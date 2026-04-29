@@ -1,2 +1,15 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# exclude certain file extensions from Languages statistics by Linguist
+*.html linguist-vendored
+*.csv linguist-vendored
+*.svg linguist-vendored
+*.dta linguist-vendored
+*.ihlp linguist-language=Stata
+*.toc linguist-language=Stata
+*.pkg linguist-language=Stata
+*.log linguist-language=Stata
+*.smcl linguist-language=Stata
+*.stmd linguist-language=Markdown
+*.[Rrq]md linguist-detectable
