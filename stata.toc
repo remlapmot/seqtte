@@ -1,0 +1,3 @@
+v 3
+d Stata package for sequential target trial emulation
+p seqtte seqtte: Stata package for sequential target trial emulation
