@@ -167,8 +167,11 @@ observational data.
 {title:Author}
 
 {phang}
-Tom Palmer, University of Bristol.
+Tom Palmer, University of Bristol, Bristol, UK.
 {browse "mailto:remlapmot@hotmail.com":remlapmot@hotmail.com}
+
+{phang}
+Michalis Katsoulis, UCL, London, UK.
 
 {phang}
 Please report any bugs or feature requests at
