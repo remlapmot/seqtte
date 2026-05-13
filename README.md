@@ -44,7 +44,9 @@ The input data should be in long (person-period) format with:
 - consecutive integer values for `time`
 - binary `treatment` (0/1)
 
-## Running certification scripts
+## For developers
+
+### Running certification scripts
 
 From the `cscripts/` directory in Stata:
 
