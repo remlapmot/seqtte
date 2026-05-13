@@ -22,7 +22,7 @@ adoupdate seqtte, update
 
 To uninstall the package run
 
-```sh
+```stata
 ado uninstall seqtte
 ```
 
