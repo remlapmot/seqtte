@@ -2,7 +2,7 @@
       name:  master
        log:  /Users/eptmp/Documents/GitHub/seqtte/cscripts/master.log
   log type:  text
- opened on:  29 Apr 2026, 11:42:07
+ opened on:  13 May 2026, 10:31:02
 
 . 
 . cscript master
@@ -21,28 +21,26 @@
   3.     do `dofile'
   4.     log close `dofile'
   5. }
-(file /Users/eptmp/Documents/GitHub/seqtte/cscripts/seqtte.log not found)
 -------------------------------------------------------------------------------
       name:  seqtte
        log:  /Users/eptmp/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- opened on:  29 Apr 2026, 11:42:07
+ opened on:  13 May 2026, 10:31:02
 
 . cscript seqtte adofile seqtte
 -------------------------------------------------------------------BEGIN seqtte
 
 -> which seqtte, usesysdir
 /Users/eptmp/Documents/GitHub/seqtte/seqtte.ado
-*! version 0.1.0  29apr2026  Tom Palmer
+*! version 0.2.0  13may2026  Tom Palmer
 
 . 
 . * ------------------------------------------------------------
 . * Generate a synthetic person-period dataset for testing
 . * ------------------------------------------------------------
-. * 200 individuals, 10 periods (0-9)
-. * First 100: treated from period 0 (ever-treated)
-. * Last 100:  never treated
-. * Outcome: approximately 8% per-period hazard, slightly lower for treated
+. * 200 individuals, up to 10 periods
+. * Treatment can be initiated at any period (time-varying)
+. * Covariate: age_grp (binary)
 . 
 . clear
 
@@ -52,11 +50,19 @@
 Number of observations (_N) was 0, now 200.
 
 . 
-. gen id = _n
+. gen id      = _n
 
-. gen trt_group = (id <= 100)  // 1 = treated, 0 = untreated
+. gen age_grp = mod(id, 2)       // binary baseline covariate
 
-. gen age_group = mod(id, 3)   // synthetic covariate
+. gen age_grp_0 = age_grp        // study-baseline version (same here)
+
+. 
+. * Individuals initiate treatment at a random period (1–8); some never treated
+. gen trt_start = ceil(runiform() * 8) if runiform() > 0.3
+(62 missing values generated)
+
+. replace trt_start = . if runiform() > 0.8  // ~20% never treated
+(24 real changes made, 24 to missing)
 
 . 
 . expand 10
@@ -65,166 +71,162 @@ Number of observations (_N) was 0, now 200.
 . bysort id: gen time = _n - 1
 
 . 
-. gen treatment = trt_group * (time == 0)
+. * Treatment: initiated at trt_start and sustained thereafter
+. gen treatment = (time >= trt_start) if !missing(trt_start)
+(860 missing values generated)
 
-. bysort id (time): replace treatment = max(treatment, treatment[_n-1])
-(900 real changes made)
+. replace treatment = 0 if missing(trt_start)
+(860 real changes made)
 
 . 
-. * Period-specific outcome: 1 in the period the event occurs, 0 otherwise
-. * Slightly lower hazard for treated group
+. * Period-specific outcome (lower hazard for treated)
 . gen double u = runiform()
 
-. gen outcome_any = (u < 0.08 - 0.03 * trt_group)
+. gen outcome = (u < 0.06 - 0.03 * treatment)
 
 . 
-. * Keep only the first event per person (drop post-event rows)
-. bysort id (time): gen cumev = sum(outcome_any)
+. * Keep only up to the first event (person exits after event)
+. bysort id (time): gen cumev = sum(outcome)
 
 . drop if cumev > 1
-(79 observations deleted)
+(89 observations deleted)
 
-. replace outcome_any = 0 if cumev == 1 & u >= (0.08 - 0.03 * trt_group)
+. replace outcome = 0 if cumev == 1 & u >= (0.06 - 0.03 * treatment)
 (0 real changes made)
 
 . 
-. * outcome = 1 only in the period the event first occurs
-. gen outcome = outcome_any
+. drop trt_start cumev u
 
-. 
-. drop trt_group cumev u outcome_any
-
-. 
 . sort id time
 
 . 
 . * ------------------------------------------------------------
-. * Test 1: basic ITT run, no covariates
+. * Test 1: ITT, no covariates
 . * ------------------------------------------------------------
 . seqtte outcome, id(id) time(time) treatment(treatment)
 (0 observations deleted)
-(1,100 missing values generated)
+(1,260 missing values generated)
 (200 missing values generated)
 (0 real changes made)
-(8,441 observations created)
-(4,388 observations deleted)
+(8,419 observations created)
+(1,783 observations deleted)
 
-Logistic regression                                     Number of obs =  5,974
-                                                        Wald chi2(5)  =  32.50
-                                                        Prob > chi2   = 0.0000
-Log pseudolikelihood = -1263.0785                       Pseudo R2     = 0.0105
+Logistic regression                                     Number of obs =  8,547
+                                                        Wald chi2(5)  =  10.63
+                                                        Prob > chi2   = 0.0592
+Log pseudolikelihood = -1284.8717                       Pseudo R2     = 0.0037
 
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
     __000009 | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
-   treatment |   .3625969   .0723535    -5.08   0.000     .2452298    .5361359
-    __00000A |   .9045589     .06223    -1.46   0.145     .7904558    1.035133
+   treatment |   .7432191   .1838192    -1.20   0.230     .4577102    1.206822
+    __00000A |   .8816805   .0669669    -1.66   0.097     .7597301    1.023206
              |
   c.__00000A#|
-  c.__00000A |   1.011313   .0060505     1.88   0.060     .9995231    1.023241
+  c.__00000A |   1.011041   .0079388     1.40   0.162        .9956    1.026721
              |
-    __000005 |   .8987489   .0537652    -1.78   0.074     .7993143    1.010553
+    __000005 |   .8743705   .0572706    -2.05   0.040     .7690285    .9941424
              |
   c.__000005#|
-  c.__000005 |   1.011476   .0066828     1.73   0.084     .9984627     1.02466
+  c.__000005 |   1.015552   .0081432     1.92   0.054      .999716    1.031638
              |
-       _cons |    .085171   .0212465    -9.87   0.000      .052234     .138877
+       _cons |    .053211   .0133002   -11.74   0.000     .0326018    .0868483
 ------------------------------------------------------------------------------
 Note: _cons estimates baseline odds.
 
 . 
-. * Stored results exist
-. assert e(N) > 0
+. assert e(N)      > 0
 
 . assert e(N_indiv) == 200
 
-. assert e(N_orig) > 0
+. assert e(N_orig)  > 0
 
-. assert e(N_exp) >= e(N_orig)
+. assert e(N_exp)  >= e(N_orig)
 
-. assert "`e(cmd)'" == "seqtte"
+. assert `"`e(cmd)'"'       == "seqtte"
 
-. assert "`e(estimator)'" == "itt"
+. assert `"`e(estimator)'"' == "itt"
 
 . 
 . * ------------------------------------------------------------
-. * Test 2: with a covariate
+. * Test 2: ITT, with covariate
 . * ------------------------------------------------------------
-. seqtte outcome, id(id) time(time) treatment(treatment) covariates(age_group)
+. seqtte outcome, id(id) time(time) treatment(treatment) ///
+>     covariates(age_grp)
 (0 observations deleted)
-(1,100 missing values generated)
+(1,260 missing values generated)
 (200 missing values generated)
 (0 real changes made)
-(8,441 observations created)
-(4,388 observations deleted)
+(8,419 observations created)
+(1,783 observations deleted)
 
-Logistic regression                                     Number of obs =  5,974
-                                                        Wald chi2(6)  =  32.52
-                                                        Prob > chi2   = 0.0000
-Log pseudolikelihood = -1263.0135                       Pseudo R2     = 0.0105
+Logistic regression                                     Number of obs =  8,547
+                                                        Wald chi2(6)  =  11.87
+                                                        Prob > chi2   = 0.0649
+Log pseudolikelihood = -1283.9416                       Pseudo R2     = 0.0044
 
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
     __000009 | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
-   treatment |   .3624941   .0723009    -5.09   0.000     .2452028    .5358911
-    __00000A |   .9046789   .0621819    -1.46   0.145     .7906573    1.035144
+   treatment |   .7395508   .1835051    -1.22   0.224     .4547356    1.202755
+    __00000A |    .881657   .0670253    -1.66   0.098     .7596082    1.023316
              |
   c.__00000A#|
-  c.__00000A |   1.011317   .0060495     1.88   0.060     .9995297    1.023244
+  c.__00000A |   1.011041    .007939     1.40   0.162     .9955995    1.026721
              |
-    __000005 |   .8988579    .053724    -1.78   0.074     .7994943    1.010571
+    __000005 |   .8734304   .0572586    -2.06   0.039     .7681163    .9931838
              |
   c.__000005#|
-  c.__000005 |   1.011484   .0066784     1.73   0.084     .9984791    1.024659
+  c.__000005 |   1.015805    .008089     1.97   0.049     1.000074    1.031783
              |
-   age_group |   1.025747   .1370466     0.19   0.849     .7894304    1.332804
-       _cons |    .082972   .0218023    -9.47   0.000     .0495751    .1388671
+     age_grp |   .8508105   .2128742    -0.65   0.518     .5210277    1.389328
+       _cons |   .0574929   .0162965   -10.08   0.000     .0329868     .100205
 ------------------------------------------------------------------------------
 Note: _cons estimates baseline odds.
 
 . 
 . assert e(N) > 0
 
-. assert "`e(cmd)'" == "seqtte"
+. assert `"`e(estimator)'"' == "itt"
 
 . 
 . * ------------------------------------------------------------
-. * Test 3: if/in restriction
+. * Test 3: ITT, if/in restriction
 . * ------------------------------------------------------------
 . seqtte outcome if time <= 7, id(id) time(time) treatment(treatment)
-(357 observations deleted)
-(1,008 missing values generated)
+(364 observations deleted)
+(1,112 missing values generated)
 (200 missing values generated)
 (0 real changes made)
-(5,409 observations created)
-(2,765 observations deleted)
+(5,325 observations created)
+(850 observations deleted)
 
-Logistic regression                                     Number of obs =  4,208
-                                                        Wald chi2(5)  =  27.72
-                                                        Prob > chi2   = 0.0000
-Log pseudolikelihood = -847.50291                       Pseudo R2     = 0.0151
+Logistic regression                                     Number of obs =  6,022
+                                                        Wald chi2(5)  =  14.89
+                                                        Prob > chi2   = 0.0108
+Log pseudolikelihood = -886.73459                       Pseudo R2     = 0.0086
 
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
     __000009 | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
-   treatment |   .3690485   .0845375    -4.35   0.000     .2355591    .5781855
-    __00000A |   .8192155   .0773754    -2.11   0.035     .6807719    .9858134
+   treatment |   .6554252   .2218943    -1.25   0.212     .3375583    1.272616
+    __00000A |   .8318781   .0660631    -2.32   0.020     .7119705      .97198
              |
   c.__00000A#|
-  c.__00000A |   1.018363   .0127519     1.45   0.146     .9936738    1.043666
+  c.__00000A |   1.011042   .0111631     0.99   0.320     .9893983     1.03316
              |
-    __000005 |     .88737   .0723772    -1.47   0.143     .7562712    1.041195
+    __000005 |   .8359192   .0634716    -2.36   0.018     .7203313    .9700548
              |
   c.__000005#|
-  c.__000005 |    1.00002   .0137639     0.00   0.999     .9734036    1.027364
+  c.__000005 |   1.012799   .0166127     0.78   0.438     .9807562    1.045888
              |
-       _cons |   .1059705   .0245826    -9.68   0.000     .0672553    .1669719
+       _cons |   .0643545   .0150466   -11.73   0.000      .040697    .1017645
 ------------------------------------------------------------------------------
 Note: _cons estimates baseline odds.
 
@@ -232,21 +234,20 @@ Note: _cons estimates baseline odds.
 . assert e(N) > 0
 
 . 
-. di as txt "seqtte cscript passed"
-seqtte cscript passed
+. * ------------------------------------------------------------
+. * Test 4: PP, unstabilized weights
+. * ------------------------------------------------------------
+. seqtte outcome, id(id) time(time) treatment(treatment) ///
+>     covariates(age_grp) ///
+>     estimator(pp) wdenominator(age_grp)
+(0 observations deleted)
+(1,260 missing values generated)
+(200 missing values generated)
+(0 real changes made)
+r(2000);
 
-. 
 end of do-file
-      name:  seqtte
-       log:  /Users/eptmp/Documents/GitHub/seqtte/cscripts/seqtte.log
-  log type:  text
- closed on:  29 Apr 2026, 11:42:08
--------------------------------------------------------------------------------
+r(2000);
 
-. 
-. log close _all
-      name:  master
-       log:  /Users/eptmp/Documents/GitHub/seqtte/cscripts/master.log
-  log type:  text
- closed on:  29 Apr 2026, 11:42:08
--------------------------------------------------------------------------------
+end of do-file
+r(2000);
