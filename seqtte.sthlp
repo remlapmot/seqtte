@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 0.1.0  29apr2026  Tom Palmer}{...}
+{* *! version 0.2.0  13may2026  Tom Palmer}{...}
 {vieweralsosee "seqtte" "help seqtte"}{...}
 {viewerjumpto "Syntax" "seqtte##syntax"}{...}
 {viewerjumpto "Description" "seqtte##description"}{...}
@@ -21,9 +21,9 @@
 {cmdab:id(}{it:varname}{cmd:)}
 {cmdab:time(}{it:varname}{cmd:)}
 {cmdab:treatment(}{it:varname}{cmd:)}
-[{cmd:covariates(}{it:varlist}{cmd:)}]
+[{it:options}]
 
-{synoptset 20 tabbed}{...}
+{synoptset 24 tabbed}{...}
 {synopthdr}
 {synoptline}
 {syntab:Required}
@@ -32,42 +32,66 @@
 {synopt:{opt treatment(varname)}}binary treatment indicator (0/1){p_end}
 {synoptline}
 {syntab:Optional}
-{synopt:{opt covariates(varlist)}}adjustment covariates; values at trial entry are used{p_end}
+{synopt:{opt covariates(varlist)}}adjustment covariates for the outcome model{p_end}
+{synopt:{opt estimator(string)}}{cmd:itt} (default) or {cmd:pp}{p_end}
+{synopt:{opt wdenominator(varlist)}}denominator weight model covariates; required for {cmd:pp}{p_end}
+{synopt:{opt wnumerator(varlist)}}numerator weight model covariates; if supplied, stabilized weights are used{p_end}
+{synopt:{opt truncation(#)}}truncation threshold for cumulative weights; default 25{p_end}
 {synoptline}
 
 {marker description}{...}
 {title:Description}
 
 {pstd}
-{cmd:seqtte} estimates the intent-to-treat (ITT) effect of a sustained
-treatment strategy using sequential target trial emulation
+{cmd:seqtte} estimates the causal effect of a sustained treatment strategy
+using sequential target trial emulation
 ({help seqtte##HR2016:Hernán and Robins, 2016}).
+Two estimators are available.
 
 {pstd}
-The input data should be in long (person-period) format.
-An individual is eligible to enter a trial at time {it:t} if they
-have not received treatment in any earlier period.
-For each eligible person-period, a trial is initiated; the person
-is then followed from that trial entry time until the end of their
-observed follow-up.
+{ul:Intent-to-treat (ITT)} ({cmd:estimator(itt)}, the default).
+Estimates the effect of being assigned to treatment at trial entry,
+regardless of subsequent treatment changes.
+No weighting is used.
 
 {pstd}
-The ITT estimand compares outcomes between those who were assigned
-(i.e., observed to initiate) treatment at trial entry versus those
-who were not, regardless of subsequent treatment changes.
+{ul:Per-protocol (PP)} ({cmd:estimator(pp)}).
+Estimates the effect of sustained adherence to the assigned treatment strategy.
+Individuals are censored at the period in which they deviate from their
+assigned treatment, and inverse probability of censoring weights (IPCW)
+are used to adjust for informative censoring.
 
 {pstd}
-Internally, {cmd:seqtte} expands the dataset to create the pooled
-person-trial observations, defines the binary outcome within each
-trial, and fits a pooled logistic regression model with quadratic
-polynomial terms for follow-up time within trial and trial number.
-Standard errors are clustered by individual to account for the fact
-that each person can contribute to multiple trials.
+{ul:Input data.}
+The data should be in long (person-period) format with one row per individual
+per time period.
+{it:outcomevar} should equal 1 only in the period the event first occurs and
+0 otherwise.
+The {it:time} variable should take consecutive integer values.
 
 {pstd}
-The {it:outcomevar} should equal 1 in the period the event first
-occurs and 0 otherwise; the event period should be the last record
-for each individual in the input data.
+{ul:Algorithm.}
+For each eligible person-period (i.e. periods in which the individual has
+not yet received treatment), a trial is initiated.
+The individual is then followed from that trial entry time to the end of
+their observed follow-up.
+Data are expanded so that each person can contribute to multiple trials.
+A pooled logistic regression model is then fitted with quadratic polynomial
+terms for follow-up time within trial and trial number, with standard errors
+clustered by individual.
+
+{pstd}
+{ul:Weight models (PP only).}
+Four logistic regression models are fitted on the pre-expansion data,
+stratified by prior treatment status ({it:A_lag} = 0 or 1):
+a denominator model including {cmd:wdenominator()} covariates
+and a cubic polynomial in calendar time,
+and (if {cmd:wnumerator()} is supplied) a numerator model including
+{cmd:wnumerator()} covariates and the same time polynomial.
+Unstabilized weights are used when {cmd:wnumerator()} is omitted;
+stabilized weights (numerator/denominator) are used when it is supplied.
+Cumulative products of per-period weights are formed within each trial,
+then truncated at {cmd:truncation()}.
 
 {marker options}{...}
 {title:Options}
@@ -88,32 +112,64 @@ Consecutive integer values represent consecutive periods.
 {dlgtab:Optional}
 
 {phang}
-{opt covariates(varlist)} specifies adjustment covariates.
-In the expanded dataset each person-trial record takes the covariate
+{opt covariates(varlist)} specifies adjustment covariates for the
+outcome model.
+In the expanded dataset each person-trial record takes covariate
 values from the trial entry period, so both time-fixed and
 time-varying covariates are included at their trial-entry values.
+
+{phang}
+{opt estimator(string)} specifies the estimator: {cmd:itt} (default)
+for the intent-to-treat effect, or {cmd:pp} for the per-protocol effect.
+
+{phang}
+{opt wdenominator(varlist)} specifies the covariates for the denominator
+weight models.
+These are fitted on the pre-expansion data and should include all
+time-varying confounders of the treatment–outcome relationship.
+Required when {cmd:estimator(pp)} is specified.
+
+{phang}
+{opt wnumerator(varlist)} specifies the covariates for the numerator
+(stabilization) weight models.
+These should be a subset of {cmd:wdenominator()}, typically restricted to
+baseline (study-entry) values of covariates.
+When omitted, unstabilized weights are used.
+
+{phang}
+{opt truncation(#)} specifies the upper truncation threshold applied
+to the cumulative IPW weights.
+Default is 25.
 
 {marker examples}{...}
 {title:Examples}
 
-{pstd}
-Generate a simple synthetic dataset and fit the ITT model:
+{pstd}Setup: generate a synthetic person-period dataset{p_end}
 
 {phang2}{cmd:. clear}{p_end}
 {phang2}{cmd:. set seed 42}{p_end}
-{phang2}{cmd:. set obs 200}{p_end}
+{phang2}{cmd:. set obs 500}{p_end}
 {phang2}{cmd:. gen id = _n}{p_end}
-{phang2}{cmd:. expand 10}{p_end}
+{phang2}{cmd:. gen age = rnormal(50, 10)}{p_end}
+{phang2}{cmd:. expand 15}{p_end}
 {phang2}{cmd:. bysort id: gen time = _n - 1}{p_end}
-{phang2}{cmd:. gen treatment = (id <= 100) * (time == 0)}{p_end}
-{phang2}{cmd:. gen treatment_ever = treatment}{p_end}
-{phang2}{cmd:. bysort id (time): replace treatment_ever = max(treatment_ever, treatment_ever[_n-1])}{p_end}
-{phang2}{cmd:. gen treatment2 = treatment_ever}{p_end}
-{phang2}{cmd:. gen u = runiform()}{p_end}
-{phang2}{cmd:. gen outcome = (u < 0.05)}{p_end}
+{phang2}{cmd:. gen treatment = 0}{p_end}
+{phang2}{cmd:. bysort id (time): replace treatment = 1 if time > 4 & id <= 250}{p_end}
+{phang2}{cmd:. gen outcome = (runiform() < 0.05)}{p_end}
 {phang2}{cmd:. bysort id (time): gen cumev = sum(outcome)}{p_end}
 {phang2}{cmd:. drop if cumev > 1}{p_end}
-{phang2}{cmd:. seqtte outcome, id(id) time(time) treatment(treatment2)}{p_end}
+
+{pstd}ITT estimator{p_end}
+
+{phang2}{cmd:. seqtte outcome, id(id) time(time) treatment(treatment) covariates(age)}{p_end}
+
+{pstd}PP estimator with unstabilized weights{p_end}
+
+{phang2}{cmd:. seqtte outcome, id(id) time(time) treatment(treatment) covariates(age) estimator(pp) wdenominator(age)}{p_end}
+
+{pstd}PP estimator with stabilized weights{p_end}
+
+{phang2}{cmd:. seqtte outcome, id(id) time(time) treatment(treatment) covariates(age) estimator(pp) wdenominator(age) wnumerator(age)}{p_end}
 
 {marker results}{...}
 {title:Stored results}
@@ -132,7 +188,7 @@ Generate a simple synthetic dataset and fit the ITT model:
 
 {p2col 5 20 24 2: Macros}{p_end}
 {synopt:{cmd:e(cmd)}}{cmd:seqtte}{p_end}
-{synopt:{cmd:e(estimator)}}{cmd:itt}{p_end}
+{synopt:{cmd:e(estimator)}}{cmd:itt} or {cmd:pp}{p_end}
 {synopt:{cmd:e(depvar)}}name of the outcome variable{p_end}
 {synopt:{cmd:e(clustvar)}}name of the cluster variable{p_end}
 {synopt:{cmd:e(vcetype)}}{cmd:Robust}{p_end}
