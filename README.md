@@ -8,6 +8,18 @@ Stata package for sequential target trial emulation.
 net install seqtte, from("https://raw.githubusercontent.com/remlapmot/seqtte/main/") replace
 ```
 
+To check for an update run
+
+```stata
+adoupdate
+```
+
+To update the package run
+
+```stata
+adoupdate seqtte, update
+```
+
 ## Commands
 
 | Command | Description |
