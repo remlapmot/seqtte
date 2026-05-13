@@ -24,12 +24,12 @@ adoupdate seqtte, update
 
 | Command | Description |
 |---------|-------------|
-| `seqtte` | Intent-to-treat (ITT) estimator via sequential trial emulation |
+| `seqtte` | Intent-to-treat (ITT) and per-protocol (PP) estimators via sequential trial emulation |
 
 ## Usage
 
 ```stata
-seqtte outcomevar, id(varname) time(varname) treatment(varname) [covariates(varlist)]
+seqtte outcomevar, id(varname) time(varname) treatment(varname) [covariates(varlist)] [estimator(itt|pp)] [wdenominator(varlist)] [wnumerator(varlist)] [truncation(#)]
 ```
 
 The input data should be in long (person-period) format with:
