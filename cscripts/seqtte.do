@@ -3,8 +3,9 @@ cscript seqtte adofile seqtte
 * ------------------------------------------------------------
 * Generate a synthetic person-period dataset for testing
 * ------------------------------------------------------------
-* 200 individuals, up to 10 periods
-* Treatment can be initiated at any period (time-varying)
+* 200 individuals, 10 periods (0–9)
+* Treatment follows a Markov chain so both A_lag==0 and A_lag==1
+* strata have variation in treatment — required for PP weight models
 * Covariate: age_grp (binary)
 
 clear
@@ -12,30 +13,31 @@ set seed 42
 set obs 200
 
 gen id      = _n
-gen age_grp = mod(id, 2)       // binary baseline covariate
-gen age_grp_0 = age_grp        // study-baseline version (same here)
-
-* Individuals initiate treatment at a random period (1–8); some never treated
-gen trt_start = ceil(runiform() * 8) if runiform() > 0.3
-replace trt_start = . if runiform() > 0.8  // ~20% never treated
+gen age_grp   = mod(id, 2)
+gen age_grp_0 = age_grp
 
 expand 10
 bysort id: gen time = _n - 1
 
-* Treatment: initiated at trt_start and sustained thereafter
-gen treatment = (time >= trt_start) if !missing(trt_start)
-replace treatment = 0 if missing(trt_start)
+* Markov treatment:
+*   P(A=1 | A_lag=0) = 0.25   (initiation)
+*   P(A=1 | A_lag=1) = 0.70   (continuation / some stopping)
+gen treatment = .
+bysort id (time): replace treatment = (runiform() < 0.25) if time == 0
+bysort id (time): replace treatment = ///
+    cond(treatment[_n-1] == 0, (runiform() < 0.25), (runiform() < 0.70)) ///
+    if time > 0
 
-* Period-specific outcome (lower hazard for treated)
+* Period-specific outcome: 1 only in the period the event occurs
 gen double u = runiform()
-gen outcome = (u < 0.06 - 0.03 * treatment)
+gen outcome = (u < 0.07 - 0.03 * treatment)
 
-* Keep only up to the first event (person exits after event)
+* Truncate at first event
 bysort id (time): gen cumev = sum(outcome)
 drop if cumev > 1
-replace outcome = 0 if cumev == 1 & u >= (0.06 - 0.03 * treatment)
+replace outcome = 0 if cumev == 1 & !outcome
 
-drop trt_start cumev u
+drop cumev u
 sort id time
 
 * ------------------------------------------------------------
@@ -43,7 +45,7 @@ sort id time
 * ------------------------------------------------------------
 seqtte outcome, id(id) time(time) treatment(treatment)
 
-assert e(N)      > 0
+assert e(N)       > 0
 assert e(N_indiv) == 200
 assert e(N_orig)  > 0
 assert e(N_exp)  >= e(N_orig)
@@ -77,7 +79,7 @@ assert e(N) > 0
 assert `"`e(estimator)'"' == "pp"
 
 * ------------------------------------------------------------
-* Test 5: PP, stabilized weights
+* Test 5: PP, stabilized weights (wnumerator = subset of wdenominator)
 * ------------------------------------------------------------
 seqtte outcome, id(id) time(time) treatment(treatment) ///
     covariates(age_grp) ///
@@ -97,6 +99,6 @@ assert e(N) > 0
 * ------------------------------------------------------------
 * Test 7: error if pp specified without wdenominator
 * ------------------------------------------------------------
-rcof "seqtte outcome, id(id) time(time) treatment(treatment) estimator(pp)" == 198
+rcof `"seqtte outcome, id(id) time(time) treatment(treatment) estimator(pp)"' == 198
 
 di as txt "seqtte cscript passed"
