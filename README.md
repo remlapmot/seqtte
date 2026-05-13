@@ -20,6 +20,12 @@ To update the package run
 adoupdate seqtte, update
 ```
 
+To uninstall the package run
+
+```sh
+ado uninstall seqtte
+```
+
 ## Commands
 
 | Command | Description |
