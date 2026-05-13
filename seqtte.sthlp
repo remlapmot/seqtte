@@ -214,7 +214,7 @@ an emulation of randomised trials of statins and primary prevention of coronary 
 
 {phang}
 Maringe C, Benitez Majano S, Exarchakou A, et al. 2020.
-Reflections on modern methods: trial emulation in the presence of immortal-time bias.
+Reflection on modern methods: trial emulation in the presence of immortal-time bias.
 Assessing the benefit of major surgery for elderly lung cancer patients using
 observational data.
 {it:International Journal of Epidemiology} 49(5): 1719–1729.
