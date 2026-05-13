@@ -46,6 +46,11 @@ From the `cscripts/` directory in Stata:
 do master
 ```
 
+Or from top level of repo
+
+```sh
+just test
+```
 ## References
 
 Hernán MA, Robins JM (2016). Using Big Data to Emulate a Target Trial When a Randomized Trial Is Not Available. *American Journal of Epidemiology* 183(8): 758–764.
