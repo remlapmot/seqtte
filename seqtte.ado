@@ -1,4 +1,4 @@
-*! version 0.2.0  13may2026  Tom Palmer
+*! version 0.3.0  13may2026  Tom Palmer
 program seqtte, eclass
     version 16
 
@@ -26,6 +26,9 @@ program seqtte, eclass
         exit 198
     }
 
+    // Capture variable count before tempvars are created
+    local k_orig = c(k)
+
     preserve
 
     marksample touse
@@ -39,6 +42,8 @@ program seqtte, eclass
     local n_orig = r(N)
     qui levelsof `id'
     local n_indiv = r(r)
+
+    di as txt _n "Original dataset: " %12.0fc `n_orig' " observations, " `k_orig' " variables"
 
     // Event time per individual
     tempvar evttime evttime_max
@@ -54,12 +59,18 @@ program seqtte, eclass
     by `id': replace `eligible' = 0 ///
         if `eligible'[_n-1] == 0 & `id' == `id'[_n-1]
 
+    qui count if `eligible' == 1
+    local n_elig = r(N)
+    di as txt "Eligible observations: " %12.0fc `n_elig' " (" `n_indiv' " individuals)"
+
     // Trial = calendar time at trial entry
     tempvar trial
     qui gen long `trial' = `time'
 
     // ----- PP: weight models and per-period snapshots (before expand) -----
     if "`estimator'" == "pp" {
+
+        di as txt _n "Fitting weight models..."
 
         qui sum `time'
         local t_min = r(min)
@@ -78,7 +89,6 @@ program seqtte, eclass
         qui predict double `p_d1'
 
         // Numerator: P(A | A_lag, time + time² + time³, wnumerator)
-        // If wnumerator not given, use unstabilized weights (numerator = 1)
         local stabilized = ("`wnumerator'" != "")
         if `stabilized' {
             tempvar p_n0 p_n1
@@ -123,9 +133,13 @@ program seqtte, eclass
             by `id': egen byte   `_ca`i'' = max(`_c`i'')
             by `id': egen double `_wa`i'' = max(`_w`i'')
         }
+
+        di as txt "Weight models fitted"
     }
 
     // ----- Expand each row to cover remaining follow-up -----
+    di as txt _n "Expanding data..."
+
     tempvar max_t n_expand
     by `id': gen long `max_t' = `time'[_N]
     qui gen long `n_expand' = `max_t' - `time' + 1
@@ -137,6 +151,10 @@ program seqtte, eclass
     by `id' `trial': gen long `time_in_trial' = _n
 
     drop if `eligible' == 0
+
+    qui count
+    local n_exp = r(N)
+    di as txt "Expanded dataset: " %12.0fc `n_exp' " observations"
 
     // ----- PP: fill censoring and cumulative weights into expanded data -----
     if "`estimator'" == "pp" {
@@ -167,6 +185,10 @@ program seqtte, eclass
         // Truncate extreme weights
         qui replace `wt_cum' = `truncation' ///
             if `wt_cum' > `truncation' & !missing(`wt_cum')
+
+        qui count if `censored' == 0
+        local n_pp = r(N)
+        di as txt "Post-censoring dataset: " %12.0fc `n_pp' " observations"
     }
 
     // ----- Outcome and follow-up time -----
@@ -177,10 +199,9 @@ program seqtte, eclass
         & !missing(`evttime_max')
     qui gen long `fu_time' = `time_in_trial' - 1
 
-    qui count
-    local n_exp = r(N)
-
     // ----- Pooled logistic regression -----
+    di as txt _n "Fitting " upper("`estimator'") " model..."
+
     if "`estimator'" == "itt" {
         logistic `event' `treatment' ///
             c.`fu_time'##c.`fu_time' ///
