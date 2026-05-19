@@ -2,14 +2,14 @@
       name:  seqtte
        log:  /Users/eptmp/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- opened on:  13 May 2026, 10:56:24
+ opened on:  19 May 2026, 12:59:50
 
 . cscript seqtte adofile seqtte
 -------------------------------------------------------------------BEGIN seqtte
 
 -> which seqtte, usesysdir
 /Users/eptmp/Documents/GitHub/seqtte/seqtte.ado
-*! version 0.2.0  13may2026  Tom Palmer
+*! version 0.3.0  13may2026  Tom Palmer
 
 . 
 . * ------------------------------------------------------------
@@ -82,11 +82,19 @@ Number of observations (_N) was 0, now 200.
 . * ------------------------------------------------------------
 . seqtte outcome, id(id) time(time) treatment(treatment)
 (0 observations deleted)
+
+Original dataset:        1,930 observations, 6 variables
 (1,080 missing values generated)
 (200 missing values generated)
 (453 real changes made)
+Eligible observations:          818 (200 individuals)
+
+Expanding data...
 (8,517 observations created)
 (4,581 observations deleted)
+Expanded dataset:        5,866 observations
+
+Fitting ITT model...
 
 Logistic regression                                     Number of obs =  5,866
                                                         Wald chi2(5)  =   6.73
@@ -133,11 +141,19 @@ Note: _cons estimates baseline odds.
 . seqtte outcome, id(id) time(time) treatment(treatment) ///
 >     covariates(age_grp)
 (0 observations deleted)
+
+Original dataset:        1,930 observations, 6 variables
 (1,080 missing values generated)
 (200 missing values generated)
 (453 real changes made)
+Eligible observations:          818 (200 individuals)
+
+Expanding data...
 (8,517 observations created)
 (4,581 observations deleted)
+Expanded dataset:        5,866 observations
+
+Fitting ITT model...
 
 Logistic regression                                     Number of obs =  5,866
                                                         Wald chi2(6)  =   6.77
@@ -176,11 +192,19 @@ Note: _cons estimates baseline odds.
 . * ------------------------------------------------------------
 . seqtte outcome if time <= 7, id(id) time(time) treatment(treatment)
 (367 observations deleted)
+
+Original dataset:        1,563 observations, 6 variables
 (984 missing values generated)
 (200 missing values generated)
 (283 real changes made)
+Eligible observations:          770 (200 individuals)
+
+Expanding data...
 (5,399 observations created)
 (2,601 observations deleted)
+Expanded dataset:        4,361 observations
+
+Fitting ITT model...
 
 Logistic regression                                     Number of obs =  4,361
                                                         Wald chi2(5)  =   4.08
@@ -218,12 +242,24 @@ Note: _cons estimates baseline odds.
 >     covariates(age_grp) ///
 >     estimator(pp) wdenominator(age_grp)
 (0 observations deleted)
+
+Original dataset:        1,930 observations, 6 variables
 (1,080 missing values generated)
 (200 missing values generated)
 (453 real changes made)
+Eligible observations:          818 (200 individuals)
+
+Fitting weight models...
+Weight models fitted
+
+Expanding data...
 (8,517 observations created)
 (4,581 observations deleted)
+Expanded dataset:        5,866 observations
 (4259 real changes made)
+Post-censoring dataset:        2,795 observations
+
+Fitting PP model...
 
 Logistic regression                                     Number of obs =  2,795
                                                         Wald chi2(6)  =   9.82
@@ -264,12 +300,24 @@ Note: _cons estimates baseline odds.
 >     covariates(age_grp) ///
 >     estimator(pp) wdenominator(age_grp) wnumerator(age_grp_0)
 (0 observations deleted)
+
+Original dataset:        1,930 observations, 6 variables
 (1,080 missing values generated)
 (200 missing values generated)
 (453 real changes made)
+Eligible observations:          818 (200 individuals)
+
+Fitting weight models...
+Weight models fitted
+
+Expanding data...
 (8,517 observations created)
 (4,581 observations deleted)
+Expanded dataset:        5,866 observations
 (0 real changes made)
+Post-censoring dataset:        2,795 observations
+
+Fitting PP model...
 
 Logistic regression                                     Number of obs =  2,795
                                                         Wald chi2(6)  =   8.45
@@ -309,12 +357,24 @@ Note: _cons estimates baseline odds.
 . seqtte outcome, id(id) time(time) treatment(treatment) ///
 >     estimator(pp) wdenominator(age_grp) truncation(10)
 (0 observations deleted)
+
+Original dataset:        1,930 observations, 6 variables
 (1,080 missing values generated)
 (200 missing values generated)
 (453 real changes made)
+Eligible observations:          818 (200 individuals)
+
+Fitting weight models...
+Weight models fitted
+
+Expanding data...
 (8,517 observations created)
 (4,581 observations deleted)
+Expanded dataset:        5,866 observations
 (4259 real changes made)
+Post-censoring dataset:        2,795 observations
+
+Fitting PP model...
 
 Logistic regression                                     Number of obs =  2,795
                                                         Wald chi2(5)  =   9.60
@@ -360,5 +420,5 @@ end of do-file
       name:  seqtte
        log:  /Users/eptmp/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- closed on:  13 May 2026, 10:56:25
+ closed on:  19 May 2026, 12:59:51
 -------------------------------------------------------------------------------
