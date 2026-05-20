@@ -1,4 +1,4 @@
-*! version 0.4.0  20may2026  Tom Palmer
+*! version 0.4.1  20may2026  Tom Palmer
 program seqtte, eclass
     version 16
 
@@ -95,30 +95,62 @@ program seqtte, eclass
         local t_max = r(max)
 
         // Denominator: P(A | A_lag, time + time² + time³, wdenominator)
+        // Guard each fit: if treatment does not vary within the A_lag stratum
+        // (e.g. monotonic, non-reversible treatment, where everyone with
+        // A_lag == 1 also has treatment == 1), logistic exits with r(2000)
+        // "outcome does not vary". In that case the stratum's weight
+        // contribution is 1, so set the predicted probability to the constant
+        // value of treatment instead of fitting a model.
         tempvar p_d0 p_d1
-        qui logistic `treatment' ///
-            c.`time' c.`time'#c.`time' c.`time'#c.`time'#c.`time' ///
-            `wdenominator' if `A_lag' == 0
-        qui predict double `p_d0'
 
-        qui logistic `treatment' ///
-            c.`time' c.`time'#c.`time' c.`time'#c.`time'#c.`time' ///
-            `wdenominator' if `A_lag' == 1
-        qui predict double `p_d1'
+        qui sum `treatment' if `A_lag' == 0, meanonly
+        if r(N) == 0 | r(min) == r(max) {
+            qui gen double `p_d0' = cond(r(N) == 0, 1, r(mean))
+        }
+        else {
+            qui logistic `treatment' ///
+                c.`time' c.`time'#c.`time' c.`time'#c.`time'#c.`time' ///
+                `wdenominator' if `A_lag' == 0
+            qui predict double `p_d0'
+        }
+
+        qui sum `treatment' if `A_lag' == 1, meanonly
+        if r(N) == 0 | r(min) == r(max) {
+            qui gen double `p_d1' = cond(r(N) == 0, 1, r(mean))
+        }
+        else {
+            qui logistic `treatment' ///
+                c.`time' c.`time'#c.`time' c.`time'#c.`time'#c.`time' ///
+                `wdenominator' if `A_lag' == 1
+            qui predict double `p_d1'
+        }
 
         // Numerator: P(A | A_lag, time + time² + time³, wnumerator)
         local stabilized = ("`wnumerator'" != "")
         if `stabilized' {
             tempvar p_n0 p_n1
-            qui logistic `treatment' ///
-                c.`time' c.`time'#c.`time' c.`time'#c.`time'#c.`time' ///
-                `wnumerator' if `A_lag' == 0
-            qui predict double `p_n0'
 
-            qui logistic `treatment' ///
-                c.`time' c.`time'#c.`time' c.`time'#c.`time'#c.`time' ///
-                `wnumerator' if `A_lag' == 1
-            qui predict double `p_n1'
+            qui sum `treatment' if `A_lag' == 0, meanonly
+            if r(N) == 0 | r(min) == r(max) {
+                qui gen double `p_n0' = cond(r(N) == 0, 1, r(mean))
+            }
+            else {
+                qui logistic `treatment' ///
+                    c.`time' c.`time'#c.`time' c.`time'#c.`time'#c.`time' ///
+                    `wnumerator' if `A_lag' == 0
+                qui predict double `p_n0'
+            }
+
+            qui sum `treatment' if `A_lag' == 1, meanonly
+            if r(N) == 0 | r(min) == r(max) {
+                qui gen double `p_n1' = cond(r(N) == 0, 1, r(mean))
+            }
+            else {
+                qui logistic `treatment' ///
+                    c.`time' c.`time'#c.`time' c.`time'#c.`time'#c.`time' ///
+                    `wnumerator' if `A_lag' == 1
+                qui predict double `p_n1'
+            }
         }
 
         // IPW weights (reset to 1 at each person's first record)
