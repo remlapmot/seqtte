@@ -2,7 +2,7 @@
       name:  seqtte
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- opened on:  20 May 2026, 11:31:40
+ opened on:  20 May 2026, 15:44:14
 
 . cscript seqtte adofile seqtte
 -------------------------------------------------------------------BEGIN seqtte
@@ -983,7 +983,130 @@ Note: _cons estimates baseline odds.
 
 . 
 . * ------------------------------------------------------------
-. * Test 17: bootstrap invalid (negative)
+. * Test 17: bootstrap when selectionrandom drops whole clusters
+. *   Regression test for r(498). n_indiv is counted before
+. *   selectionrandom, so when selection removes every (id, trial) pair
+. *   for some individuals the surviving cluster count falls below
+. *   n_indiv. bsample must resample the post-selection cluster count,
+. *   not n_indiv, or every replicate errors and 0 succeed.
+. * ------------------------------------------------------------
+. preserve
+
+. 
+. clear
+
+. set seed 12345
+
+. set obs 300
+Number of observations (_N) was 0, now 300.
+
+. gen id = _n
+
+. * Odd ids: a single period, never treated (all control-arm), so
+. * selectionsample(0.5) drops roughly half of them entirely.
+. gen byte shortfu = mod(id, 2)
+
+. expand cond(shortfu, 1, 8)
+(1,050 observations created)
+
+. bysort id: gen time = _n - 1
+
+. gen treatment = .
+(1,350 missing values generated)
+
+. bysort id (time): replace treatment = 0 if time == 0
+(300 real changes made)
+
+. bysort id (time): replace treatment = ///
+>     cond(shortfu, 0, cond(treatment[_n-1] == 0, (runiform() < 0.3), 1)) ///
+>     if time > 0
+(1,050 real changes made)
+
+. gen double u = runiform()
+
+. gen outcome = (u < 0.1 - 0.04 * treatment)
+
+. bysort id (time): gen cumev = sum(outcome)
+
+. drop if cumev > 1
+(44 observations deleted)
+
+. replace outcome = 0 if cumev == 1 & !outcome
+(0 real changes made)
+
+. drop cumev u
+
+. 
+. seqtte outcome, id(id) time(time) treatment(treatment) ///
+>     selectionrandom selectionsample(0.5) bootstrap(30) seed(99)
+(0 observations deleted)
+
+Original dataset:        1,306 observations, 5 variables
+(757 missing values generated)
+(300 missing values generated)
+(0 real changes made)
+Eligible observations:          757 (300 individuals)
+
+Expanding data...
+(3,960 observations created)
+(1,634 observations deleted)
+Expanded dataset:        3,632 observations
+(2,875 missing values generated)
+(2875 real changes made)
+(1,487 observations deleted)
+After random selection (0.500 of control-arm pairs):        2,145 observations
+
+Running 30 bootstrap replicates...
+Bootstrap complete: 30/30 replicates succeeded
+Bootstrap SE (log-OR):       0.2048
+Bootstrap 95% CI (log-OR): [-0.8072,  0.1002]
+
+Fitting ITT model...
+
+Logistic regression                                     Number of obs =  2,145
+                                                        Wald chi2(5)  =   6.84
+                                                        Prob > chi2   = 0.2326
+Log pseudolikelihood = -463.5515                        Pseudo R2     = 0.0100
+
+                                   (Std. err. adjusted for 226 clusters in id)
+------------------------------------------------------------------------------
+             |               Robust
+       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   treatment |   .7344823   .1531125    -1.48   0.139     .4881319    1.105161
+    followup |   .8941722   .1283983    -0.78   0.436     .6748282    1.184811
+             |
+  c.followup#|
+  c.followup |   .9978995   .0244198    -0.09   0.932     .9511674    1.046928
+             |
+       trial |   .9290028   .1282552    -0.53   0.594      .708766    1.217675
+             |
+     c.trial#|
+     c.trial |   1.004547   .0282555     0.16   0.872     .9506666    1.061482
+             |
+       _cons |    .095692   .0203856   -11.02   0.000     .0630292    .1452813
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+. 
+. assert e(N) > 0
+
+. assert e(N_sel) < e(N_exp)
+
+. assert e(N_boot) == 30
+
+. assert !missing(e(bs_se))
+
+. assert !missing(e(bs_ll))
+
+. assert !missing(e(bs_ul))
+
+. 
+. restore
+
+. 
+. * ------------------------------------------------------------
+. * Test 18: bootstrap invalid (negative)
 . * ------------------------------------------------------------
 . rcof `"seqtte outcome, id(id) time(time) treatment(treatment) bootstrap(-1)"'
 >  == 198
@@ -997,5 +1120,5 @@ end of do-file
       name:  seqtte
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- closed on:  20 May 2026, 11:31:44
+ closed on:  20 May 2026, 15:44:18
 -------------------------------------------------------------------------------
