@@ -2,7 +2,7 @@
       name:  master
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/master.log
   log type:  text
- opened on:  20 May 2026, 06:48:04
+ opened on:  20 May 2026, 11:31:40
 
 . 
 . cscript master
@@ -25,14 +25,14 @@
       name:  seqtte
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- opened on:  20 May 2026, 06:48:04
+ opened on:  20 May 2026, 11:31:40
 
 . cscript seqtte adofile seqtte
 -------------------------------------------------------------------BEGIN seqtte
 
 -> which seqtte, usesysdir
 /Users/tom/Documents/GitHub/seqtte/seqtte.ado
-*! version 0.4.0  20may2026  Tom Palmer
+*! version 0.5.0  20may2026  Tom Palmer
 
 . 
 . * ------------------------------------------------------------
@@ -127,18 +127,18 @@ Log pseudolikelihood = -1073.8885                       Pseudo R2     = 0.0025
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-    __000009 | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
    treatment |   .8519499   .1211415    -1.13   0.260     .6447316    1.125769
-    __00000A |   .9672518   .0863713    -0.37   0.709     .8119533    1.152254
+    followup |   .9672518   .0863713    -0.37   0.709     .8119533    1.152254
              |
-  c.__00000A#|
-  c.__00000A |   1.002209   .0095857     0.23   0.818     .9835961    1.021173
+  c.followup#|
+  c.followup |   1.002209   .0095857     0.23   0.818     .9835961    1.021173
              |
-    __000005 |   .8852631   .0704297    -1.53   0.126     .7574475    1.034647
+       trial |   .8852631   .0704297    -1.53   0.126     .7574475    1.034647
              |
-  c.__000005#|
-  c.__000005 |   1.022453   .0129066     1.76   0.079     .9974667    1.048065
+     c.trial#|
+     c.trial |   1.022453   .0129066     1.76   0.079     .9974667    1.048065
              |
        _cons |   .0556938   .0130565   -12.32   0.000     .0351769    .0881773
 ------------------------------------------------------------------------------
@@ -186,18 +186,18 @@ Log pseudolikelihood = -1073.1731                       Pseudo R2     = 0.0032
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-    __000009 | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
    treatment |   .8509309    .121162    -1.13   0.257     .6437151    1.124851
-    __00000A |   .9672047    .086409    -0.37   0.709     .8118448    1.152295
+    followup |   .9672047    .086409    -0.37   0.709     .8118448    1.152295
              |
-  c.__00000A#|
-  c.__00000A |   1.002184    .009583     0.23   0.820     .9835763    1.021143
+  c.followup#|
+  c.followup |   1.002184    .009583     0.23   0.820     .9835763    1.021143
              |
-    __000005 |    .884369   .0702201    -1.55   0.122     .7569148    1.033285
+       trial |    .884369   .0702201    -1.55   0.122     .7569148    1.033285
              |
-  c.__000005#|
-  c.__000005 |   1.022634   .0129449     1.77   0.077     .9975749    1.048323
+     c.trial#|
+     c.trial |   1.022634   .0129449     1.77   0.077     .9975749    1.048323
              |
      age_grp |   1.163051   .2607572     0.67   0.500     .7494771    1.804841
        _cons |   .0515335   .0140795   -10.85   0.000      .030167    .0880333
@@ -237,18 +237,18 @@ Log pseudolikelihood = -791.99732                       Pseudo R2     = 0.0018
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-    __000009 | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
    treatment |   .9147963   .1477508    -0.55   0.581     .6665687    1.255463
-    __00000A |   .8922942   .0999469    -1.02   0.309     .7164139    1.111353
+    followup |   .8922942   .0999469    -1.02   0.309     .7164139    1.111353
              |
-  c.__00000A#|
-  c.__00000A |   1.013095    .016816     0.78   0.433     .9806669    1.046596
+  c.followup#|
+  c.followup |   1.013095    .016816     0.78   0.433     .9806669    1.046596
              |
-    __000005 |   .9611229   .1059508    -0.36   0.719     .7743646    1.192923
+       trial |   .9611229   .1059508    -0.36   0.719     .7743646    1.192923
              |
-  c.__000005#|
-  c.__000005 |    .993824   .0174655    -0.35   0.724     .9601751    1.028652
+     c.trial#|
+     c.trial |    .993824   .0174655    -0.35   0.724     .9601751    1.028652
              |
        _cons |   .0603429   .0142604   -11.88   0.000     .0379724    .0958924
 ------------------------------------------------------------------------------
@@ -292,18 +292,18 @@ Log pseudolikelihood = -1284.7328                       Pseudo R2     = 0.0263
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-    __00001F | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
    treatment |   .5032836   .1816938    -1.90   0.057      .248036      1.0212
-    __00001G |    .924474   .1067231    -0.68   0.496     .7372764    1.159202
+    followup |    .924474   .1067231    -0.68   0.496     .7372764    1.159202
              |
-  c.__00001G#|
-  c.__00001G |   1.019031   .0185517     1.04   0.300     .9833119    1.056049
+  c.followup#|
+  c.followup |   1.019031   .0185517     1.04   0.300     .9833119    1.056049
              |
-    __000005 |    1.02936   .1216338     0.24   0.807     .8165555    1.297625
+       trial |    1.02936   .1216338     0.24   0.807     .8165555    1.297625
              |
-  c.__000005#|
-  c.__000005 |   1.008331   .0062651     1.34   0.182     .9961266    1.020686
+     c.trial#|
+     c.trial |   1.008331   .0062651     1.34   0.182     .9961266    1.020686
              |
      age_grp |   1.992418   .8756128     1.57   0.117     .8419781    4.714765
        _cons |   .0360684   .0170568    -7.03   0.000     .0142756      .09113
@@ -350,18 +350,18 @@ Log pseudolikelihood = -581.02604                       Pseudo R2     = 0.0158
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-    __00001H | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
    treatment |   .6553398   .1862556    -1.49   0.137     .3754435    1.143901
-    __00001I |   .9313866   .0859551    -0.77   0.441     .7772755    1.116053
+    followup |   .9313866   .0859551    -0.77   0.441     .7772755    1.116053
              |
-  c.__00001I#|
-  c.__00001I |    1.01877   .0124757     1.52   0.129     .9946091    1.043517
+  c.followup#|
+  c.followup |    1.01877   .0124757     1.52   0.129     .9946091    1.043517
              |
-    __000005 |   .8876157   .0840739    -1.26   0.208     .7372253    1.068685
+       trial |   .8876157   .0840739    -1.26   0.208     .7372253    1.068685
              |
-  c.__000005#|
-  c.__000005 |   1.024262   .0122626     2.00   0.045     1.000508    1.048581
+     c.trial#|
+     c.trial |   1.024262   .0122626     2.00   0.045     1.000508    1.048581
              |
      age_grp |   1.625581   .5174984     1.53   0.127     .8710261    3.033792
        _cons |   .0467652    .015746    -9.10   0.000     .0241724    .0904742
@@ -407,18 +407,18 @@ Log pseudolikelihood = -1297.3976                       Pseudo R2     = 0.0129
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-    __00001F | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
    treatment |   .5865787   .1917975    -1.63   0.103      .309032    1.113395
-    __00001G |   .8984417   .1040038    -0.93   0.355     .7160685    1.127263
+    followup |   .8984417   .1040038    -0.93   0.355     .7160685    1.127263
              |
-  c.__00001G#|
-  c.__00001G |   1.022334   .0185674     1.22   0.224     .9865826    1.059381
+  c.followup#|
+  c.followup |   1.022334   .0185674     1.22   0.224     .9865826    1.059381
              |
-    __000005 |   1.020075   .1201681     0.17   0.866     .8097632     1.28501
+       trial |   1.020075   .1201681     0.17   0.866     .8097632     1.28501
              |
-  c.__000005#|
-  c.__000005 |   1.008675   .0059934     1.45   0.146     .9969967    1.020491
+     c.trial#|
+     c.trial |   1.008675   .0059934     1.45   0.146     .9969967    1.020491
              |
        _cons |   .0544195   .0171555    -9.23   0.000     .0293372    .1009465
 ------------------------------------------------------------------------------
@@ -466,18 +466,18 @@ Log pseudolikelihood = -1071.5822                       Pseudo R2     = 0.0047
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-    __000009 | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
    treatment |   .8586673   .1219067    -1.07   0.283      .650097    1.134153
-    __00000A |   .9669522   .0864091    -0.38   0.707     .8115955    1.152047
+    followup |   .9669522   .0864091    -0.38   0.707     .8115955    1.152047
              |
-  c.__00000A#|
-  c.__00000A |   1.002126   .0095971     0.22   0.825     .9834912    1.021113
+  c.followup#|
+  c.followup |   1.002126   .0095971     0.22   0.825     .9834912    1.021113
              |
-    __000005 |   .8839737   .0696678    -1.56   0.118     .7574507    1.031631
+       trial |   .8839737   .0696678    -1.56   0.118     .7574507    1.031631
              |
-  c.__000005#|
-  c.__000005 |    1.02205   .0131262     1.70   0.089     .9966439    1.048103
+     c.trial#|
+     c.trial |    1.02205   .0131262     1.70   0.089     .9966439    1.048103
              |
    1.age_grp |   1.162389    .260249     0.67   0.502     .7495052     1.80272
              |
@@ -527,18 +527,18 @@ Log pseudolikelihood = -586.45887                       Pseudo R2     = 0.0173
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-    __00001H | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
    treatment |     .64909   .1864859    -1.50   0.133     .3696168    1.139877
-    __00001I |   .9295571   .0852592    -0.80   0.426     .7766113    1.112624
+    followup |   .9295571   .0852592    -0.80   0.426     .7766113    1.112624
              |
-  c.__00001I#|
-  c.__00001I |   1.019559   .0127514     1.55   0.121     .9948708     1.04486
+  c.followup#|
+  c.followup |   1.019559   .0127514     1.55   0.121     .9948708     1.04486
              |
-    __000005 |   .8926966   .0840625    -1.21   0.228     .7422476    1.073641
+       trial |   .8926966   .0840625    -1.21   0.228     .7422476    1.073641
              |
-  c.__000005#|
-  c.__000005 |   1.023921   .0121833     1.99   0.047     1.000319    1.048081
+     c.trial#|
+     c.trial |   1.023921   .0121833     1.99   0.047     1.000319    1.048081
              |
    1.age_grp |   1.650685   .5192156     1.59   0.111     .8910923    3.057778
              |
@@ -556,6 +556,462 @@ Note: _cons estimates baseline odds.
 . assert `"`e(estimator)'"' == "pp"
 
 . 
+. * ------------------------------------------------------------
+. * Test 9: selection_random, ITT — runs and reduces dataset
+. * ------------------------------------------------------------
+. seqtte outcome, id(id) time(time) treatment(treatment) ///
+>     selectionrandom selectionsample(0.5) seed(42)
+(0 observations deleted)
+
+Original dataset:        1,930 observations, 7 variables
+(1,080 missing values generated)
+(200 missing values generated)
+(453 real changes made)
+Eligible observations:          818 (200 individuals)
+
+Expanding data...
+(8,517 observations created)
+(4,581 observations deleted)
+Expanded dataset:        5,866 observations
+(5,048 missing values generated)
+(5048 real changes made)
+(2,185 observations deleted)
+After random selection (0.500 of control-arm pairs):        3,681 observations
+
+Fitting ITT model...
+
+Logistic regression                                     Number of obs =  3,681
+                                                        Wald chi2(5)  =   0.63
+                                                        Prob > chi2   = 0.9867
+Log pseudolikelihood = -626.66001                       Pseudo R2     = 0.0005
+
+                                   (Std. err. adjusted for 200 clusters in id)
+------------------------------------------------------------------------------
+             |               Robust
+       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   treatment |   .9570317   .1505597    -0.28   0.780     .7030979    1.302677
+    followup |   .9597697   .1193315    -0.33   0.741     .7522016    1.224616
+             |
+  c.followup#|
+  c.followup |   1.004617   .0137442     0.34   0.736     .9780366    1.031919
+             |
+       trial |   .9461335   .1040642    -0.50   0.615     .7626577    1.173749
+             |
+     c.trial#|
+     c.trial |   1.009099   .0194545     0.47   0.638     .9716802    1.047958
+             |
+       _cons |   .0473291   .0136464   -10.58   0.000     .0268968    .0832829
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+. 
+. assert e(N) > 0
+
+. assert e(N_sel) > 0
+
+. assert e(N_sel) <= e(N_exp)
+
+. assert `"`e(estimator)'"' == "itt"
+
+. 
+. * ------------------------------------------------------------
+. * Test 10: selection_random reproducibility — same seed → same N
+. * ------------------------------------------------------------
+. local n_rep1 = e(N)
+
+. 
+. seqtte outcome, id(id) time(time) treatment(treatment) ///
+>     selectionrandom selectionsample(0.5) seed(42)
+(0 observations deleted)
+
+Original dataset:        1,930 observations, 7 variables
+(1,080 missing values generated)
+(200 missing values generated)
+(453 real changes made)
+Eligible observations:          818 (200 individuals)
+
+Expanding data...
+(8,517 observations created)
+(4,581 observations deleted)
+Expanded dataset:        5,866 observations
+(5,048 missing values generated)
+(5048 real changes made)
+(2,185 observations deleted)
+After random selection (0.500 of control-arm pairs):        3,681 observations
+
+Fitting ITT model...
+
+Logistic regression                                     Number of obs =  3,681
+                                                        Wald chi2(5)  =   0.63
+                                                        Prob > chi2   = 0.9867
+Log pseudolikelihood = -626.66001                       Pseudo R2     = 0.0005
+
+                                   (Std. err. adjusted for 200 clusters in id)
+------------------------------------------------------------------------------
+             |               Robust
+       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   treatment |   .9570317   .1505597    -0.28   0.780     .7030979    1.302677
+    followup |   .9597697   .1193315    -0.33   0.741     .7522016    1.224616
+             |
+  c.followup#|
+  c.followup |   1.004617   .0137442     0.34   0.736     .9780366    1.031919
+             |
+       trial |   .9461335   .1040642    -0.50   0.615     .7626577    1.173749
+             |
+     c.trial#|
+     c.trial |   1.009099   .0194545     0.47   0.638     .9716802    1.047958
+             |
+       _cons |   .0473291   .0136464   -10.58   0.000     .0268968    .0832829
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+. 
+. assert e(N) == `n_rep1'
+
+. 
+. * ------------------------------------------------------------
+. * Test 11: selection_random with PP estimator
+. * ------------------------------------------------------------
+. seqtte outcome, id(id) time(time) treatment(treatment) ///
+>     covariates(age_grp) estimator(pp) wdenominator(age_grp) ///
+>     selectionrandom selectionsample(0.3) seed(7)
+(0 observations deleted)
+
+Original dataset:        1,930 observations, 7 variables
+(1,080 missing values generated)
+(200 missing values generated)
+(453 real changes made)
+Eligible observations:          818 (200 individuals)
+
+Fitting weight models...
+Weight models fitted
+
+Expanding data...
+(8,517 observations created)
+(4,581 observations deleted)
+Expanded dataset:        5,866 observations
+(4259 real changes made)
+Post-censoring dataset:        2,795 observations
+(5,048 missing values generated)
+(5048 real changes made)
+(3,139 observations deleted)
+After random selection (0.300 of control-arm pairs):        2,727 observations
+
+Fitting PP model...
+
+Logistic regression                                     Number of obs =  1,184
+                                                        Wald chi2(6)  =   9.09
+                                                        Prob > chi2   = 0.1687
+Log pseudolikelihood = -475.85018                       Pseudo R2     = 0.0160
+
+                                   (Std. err. adjusted for 199 clusters in id)
+------------------------------------------------------------------------------
+             |               Robust
+       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   treatment |   .5478439   .2049807    -1.61   0.108     .2631311    1.140621
+    followup |    1.14789   .2956624     0.54   0.592     .6928765    1.901711
+             |
+  c.followup#|
+  c.followup |   .9814306   .0400607    -0.46   0.646     .9059718    1.063175
+             |
+       trial |   .7284498   .1253738    -1.84   0.066      .519875    1.020705
+             |
+     c.trial#|
+     c.trial |   1.050844   .0246109     2.12   0.034     1.003698    1.100205
+             |
+     age_grp |   1.211043   .4882173     0.47   0.635     .5495509     2.66877
+       _cons |   .0604604   .0199158    -8.52   0.000     .0317017    .1153079
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+. 
+. assert e(N) > 0
+
+. assert `"`e(estimator)'"' == "pp"
+
+. assert e(N_sel) <= e(N_exp)
+
+. assert e(selection_sample) == .3
+
+. 
+. * ------------------------------------------------------------
+. * Test 12: selection_random invalid selectionsample
+. * ------------------------------------------------------------
+. rcof `"seqtte outcome, id(id) time(time) treatment(treatment) selectionrandom
+>  selectionsample(1.5)"' == 198
+
+. rcof `"seqtte outcome, id(id) time(time) treatment(treatment) selectionrandom
+>  selectionsample(0)"' == 198
+
+. 
+. * ------------------------------------------------------------
+. * Test 13: bootstrap, ITT — scalars and matrix returned
+. * ------------------------------------------------------------
+. seqtte outcome, id(id) time(time) treatment(treatment) ///
+>     bootstrap(50) seed(42)
+(0 observations deleted)
+
+Original dataset:        1,930 observations, 7 variables
+(1,080 missing values generated)
+(200 missing values generated)
+(453 real changes made)
+Eligible observations:          818 (200 individuals)
+
+Expanding data...
+(8,517 observations created)
+(4,581 observations deleted)
+Expanded dataset:        5,866 observations
+
+Running 50 bootstrap replicates...
+Bootstrap complete: 50/50 replicates succeeded
+Bootstrap SE (log-OR):       0.1329
+Bootstrap 95% CI (log-OR): [-0.4396,  0.0840]
+
+Fitting ITT model...
+
+Logistic regression                                     Number of obs =  5,866
+                                                        Wald chi2(5)  =   6.73
+                                                        Prob > chi2   = 0.2412
+Log pseudolikelihood = -1073.8885                       Pseudo R2     = 0.0025
+
+                                   (Std. err. adjusted for 200 clusters in id)
+------------------------------------------------------------------------------
+             |               Robust
+       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   treatment |   .8519499   .1211415    -1.13   0.260     .6447316    1.125769
+    followup |   .9672518   .0863713    -0.37   0.709     .8119533    1.152254
+             |
+  c.followup#|
+  c.followup |   1.002209   .0095857     0.23   0.818     .9835961    1.021173
+             |
+       trial |   .8852631   .0704297    -1.53   0.126     .7574475    1.034647
+             |
+     c.trial#|
+     c.trial |   1.022453   .0129066     1.76   0.079     .9974667    1.048065
+             |
+       _cons |   .0556938   .0130565   -12.32   0.000     .0351769    .0881773
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+. 
+. assert e(N) > 0
+
+. assert e(N_boot) > 0
+
+. assert e(N_boot) <= 50
+
+. assert !missing(e(bs_se))
+
+. assert !missing(e(bs_ll))
+
+. assert !missing(e(bs_ul))
+
+. assert e(bs_ll) < e(bs_ul)
+
+. assert rowsof(e(bs_b)) == 50
+
+. assert `"`e(estimator)'"' == "itt"
+
+. 
+. * ------------------------------------------------------------
+. * Test 14: bootstrap reproducibility — same seed → same SE
+. * ------------------------------------------------------------
+. local se_rep1 = e(bs_se)
+
+. 
+. seqtte outcome, id(id) time(time) treatment(treatment) ///
+>     bootstrap(50) seed(42)
+(0 observations deleted)
+
+Original dataset:        1,930 observations, 7 variables
+(1,080 missing values generated)
+(200 missing values generated)
+(453 real changes made)
+Eligible observations:          818 (200 individuals)
+
+Expanding data...
+(8,517 observations created)
+(4,581 observations deleted)
+Expanded dataset:        5,866 observations
+
+Running 50 bootstrap replicates...
+Bootstrap complete: 50/50 replicates succeeded
+Bootstrap SE (log-OR):       0.1329
+Bootstrap 95% CI (log-OR): [-0.4396,  0.0840]
+
+Fitting ITT model...
+
+Logistic regression                                     Number of obs =  5,866
+                                                        Wald chi2(5)  =   6.73
+                                                        Prob > chi2   = 0.2412
+Log pseudolikelihood = -1073.8885                       Pseudo R2     = 0.0025
+
+                                   (Std. err. adjusted for 200 clusters in id)
+------------------------------------------------------------------------------
+             |               Robust
+       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   treatment |   .8519499   .1211415    -1.13   0.260     .6447316    1.125769
+    followup |   .9672518   .0863713    -0.37   0.709     .8119533    1.152254
+             |
+  c.followup#|
+  c.followup |   1.002209   .0095857     0.23   0.818     .9835961    1.021173
+             |
+       trial |   .8852631   .0704297    -1.53   0.126     .7574475    1.034647
+             |
+     c.trial#|
+     c.trial |   1.022453   .0129066     1.76   0.079     .9974667    1.048065
+             |
+       _cons |   .0556938   .0130565   -12.32   0.000     .0351769    .0881773
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+. 
+. assert reldif(e(bs_se), `se_rep1') < 1e-10
+
+. 
+. * ------------------------------------------------------------
+. * Test 15: bootstrap with PP estimator
+. * ------------------------------------------------------------
+. seqtte outcome, id(id) time(time) treatment(treatment) ///
+>     covariates(age_grp) estimator(pp) wdenominator(age_grp) ///
+>     bootstrap(30) seed(7)
+(0 observations deleted)
+
+Original dataset:        1,930 observations, 7 variables
+(1,080 missing values generated)
+(200 missing values generated)
+(453 real changes made)
+Eligible observations:          818 (200 individuals)
+
+Fitting weight models...
+Weight models fitted
+
+Expanding data...
+(8,517 observations created)
+(4,581 observations deleted)
+Expanded dataset:        5,866 observations
+(4259 real changes made)
+Post-censoring dataset:        2,795 observations
+
+Running 30 bootstrap replicates...
+Bootstrap complete: 30/30 replicates succeeded
+Bootstrap SE (log-OR):       0.3474
+Bootstrap 95% CI (log-OR): [-1.4190,  0.1070]
+
+Fitting PP model...
+
+Logistic regression                                     Number of obs =  2,795
+                                                        Wald chi2(6)  =   9.82
+                                                        Prob > chi2   = 0.1324
+Log pseudolikelihood = -1284.7328                       Pseudo R2     = 0.0263
+
+                                   (Std. err. adjusted for 200 clusters in id)
+------------------------------------------------------------------------------
+             |               Robust
+       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   treatment |   .5032836   .1816938    -1.90   0.057      .248036      1.0212
+    followup |    .924474   .1067231    -0.68   0.496     .7372764    1.159202
+             |
+  c.followup#|
+  c.followup |   1.019031   .0185517     1.04   0.300     .9833119    1.056049
+             |
+       trial |    1.02936   .1216338     0.24   0.807     .8165555    1.297625
+             |
+     c.trial#|
+     c.trial |   1.008331   .0062651     1.34   0.182     .9961266    1.020686
+             |
+     age_grp |   1.992418   .8756128     1.57   0.117     .8419781    4.714765
+       _cons |   .0360684   .0170568    -7.03   0.000     .0142756      .09113
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+. 
+. assert e(N) > 0
+
+. assert `"`e(estimator)'"' == "pp"
+
+. assert e(N_boot) > 0
+
+. assert !missing(e(bs_se))
+
+. 
+. * ------------------------------------------------------------
+. * Test 16: bootstrap combined with selection_random
+. * ------------------------------------------------------------
+. seqtte outcome, id(id) time(time) treatment(treatment) ///
+>     selectionrandom selectionsample(0.5) bootstrap(30) seed(99)
+(0 observations deleted)
+
+Original dataset:        1,930 observations, 7 variables
+(1,080 missing values generated)
+(200 missing values generated)
+(453 real changes made)
+Eligible observations:          818 (200 individuals)
+
+Expanding data...
+(8,517 observations created)
+(4,581 observations deleted)
+Expanded dataset:        5,866 observations
+(5,048 missing values generated)
+(5048 real changes made)
+(2,372 observations deleted)
+After random selection (0.500 of control-arm pairs):        3,494 observations
+
+Running 30 bootstrap replicates...
+Bootstrap complete: 30/30 replicates succeeded
+Bootstrap SE (log-OR):       0.1571
+Bootstrap 95% CI (log-OR): [-0.5242,  0.1217]
+
+Fitting ITT model...
+
+Logistic regression                                     Number of obs =  3,494
+                                                        Wald chi2(5)  =   5.54
+                                                        Prob > chi2   = 0.3530
+Log pseudolikelihood = -609.95692                       Pseudo R2     = 0.0045
+
+                                   (Std. err. adjusted for 200 clusters in id)
+------------------------------------------------------------------------------
+             |               Robust
+       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   treatment |   .9006041   .1362361    -0.69   0.489     .6695315    1.211426
+    followup |   .9725951   .1208259    -0.22   0.823     .7624071     1.24073
+             |
+  c.followup#|
+  c.followup |   .9953339   .0140155    -0.33   0.740     .9682397    1.023186
+             |
+       trial |   .8988064   .0930949    -1.03   0.303     .7336721    1.101109
+             |
+     c.trial#|
+     c.trial |   1.018671   .0176866     1.07   0.287      .984589    1.053932
+             |
+       _cons |   .0582487   .0155783   -10.63   0.000     .0344855    .0983867
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+. 
+. assert e(N) > 0
+
+. assert e(N_sel) <= e(N_exp)
+
+. assert e(N_boot) > 0
+
+. assert !missing(e(bs_se))
+
+. 
+. * ------------------------------------------------------------
+. * Test 17: bootstrap invalid (negative)
+. * ------------------------------------------------------------
+. rcof `"seqtte outcome, id(id) time(time) treatment(treatment) bootstrap(-1)"'
+>  == 198
+
+. 
 . di as txt "seqtte cscript passed"
 seqtte cscript passed
 
@@ -564,7 +1020,7 @@ end of do-file
       name:  seqtte
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- closed on:  20 May 2026, 06:48:05
+ closed on:  20 May 2026, 11:31:44
 -------------------------------------------------------------------------------
 
 . 
@@ -572,5 +1028,5 @@ end of do-file
       name:  master
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/master.log
   log type:  text
- closed on:  20 May 2026, 06:48:05
+ closed on:  20 May 2026, 11:31:44
 -------------------------------------------------------------------------------
