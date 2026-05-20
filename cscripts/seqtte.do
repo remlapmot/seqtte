@@ -101,4 +101,23 @@ assert e(N) > 0
 * ------------------------------------------------------------
 rcof `"seqtte outcome, id(id) time(time) treatment(treatment) estimator(pp)"' == 198
 
+* ------------------------------------------------------------
+* Test 8: factor-variable notation in covariates and weight models
+* ------------------------------------------------------------
+gen grp = mod(id, 3)
+
+seqtte outcome, id(id) time(time) treatment(treatment) ///
+    covariates(i.age_grp i.grp)
+
+assert e(N) > 0
+assert `"`e(estimator)'"' == "itt"
+
+seqtte outcome, id(id) time(time) treatment(treatment) ///
+    covariates(i.age_grp i.grp) ///
+    estimator(pp) ///
+    wdenominator(i.age_grp i.grp) wnumerator(i.age_grp)
+
+assert e(N) > 0
+assert `"`e(estimator)'"' == "pp"
+
 di as txt "seqtte cscript passed"
