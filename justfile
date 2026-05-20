@@ -7,3 +7,7 @@
 [working-directory: 'cscripts']
 test:
     stata-mp -b "do master"
+install:
+    stata-mp -q <<< 'net install seqtte, from("https://raw.githubusercontent.com/remlapmot/seqtte/main/") replace'
+uninstall:
+    stata-mp -q <<< 'ado uninstall seqtte'
