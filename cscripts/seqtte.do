@@ -209,7 +209,50 @@ assert e(N_boot) > 0
 assert !missing(e(bs_se))
 
 * ------------------------------------------------------------
-* Test 17: bootstrap invalid (negative)
+* Test 17: bootstrap when selectionrandom drops whole clusters
+*   Regression test for r(498). n_indiv is counted before
+*   selectionrandom, so when selection removes every (id, trial) pair
+*   for some individuals the surviving cluster count falls below
+*   n_indiv. bsample must resample the post-selection cluster count,
+*   not n_indiv, or every replicate errors and 0 succeed.
+* ------------------------------------------------------------
+preserve
+
+clear
+set seed 12345
+set obs 300
+gen id = _n
+* Odd ids: a single period, never treated (all control-arm), so
+* selectionsample(0.5) drops roughly half of them entirely.
+gen byte shortfu = mod(id, 2)
+expand cond(shortfu, 1, 8)
+bysort id: gen time = _n - 1
+gen treatment = .
+bysort id (time): replace treatment = 0 if time == 0
+bysort id (time): replace treatment = ///
+    cond(shortfu, 0, cond(treatment[_n-1] == 0, (runiform() < 0.3), 1)) ///
+    if time > 0
+gen double u = runiform()
+gen outcome = (u < 0.1 - 0.04 * treatment)
+bysort id (time): gen cumev = sum(outcome)
+drop if cumev > 1
+replace outcome = 0 if cumev == 1 & !outcome
+drop cumev u
+
+seqtte outcome, id(id) time(time) treatment(treatment) ///
+    selectionrandom selectionsample(0.5) bootstrap(30) seed(99)
+
+assert e(N) > 0
+assert e(N_sel) < e(N_exp)
+assert e(N_boot) == 30
+assert !missing(e(bs_se))
+assert !missing(e(bs_ll))
+assert !missing(e(bs_ul))
+
+restore
+
+* ------------------------------------------------------------
+* Test 18: bootstrap invalid (negative)
 * ------------------------------------------------------------
 rcof `"seqtte outcome, id(id) time(time) treatment(treatment) bootstrap(-1)"' == 198
 
