@@ -14,6 +14,7 @@ program seqtte, eclass
          SELECTIONrandom ///
          SELECTIONsample(real 0.5) ///
          SEEd(integer -1) ///
+         BOOTstrap(integer 0)]
 
     local outcome `varlist'
 
@@ -36,6 +37,14 @@ program seqtte, eclass
             exit 198
         }
     }
+
+    // Validate bootstrap option
+    if `bootstrap' < 0 {
+        di as err "bootstrap() must be a non-negative integer"
+        exit 198
+    }
+    local do_bs = (`bootstrap' > 0)
+
     // Capture variable count before tempvars are created
     local k_orig = c(k)
     local seed_set 0
@@ -304,6 +313,70 @@ program seqtte, eclass
         local trial trial
     }
 
+    // ----- Bootstrap -----
+    if `do_bs' {
+
+        if `seed' != -1 & !`seed_set' {
+            set seed `seed'
+            local seed_set 1
+        }
+
+        // Save fully processed dataset (weights, outcome, renaming applied)
+        tempfile bsdata
+        qui save `bsdata'
+
+        di as txt _n "Running " `bootstrap' " bootstrap replicates..."
+
+        tempname bs_b
+        matrix `bs_b' = J(`bootstrap', 1, .)
+        local bs_ok = 0
+        // newid declared once; bsample creates it fresh each iteration after reload
+        tempvar bs_newid
+
+        forvalues b = 1/`bootstrap' {
+            // reload from tempfile instead of nested preserve (r(621))
+            qui use `bsdata', clear
+            cap {
+                bsample `n_indiv', cluster(`id') idcluster(`bs_newid')
+
+                if "`estimator'" == "itt" {
+                    qui logistic `event' `treatment' ///
+                        c.`fu_time'##c.`fu_time' ///
+                        c.`trial'##c.`trial' ///
+                        `covariates', cluster(`bs_newid')
+                }
+                else {
+                    qui logistic `event' `treatment' ///
+                        c.`fu_time'##c.`fu_time' ///
+                        c.`trial'##c.`trial' ///
+                        `covariates' ///
+                        if `censored' == 0 [pweight = `wt_cum'], cluster(`bs_newid')
+                }
+
+                matrix `bs_b'[`b', 1] = _b[`treatment']
+                local bs_ok = `bs_ok' + 1
+            }
+        }
+
+        // Reload processed data so the main regression has the correct dataset
+        qui use `bsdata', clear
+
+        // Bootstrap SE and percentile CI (95%) from log-OR distribution
+        // svmat places values in obs 1..B; remaining obs are missing — both
+        // sum and _pctile skip missing values automatically.
+        svmat double `bs_b', names(_seqtte_bs_)
+        qui sum _seqtte_bs_1
+        local bs_se = r(sd)
+        qui _pctile _seqtte_bs_1, p(2.5 97.5)
+        local bs_ll = r(r1)
+        local bs_ul = r(r2)
+        drop _seqtte_bs_1
+
+        di as txt "Bootstrap complete: " `bs_ok' "/" `bootstrap' " replicates succeeded"
+        di as txt "Bootstrap SE (log-OR):      " %7.4f `bs_se'
+        di as txt "Bootstrap 95% CI (log-OR): [" %7.4f `bs_ll' ", " %7.4f `bs_ul' "]"
+    }
+
     // ----- Pooled logistic regression -----
     di as txt _n "Fitting " upper("`estimator'") " model..."
 
@@ -329,6 +402,13 @@ program seqtte, eclass
     if "`selectionrandom'" != "" {
         ereturn scalar N_sel            = `n_sel'
         ereturn scalar selection_sample = `selectionsample'
+    }
+    if `do_bs' {
+        ereturn scalar N_boot = `bs_ok'
+        ereturn scalar bs_se  = `bs_se'
+        ereturn scalar bs_ll  = `bs_ll'
+        ereturn scalar bs_ul  = `bs_ul'
+        ereturn matrix bs_b   = `bs_b'
     }
     ereturn local  estimator "`estimator'"
     ereturn local  cmd       "seqtte"
