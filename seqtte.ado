@@ -249,6 +249,26 @@ program seqtte, eclass
         & !missing(`evttime_max')
     qui gen long `fu_time' = `time_in_trial' - 1
 
+    // ----- Readable names for the regression table -----
+    // The data are preserved/restored, so these renames are discarded after the
+    // fit. If a name is already in use in the caller's data we keep the
+    // temporary name to avoid a collision.
+    capture confirm new variable event
+    if !_rc {
+        rename `event' event
+        local event event
+    }
+    capture confirm new variable followup
+    if !_rc {
+        rename `fu_time' followup
+        local fu_time followup
+    }
+    capture confirm new variable trial
+    if !_rc {
+        rename `trial' trial
+        local trial trial
+    }
+
     // ----- Pooled logistic regression -----
     di as txt _n "Fitting " upper("`estimator'") " model..."
 
