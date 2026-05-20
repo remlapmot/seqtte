@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 0.2.0  13may2026  Tom Palmer}{...}
+{* *! version 0.4.0  20may2026  Tom Palmer}{...}
 {vieweralsosee "seqtte" "help seqtte"}{...}
 {viewerjumpto "Syntax" "seqtte##syntax"}{...}
 {viewerjumpto "Description" "seqtte##description"}{...}
@@ -117,6 +117,7 @@ outcome model.
 In the expanded dataset each person-trial record takes covariate
 values from the trial entry period, so both time-fixed and
 time-varying covariates are included at their trial-entry values.
+{help fvvarlist:Factor-variable notation} (e.g. {cmd:i.group}) is allowed.
 
 {phang}
 {opt estimator(string)} specifies the estimator: {cmd:itt} (default)
@@ -128,6 +129,7 @@ weight models.
 These are fitted on the pre-expansion data and should include all
 time-varying confounders of the treatment–outcome relationship.
 Required when {cmd:estimator(pp)} is specified.
+{help fvvarlist:Factor-variable notation} (e.g. {cmd:i.group}) is allowed.
 
 {phang}
 {opt wnumerator(varlist)} specifies the covariates for the numerator
@@ -135,6 +137,7 @@ Required when {cmd:estimator(pp)} is specified.
 These should be a subset of {cmd:wdenominator()}, typically restricted to
 baseline (study-entry) values of covariates.
 When omitted, unstabilized weights are used.
+{help fvvarlist:Factor-variable notation} (e.g. {cmd:i.group}) is allowed.
 
 {phang}
 {opt truncation(#)} specifies the upper truncation threshold applied
