@@ -158,4 +158,59 @@ assert e(selection_sample) == .3
 * ------------------------------------------------------------
 rcof `"seqtte outcome, id(id) time(time) treatment(treatment) selectionrandom selectionsample(1.5)"' == 198
 rcof `"seqtte outcome, id(id) time(time) treatment(treatment) selectionrandom selectionsample(0)"' == 198
+
+* ------------------------------------------------------------
+* Test 13: bootstrap, ITT — scalars and matrix returned
+* ------------------------------------------------------------
+seqtte outcome, id(id) time(time) treatment(treatment) ///
+    bootstrap(50) seed(42)
+
+assert e(N) > 0
+assert e(N_boot) > 0
+assert e(N_boot) <= 50
+assert !missing(e(bs_se))
+assert !missing(e(bs_ll))
+assert !missing(e(bs_ul))
+assert e(bs_ll) < e(bs_ul)
+assert rowsof(e(bs_b)) == 50
+assert `"`e(estimator)'"' == "itt"
+
+* ------------------------------------------------------------
+* Test 14: bootstrap reproducibility — same seed → same SE
+* ------------------------------------------------------------
+local se_rep1 = e(bs_se)
+
+seqtte outcome, id(id) time(time) treatment(treatment) ///
+    bootstrap(50) seed(42)
+
+assert reldif(e(bs_se), `se_rep1') < 1e-10
+
+* ------------------------------------------------------------
+* Test 15: bootstrap with PP estimator
+* ------------------------------------------------------------
+seqtte outcome, id(id) time(time) treatment(treatment) ///
+    covariates(age_grp) estimator(pp) wdenominator(age_grp) ///
+    bootstrap(30) seed(7)
+
+assert e(N) > 0
+assert `"`e(estimator)'"' == "pp"
+assert e(N_boot) > 0
+assert !missing(e(bs_se))
+
+* ------------------------------------------------------------
+* Test 16: bootstrap combined with selection_random
+* ------------------------------------------------------------
+seqtte outcome, id(id) time(time) treatment(treatment) ///
+    selectionrandom selectionsample(0.5) bootstrap(30) seed(99)
+
+assert e(N) > 0
+assert e(N_sel) <= e(N_exp)
+assert e(N_boot) > 0
+assert !missing(e(bs_se))
+
+* ------------------------------------------------------------
+* Test 17: bootstrap invalid (negative)
+* ------------------------------------------------------------
+rcof `"seqtte outcome, id(id) time(time) treatment(treatment) bootstrap(-1)"' == 198
+
 di as txt "seqtte cscript passed"
