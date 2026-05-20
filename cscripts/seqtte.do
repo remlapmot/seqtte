@@ -120,4 +120,42 @@ seqtte outcome, id(id) time(time) treatment(treatment) ///
 assert e(N) > 0
 assert `"`e(estimator)'"' == "pp"
 
+* ------------------------------------------------------------
+* Test 9: selection_random, ITT — runs and reduces dataset
+* ------------------------------------------------------------
+seqtte outcome, id(id) time(time) treatment(treatment) ///
+    selectionrandom selectionsample(0.5) seed(42)
+
+assert e(N) > 0
+assert e(N_sel) > 0
+assert e(N_sel) <= e(N_exp)
+assert `"`e(estimator)'"' == "itt"
+
+* ------------------------------------------------------------
+* Test 10: selection_random reproducibility — same seed → same N
+* ------------------------------------------------------------
+local n_rep1 = e(N)
+
+seqtte outcome, id(id) time(time) treatment(treatment) ///
+    selectionrandom selectionsample(0.5) seed(42)
+
+assert e(N) == `n_rep1'
+
+* ------------------------------------------------------------
+* Test 11: selection_random with PP estimator
+* ------------------------------------------------------------
+seqtte outcome, id(id) time(time) treatment(treatment) ///
+    covariates(age_grp) estimator(pp) wdenominator(age_grp) ///
+    selectionrandom selectionsample(0.3) seed(7)
+
+assert e(N) > 0
+assert `"`e(estimator)'"' == "pp"
+assert e(N_sel) <= e(N_exp)
+assert e(selection_sample) == .3
+
+* ------------------------------------------------------------
+* Test 12: selection_random invalid selectionsample
+* ------------------------------------------------------------
+rcof `"seqtte outcome, id(id) time(time) treatment(treatment) selectionrandom selectionsample(1.5)"' == 198
+rcof `"seqtte outcome, id(id) time(time) treatment(treatment) selectionrandom selectionsample(0)"' == 198
 di as txt "seqtte cscript passed"
