@@ -1,8 +1,8 @@
 -------------------------------------------------------------------------------
       name:  master
-       log:  /Users/eptmp/Documents/GitHub/seqtte/cscripts/master.log
+       log:  /Users/tom/Documents/GitHub/seqtte/cscripts/master.log
   log type:  text
- opened on:  19 May 2026, 12:59:49
+ opened on:  20 May 2026, 06:48:04
 
 . 
 . cscript master
@@ -23,16 +23,16 @@
   5. }
 -------------------------------------------------------------------------------
       name:  seqtte
-       log:  /Users/eptmp/Documents/GitHub/seqtte/cscripts/seqtte.log
+       log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- opened on:  19 May 2026, 12:59:50
+ opened on:  20 May 2026, 06:48:04
 
 . cscript seqtte adofile seqtte
 -------------------------------------------------------------------BEGIN seqtte
 
 -> which seqtte, usesysdir
-/Users/eptmp/Documents/GitHub/seqtte/seqtte.ado
-*! version 0.3.0  13may2026  Tom Palmer
+/Users/tom/Documents/GitHub/seqtte/seqtte.ado
+*! version 0.4.0  20may2026  Tom Palmer
 
 . 
 . * ------------------------------------------------------------
@@ -435,21 +435,142 @@ Note: _cons estimates baseline odds.
 >  == 198
 
 . 
+. * ------------------------------------------------------------
+. * Test 8: factor-variable notation in covariates and weight models
+. * ------------------------------------------------------------
+. gen grp = mod(id, 3)
+
+. 
+. seqtte outcome, id(id) time(time) treatment(treatment) ///
+>     covariates(i.age_grp i.grp)
+(0 observations deleted)
+
+Original dataset:        1,930 observations, 7 variables
+(1,080 missing values generated)
+(200 missing values generated)
+(453 real changes made)
+Eligible observations:          818 (200 individuals)
+
+Expanding data...
+(8,517 observations created)
+(4,581 observations deleted)
+Expanded dataset:        5,866 observations
+
+Fitting ITT model...
+
+Logistic regression                                     Number of obs =  5,866
+                                                        Wald chi2(8)  =   8.61
+                                                        Prob > chi2   = 0.3759
+Log pseudolikelihood = -1071.5822                       Pseudo R2     = 0.0047
+
+                                   (Std. err. adjusted for 200 clusters in id)
+------------------------------------------------------------------------------
+             |               Robust
+    __000009 | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   treatment |   .8586673   .1219067    -1.07   0.283      .650097    1.134153
+    __00000A |   .9669522   .0864091    -0.38   0.707     .8115955    1.152047
+             |
+  c.__00000A#|
+  c.__00000A |   1.002126   .0095971     0.22   0.825     .9834912    1.021113
+             |
+    __000005 |   .8839737   .0696678    -1.56   0.118     .7574507    1.031631
+             |
+  c.__000005#|
+  c.__000005 |    1.02205   .0131262     1.70   0.089     .9966439    1.048103
+             |
+   1.age_grp |   1.162389    .260249     0.67   0.502     .7495052     1.80272
+             |
+         grp |
+          1  |   .8507486   .2293855    -0.60   0.549     .5015262    1.443141
+          2  |   .7655951   .2082747    -0.98   0.326     .4491959    1.304856
+             |
+       _cons |   .0592056   .0177021    -9.45   0.000     .0329502    .1063817
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+. 
+. assert e(N) > 0
+
+. assert `"`e(estimator)'"' == "itt"
+
+. 
+. seqtte outcome, id(id) time(time) treatment(treatment) ///
+>     covariates(i.age_grp i.grp) ///
+>     estimator(pp) ///
+>     wdenominator(i.age_grp i.grp) wnumerator(i.age_grp)
+(0 observations deleted)
+
+Original dataset:        1,930 observations, 7 variables
+(1,080 missing values generated)
+(200 missing values generated)
+(453 real changes made)
+Eligible observations:          818 (200 individuals)
+
+Fitting weight models...
+Weight models fitted
+
+Expanding data...
+(8,517 observations created)
+(4,581 observations deleted)
+Expanded dataset:        5,866 observations
+(3139 real changes made)
+Post-censoring dataset:        2,795 observations
+
+Fitting PP model...
+
+Logistic regression                                     Number of obs =  2,795
+                                                        Wald chi2(8)  =   9.32
+                                                        Prob > chi2   = 0.3162
+Log pseudolikelihood = -586.45887                       Pseudo R2     = 0.0173
+
+                                   (Std. err. adjusted for 200 clusters in id)
+------------------------------------------------------------------------------
+             |               Robust
+    __00001H | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   treatment |     .64909   .1864859    -1.50   0.133     .3696168    1.139877
+    __00001I |   .9295571   .0852592    -0.80   0.426     .7766113    1.112624
+             |
+  c.__00001I#|
+  c.__00001I |   1.019559   .0127514     1.55   0.121     .9948708     1.04486
+             |
+    __000005 |   .8926966   .0840625    -1.21   0.228     .7422476    1.073641
+             |
+  c.__000005#|
+  c.__000005 |   1.023921   .0121833     1.99   0.047     1.000319    1.048081
+             |
+   1.age_grp |   1.650685   .5192156     1.59   0.111     .8910923    3.057778
+             |
+         grp |
+          1  |   1.091255   .4104422     0.23   0.816     .5221228     2.28076
+          2  |   .8762913   .3383648    -0.34   0.732     .4111229    1.867778
+             |
+       _cons |    .046721   .0198693    -7.20   0.000     .0203009    .1075247
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+. 
+. assert e(N) > 0
+
+. assert `"`e(estimator)'"' == "pp"
+
+. 
 . di as txt "seqtte cscript passed"
 seqtte cscript passed
 
 . 
 end of do-file
       name:  seqtte
-       log:  /Users/eptmp/Documents/GitHub/seqtte/cscripts/seqtte.log
+       log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- closed on:  19 May 2026, 12:59:51
+ closed on:  20 May 2026, 06:48:05
 -------------------------------------------------------------------------------
 
 . 
 . log close _all
       name:  master
-       log:  /Users/eptmp/Documents/GitHub/seqtte/cscripts/master.log
+       log:  /Users/tom/Documents/GitHub/seqtte/cscripts/master.log
   log type:  text
- closed on:  19 May 2026, 12:59:51
+ closed on:  20 May 2026, 06:48:05
 -------------------------------------------------------------------------------
