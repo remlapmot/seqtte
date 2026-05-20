@@ -1,4 +1,4 @@
-*! version 0.4.1  20may2026  Tom Palmer
+*! version 0.5.0  20may2026  Tom Palmer
 program seqtte, eclass
     version 16
 
@@ -10,7 +10,10 @@ program seqtte, eclass
          ESTIMator(string) ///
          wdenominator(varlist fv) ///
          wnumerator(varlist fv) ///
-         TRUNCation(real 25)]
+         TRUNCation(real 25) ///
+         SELECTIONrandom ///
+         SELECTIONsample(real 0.5) ///
+         SEEd(integer -1) ///
 
     local outcome `varlist'
 
@@ -26,8 +29,16 @@ program seqtte, eclass
         exit 198
     }
 
+    // Validate selection_random option
+    if "`selectionrandom'" != "" {
+        if `selectionsample' <= 0 | `selectionsample' > 1 {
+            di as err "selectionsample() must be in (0, 1]"
+            exit 198
+        }
+    }
     // Capture variable count before tempvars are created
     local k_orig = c(k)
+    local seed_set 0
 
     preserve
 
@@ -241,6 +252,30 @@ program seqtte, eclass
         di as txt "Post-censoring dataset: " %12.0fc `n_pp' " observations"
     }
 
+    // ----- Random selection of control-arm (id, trial) pairs -----
+    if "`selectionrandom'" != "" {
+
+        if `seed' != -1 & !`seed_set' {
+            set seed `seed'
+            local seed_set 1
+        }
+
+        // One random draw per (id, trial) pair; treatment is constant within pairs
+        tempvar rnd_pair
+        bysort `id' `trial' (`time_in_trial'): ///
+            gen double `rnd_pair' = runiform() if _n == 1
+        bysort `id' `trial' (`time_in_trial'): ///
+            replace `rnd_pair' = `rnd_pair'[1]
+
+        // Keep all treated-arm pairs; Bernoulli-sample control-arm pairs
+        keep if `treatment' == 1 | (`treatment' == 0 & `rnd_pair' <= `selectionsample')
+
+        qui count
+        local n_sel = r(N)
+        di as txt "After random selection (" %5.3f `selectionsample' ///
+            " of control-arm pairs): " %12.0fc `n_sel' " observations"
+    }
+
     // ----- Outcome and follow-up time -----
     tempvar event fu_time
     qui gen byte `event' = 0
@@ -291,6 +326,10 @@ program seqtte, eclass
     ereturn scalar N_indiv   = `n_indiv'
     ereturn scalar N_orig    = `n_orig'
     ereturn scalar N_exp     = `n_exp'
+    if "`selectionrandom'" != "" {
+        ereturn scalar N_sel            = `n_sel'
+        ereturn scalar selection_sample = `selectionsample'
+    }
     ereturn local  estimator "`estimator'"
     ereturn local  cmd       "seqtte"
 end
