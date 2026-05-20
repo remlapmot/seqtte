@@ -321,6 +321,16 @@ program seqtte, eclass
             local seed_set 1
         }
 
+        // Resample as many clusters as remain in the analysis sample.
+        // selectionrandom (and expansion) can drop whole ids, so the original
+        // individual count may exceed the clusters present here; bsample errors
+        // (r(498)) if asked for more clusters than exist.
+        tempvar bs_grp
+        qui egen long `bs_grp' = group(`id')
+        qui summarize `bs_grp', meanonly
+        local n_clust = r(max)
+        drop `bs_grp'
+
         // Save fully processed dataset (weights, outcome, renaming applied)
         tempfile bsdata
         qui save `bsdata'
@@ -337,7 +347,7 @@ program seqtte, eclass
             // reload from tempfile instead of nested preserve (r(621))
             qui use `bsdata', clear
             cap {
-                bsample `n_indiv', cluster(`id') idcluster(`bs_newid')
+                bsample `n_clust', cluster(`id') idcluster(`bs_newid')
 
                 if "`estimator'" == "itt" {
                     qui logistic `event' `treatment' ///
