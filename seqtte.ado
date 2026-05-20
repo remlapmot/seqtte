@@ -381,10 +381,6 @@ program seqtte, eclass
         local bs_ll = r(r1)
         local bs_ul = r(r2)
         drop _seqtte_bs_1
-
-        di as txt "Bootstrap complete: " `bs_ok' "/" `bootstrap' " replicates succeeded"
-        di as txt "Bootstrap SE (log-OR):      " %7.4f `bs_se'
-        di as txt "Bootstrap 95% CI (log-OR): [" %7.4f `bs_ll' ", " %7.4f `bs_ul' "]"
     }
 
     // ----- Pooled logistic regression -----
@@ -402,6 +398,18 @@ program seqtte, eclass
             c.`trial'##c.`trial' ///
             `covariates' ///
             if `censored' == 0 [pweight = `wt_cum'], cluster(`id')
+    }
+
+    // Bootstrap summary (after the fit so the point OR is available)
+    if `do_bs' {
+        local bs_or    = exp(_b[`treatment'])
+        local bs_or_ll = exp(`bs_ll')
+        local bs_or_ul = exp(`bs_ul')
+        di as txt _n "Bootstrap complete: " `bs_ok' "/" `bootstrap' " replicates succeeded"
+        di as txt "Bootstrap SE (log-OR):      " %7.4f `bs_se'
+        di as txt "Bootstrap 95% CI (log-OR): [" %7.4f `bs_ll' ", " %7.4f `bs_ul' "]"
+        di as txt "Estimated OR: " %7.4f `bs_or' ///
+            " with bootstrap 95% CI [" %7.4f `bs_or_ll' ", " %7.4f `bs_or_ul' "]"
     }
 
     restore
