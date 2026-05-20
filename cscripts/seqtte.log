@@ -2,7 +2,7 @@
       name:  seqtte
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- opened on:  20 May 2026, 15:44:14
+ opened on:  20 May 2026, 16:03:00
 
 . cscript seqtte adofile seqtte
 -------------------------------------------------------------------BEGIN seqtte
@@ -743,9 +743,6 @@ Expanding data...
 Expanded dataset:        5,866 observations
 
 Running 50 bootstrap replicates...
-Bootstrap complete: 50/50 replicates succeeded
-Bootstrap SE (log-OR):       0.1329
-Bootstrap 95% CI (log-OR): [-0.4396,  0.0840]
 
 Fitting ITT model...
 
@@ -773,6 +770,11 @@ Log pseudolikelihood = -1073.8885                       Pseudo R2     = 0.0025
        _cons |   .0556938   .0130565   -12.32   0.000     .0351769    .0881773
 ------------------------------------------------------------------------------
 Note: _cons estimates baseline odds.
+
+Bootstrap complete: 50/50 replicates succeeded
+Bootstrap SE (log-OR):       0.1329
+Bootstrap 95% CI (log-OR): [-0.4396,  0.0840]
+Estimated OR:  0.8519 with bootstrap 95% CI [ 0.6443,  1.0877]
 
 . 
 . assert e(N) > 0
@@ -816,9 +818,6 @@ Expanding data...
 Expanded dataset:        5,866 observations
 
 Running 50 bootstrap replicates...
-Bootstrap complete: 50/50 replicates succeeded
-Bootstrap SE (log-OR):       0.1329
-Bootstrap 95% CI (log-OR): [-0.4396,  0.0840]
 
 Fitting ITT model...
 
@@ -846,6 +845,11 @@ Log pseudolikelihood = -1073.8885                       Pseudo R2     = 0.0025
        _cons |   .0556938   .0130565   -12.32   0.000     .0351769    .0881773
 ------------------------------------------------------------------------------
 Note: _cons estimates baseline odds.
+
+Bootstrap complete: 50/50 replicates succeeded
+Bootstrap SE (log-OR):       0.1329
+Bootstrap 95% CI (log-OR): [-0.4396,  0.0840]
+Estimated OR:  0.8519 with bootstrap 95% CI [ 0.6443,  1.0877]
 
 . 
 . assert reldif(e(bs_se), `se_rep1') < 1e-10
@@ -876,9 +880,6 @@ Expanded dataset:        5,866 observations
 Post-censoring dataset:        2,795 observations
 
 Running 30 bootstrap replicates...
-Bootstrap complete: 30/30 replicates succeeded
-Bootstrap SE (log-OR):       0.3474
-Bootstrap 95% CI (log-OR): [-1.4190,  0.1070]
 
 Fitting PP model...
 
@@ -907,6 +908,11 @@ Log pseudolikelihood = -1284.7328                       Pseudo R2     = 0.0263
        _cons |   .0360684   .0170568    -7.03   0.000     .0142756      .09113
 ------------------------------------------------------------------------------
 Note: _cons estimates baseline odds.
+
+Bootstrap complete: 30/30 replicates succeeded
+Bootstrap SE (log-OR):       0.3474
+Bootstrap 95% CI (log-OR): [-1.4190,  0.1070]
+Estimated OR:  0.5033 with bootstrap 95% CI [ 0.2420,  1.1129]
 
 . 
 . assert e(N) > 0
@@ -941,9 +947,6 @@ Expanded dataset:        5,866 observations
 After random selection (0.500 of control-arm pairs):        3,494 observations
 
 Running 30 bootstrap replicates...
-Bootstrap complete: 30/30 replicates succeeded
-Bootstrap SE (log-OR):       0.1571
-Bootstrap 95% CI (log-OR): [-0.5242,  0.1217]
 
 Fitting ITT model...
 
@@ -971,6 +974,11 @@ Log pseudolikelihood = -609.95692                       Pseudo R2     = 0.0045
        _cons |   .0582487   .0155783   -10.63   0.000     .0344855    .0983867
 ------------------------------------------------------------------------------
 Note: _cons estimates baseline odds.
+
+Bootstrap complete: 30/30 replicates succeeded
+Bootstrap SE (log-OR):       0.1571
+Bootstrap 95% CI (log-OR): [-0.5242,  0.1217]
+Estimated OR:  0.9006 with bootstrap 95% CI [ 0.5920,  1.1294]
 
 . 
 . assert e(N) > 0
@@ -1057,9 +1065,6 @@ Expanded dataset:        3,632 observations
 After random selection (0.500 of control-arm pairs):        2,145 observations
 
 Running 30 bootstrap replicates...
-Bootstrap complete: 30/30 replicates succeeded
-Bootstrap SE (log-OR):       0.2048
-Bootstrap 95% CI (log-OR): [-0.8072,  0.1002]
 
 Fitting ITT model...
 
@@ -1087,6 +1092,11 @@ Log pseudolikelihood = -463.5515                        Pseudo R2     = 0.0100
        _cons |    .095692   .0203856   -11.02   0.000     .0630292    .1452813
 ------------------------------------------------------------------------------
 Note: _cons estimates baseline odds.
+
+Bootstrap complete: 30/30 replicates succeeded
+Bootstrap SE (log-OR):       0.2048
+Bootstrap 95% CI (log-OR): [-0.8072,  0.1002]
+Estimated OR:  0.7345 with bootstrap 95% CI [ 0.4461,  1.1054]
 
 . 
 . assert e(N) > 0
@@ -1120,5 +1130,5 @@ end of do-file
       name:  seqtte
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- closed on:  20 May 2026, 15:44:18
+ closed on:  20 May 2026, 16:03:04
 -------------------------------------------------------------------------------
