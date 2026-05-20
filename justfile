@@ -8,6 +8,6 @@
 test:
     stata-mp -b "do master"
 install:
-    stata-mp -q <<< 'net install seqtte, from("https://raw.githubusercontent.com/remlapmot/seqtte/main/") replace'
+    printf 'ado uninstall seqtte\nnet install seqtte, from("https://raw.githubusercontent.com/remlapmot/seqtte/main/") replace\nado dir seqtte\n' | stata-mp -q
 uninstall:
     stata-mp -q <<< 'ado uninstall seqtte'
