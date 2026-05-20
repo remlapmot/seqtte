@@ -1,4 +1,4 @@
-*! version 0.3.0  13may2026  Tom Palmer
+*! version 0.4.0  20may2026  Tom Palmer
 program seqtte, eclass
     version 16
 
@@ -6,10 +6,10 @@ program seqtte, eclass
         id(varname numeric) ///
         time(varname numeric) ///
         treatment(varname numeric) ///
-        [covariates(varlist) ///
+        [covariates(varlist fv) ///
          ESTIMator(string) ///
-         wdenominator(varlist) ///
-         wnumerator(varlist) ///
+         wdenominator(varlist fv) ///
+         wnumerator(varlist fv) ///
          TRUNCation(real 25)]
 
     local outcome `varlist'
@@ -32,8 +32,26 @@ program seqtte, eclass
     preserve
 
     marksample touse
-    markout `touse' `id' `time' `treatment' `covariates'
-    if "`estimator'" == "pp" markout `touse' `wdenominator' `wnumerator'
+    // markout needs base variable names, not factor-variable notation
+    local cov_base `covariates'
+    if "`cov_base'" != "" {
+        fvrevar `cov_base', list
+        local cov_base `r(varlist)'
+    }
+    markout `touse' `id' `time' `treatment' `cov_base'
+    if "`estimator'" == "pp" {
+        local wden_base `wdenominator'
+        local wnum_base `wnumerator'
+        if "`wden_base'" != "" {
+            fvrevar `wden_base', list
+            local wden_base `r(varlist)'
+        }
+        if "`wnum_base'" != "" {
+            fvrevar `wnum_base', list
+            local wnum_base `r(varlist)'
+        }
+        markout `touse' `wden_base' `wnum_base'
+    }
     keep if `touse'
 
     sort `id' `time'
