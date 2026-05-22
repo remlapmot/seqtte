@@ -1,4 +1,4 @@
-*! version 0.5.0  20may2026  Tom Palmer
+*! version 0.6.0  22may2026  Tom Palmer
 program seqtte, eclass
     version 16
 
@@ -25,10 +25,8 @@ program seqtte, eclass
         di as err "estimator() must be itt or pp"
         exit 198
     }
-    if "`estimator'" == "pp" & "`wdenominator'" == "" {
-        di as err "wdenominator() required for per-protocol estimation"
-        exit 198
-    }
+    // weighted_pp: censoring + IPCW weights; unweighted pp: censoring only
+    local weighted_pp = ("`estimator'" == "pp" & "`wdenominator'" != "")
 
     // Validate selection_random option
     if "`selectionrandom'" != "" {
@@ -105,106 +103,115 @@ program seqtte, eclass
     tempvar trial
     qui gen long `trial' = `time'
 
-    // ----- PP: weight models and per-period snapshots (before expand) -----
+    // ----- PP: censoring snapshots and weight models (before expand) -----
     if "`estimator'" == "pp" {
-
-        di as txt _n "Fitting weight models..."
 
         qui sum `time'
         local t_min = r(min)
         local t_max = r(max)
+        local loop_start = `t_min' + 1
 
-        // Denominator: P(A | A_lag, time + time² + time³, wdenominator)
-        // Guard each fit: if treatment does not vary within the A_lag stratum
-        // (e.g. monotonic, non-reversible treatment, where everyone with
-        // A_lag == 1 also has treatment == 1), logistic exits with r(2000)
-        // "outcome does not vary". In that case the stratum's weight
-        // contribution is 1, so set the predicted probability to the constant
-        // value of treatment instead of fitting a model.
-        tempvar p_d0 p_d1
-
-        qui sum `treatment' if `A_lag' == 0, meanonly
-        if r(N) == 0 | r(min) == r(max) {
-            qui gen double `p_d0' = cond(r(N) == 0, 1, r(mean))
+        // Per-calendar-period censoring snapshots (all PP variants)
+        forvalues i = `loop_start'/`t_max' {
+            tempvar _c`i'
+            qui gen byte `_c`i'' = 0
+            qui replace `_c`i'' = 1 ///
+                if `trial' == `i' & `treatment' != `treatment'[_n-1] ///
+                & `id' == `id'[_n-1]
         }
-        else {
-            qui logistic `treatment' ///
-                c.`time' c.`time'#c.`time' c.`time'#c.`time'#c.`time' ///
-                `wdenominator' if `A_lag' == 0
-            qui predict double `p_d0'
+        forvalues i = `loop_start'/`t_max' {
+            tempvar _ca`i'
+            by `id': egen byte `_ca`i'' = max(`_c`i'')
         }
 
-        qui sum `treatment' if `A_lag' == 1, meanonly
-        if r(N) == 0 | r(min) == r(max) {
-            qui gen double `p_d1' = cond(r(N) == 0, 1, r(mean))
-        }
-        else {
-            qui logistic `treatment' ///
-                c.`time' c.`time'#c.`time' c.`time'#c.`time'#c.`time' ///
-                `wdenominator' if `A_lag' == 1
-            qui predict double `p_d1'
-        }
+        // Weight models and weight snapshots (weighted PP only)
+        if `weighted_pp' {
+            di as txt _n "Fitting weight models..."
 
-        // Numerator: P(A | A_lag, time + time² + time³, wnumerator)
-        local stabilized = ("`wnumerator'" != "")
-        if `stabilized' {
-            tempvar p_n0 p_n1
+            // Denominator: P(A | A_lag, time + time² + time³, wdenominator)
+            // Guard each fit: if treatment does not vary within the A_lag stratum
+            // (e.g. monotonic, non-reversible treatment, where everyone with
+            // A_lag == 1 also has treatment == 1), logistic exits with r(2000)
+            // "outcome does not vary". In that case the stratum's weight
+            // contribution is 1, so set the predicted probability to the constant
+            // value of treatment instead of fitting a model.
+            tempvar p_d0 p_d1
 
             qui sum `treatment' if `A_lag' == 0, meanonly
             if r(N) == 0 | r(min) == r(max) {
-                qui gen double `p_n0' = cond(r(N) == 0, 1, r(mean))
+                qui gen double `p_d0' = cond(r(N) == 0, 1, r(mean))
             }
             else {
                 qui logistic `treatment' ///
                     c.`time' c.`time'#c.`time' c.`time'#c.`time'#c.`time' ///
-                    `wnumerator' if `A_lag' == 0
-                qui predict double `p_n0'
+                    `wdenominator' if `A_lag' == 0
+                qui predict double `p_d0'
             }
 
             qui sum `treatment' if `A_lag' == 1, meanonly
             if r(N) == 0 | r(min) == r(max) {
-                qui gen double `p_n1' = cond(r(N) == 0, 1, r(mean))
+                qui gen double `p_d1' = cond(r(N) == 0, 1, r(mean))
             }
             else {
                 qui logistic `treatment' ///
                     c.`time' c.`time'#c.`time' c.`time'#c.`time'#c.`time' ///
-                    `wnumerator' if `A_lag' == 1
-                qui predict double `p_n1'
+                    `wdenominator' if `A_lag' == 1
+                qui predict double `p_d1'
             }
-        }
 
-        // IPW weights (reset to 1 at each person's first record)
-        tempvar ipw
-        if `stabilized' {
-            qui gen double `ipw' = (1 - `p_n0') / (1 - `p_d0') if `treatment' == 0
-            qui replace `ipw' = `p_n1' / `p_d1'                if `treatment' == 1
-        }
-        else {
-            qui gen double `ipw' = 1 / (1 - `p_d0') if `treatment' == 0
-            qui replace `ipw' = 1 / `p_d1'          if `treatment' == 1
-        }
-        qui replace `ipw' = 1 if `id' != `id'[_n-1]
+            // Numerator: P(A | A_lag, time + time² + time³, wnumerator)
+            local stabilized = ("`wnumerator'" != "")
+            if `stabilized' {
+                tempvar p_n0 p_n1
 
-        // Per-calendar-period censoring and weight snapshots
-        local loop_start = `t_min' + 1
-        forvalues i = `loop_start'/`t_max' {
-            tempvar _c`i' _w`i'
-            qui gen byte   `_c`i'' = 0
-            qui gen double `_w`i'' = 1
-            qui replace `_c`i'' = 1 ///
-                if `trial' == `i' & `treatment' != `treatment'[_n-1] ///
-                & `id' == `id'[_n-1]
-            qui replace `_w`i'' = `ipw' if `trial' == `i'
-        }
+                qui sum `treatment' if `A_lag' == 0, meanonly
+                if r(N) == 0 | r(min) == r(max) {
+                    qui gen double `p_n0' = cond(r(N) == 0, 1, r(mean))
+                }
+                else {
+                    qui logistic `treatment' ///
+                        c.`time' c.`time'#c.`time' c.`time'#c.`time'#c.`time' ///
+                        `wnumerator' if `A_lag' == 0
+                    qui predict double `p_n0'
+                }
 
-        // Aggregate snapshots to person level
-        forvalues i = `loop_start'/`t_max' {
-            tempvar _ca`i' _wa`i'
-            by `id': egen byte   `_ca`i'' = max(`_c`i'')
-            by `id': egen double `_wa`i'' = max(`_w`i'')
-        }
+                qui sum `treatment' if `A_lag' == 1, meanonly
+                if r(N) == 0 | r(min) == r(max) {
+                    qui gen double `p_n1' = cond(r(N) == 0, 1, r(mean))
+                }
+                else {
+                    qui logistic `treatment' ///
+                        c.`time' c.`time'#c.`time' c.`time'#c.`time'#c.`time' ///
+                        `wnumerator' if `A_lag' == 1
+                    qui predict double `p_n1'
+                }
+            }
 
-        di as txt "Weight models fitted"
+            // IPW weights (reset to 1 at each person's first record)
+            tempvar ipw
+            if `stabilized' {
+                qui gen double `ipw' = (1 - `p_n0') / (1 - `p_d0') if `treatment' == 0
+                qui replace `ipw' = `p_n1' / `p_d1'                if `treatment' == 1
+            }
+            else {
+                qui gen double `ipw' = 1 / (1 - `p_d0') if `treatment' == 0
+                qui replace `ipw' = 1 / `p_d1'          if `treatment' == 1
+            }
+            qui replace `ipw' = 1 if `id' != `id'[_n-1]
+
+            // Per-calendar-period weight snapshots
+            forvalues i = `loop_start'/`t_max' {
+                tempvar _w`i'
+                qui gen double `_w`i'' = 1
+                qui replace `_w`i'' = `ipw' if `trial' == `i'
+            }
+            forvalues i = `loop_start'/`t_max' {
+                tempvar _wa`i'
+                by `id': egen double `_wa`i'' = max(`_w`i'')
+            }
+
+            di as txt "Weight models fitted"
+        }
     }
 
     // ----- Expand each row to cover remaining follow-up -----
@@ -228,15 +235,12 @@ program seqtte, eclass
 
     // ----- PP: fill censoring and cumulative weights into expanded data -----
     if "`estimator'" == "pp" {
-        tempvar censored wt
-        qui gen byte   `censored' = 0
-        qui gen double `wt'       = 1
+        tempvar censored
+        qui gen byte `censored' = 0
 
-        local loop_start = `t_min' + 1
         forvalues i = `loop_start'/`t_max' {
             local cond "`i' == `time_in_trial' + `trial' - 1 & `time_in_trial' > 1"
             qui replace `censored' = `_ca`i'' if `cond'
-            qui replace `wt'       = `_wa`i'' if `cond'
         }
 
         // Propagate censoring forward within each (id, trial)
@@ -246,15 +250,22 @@ program seqtte, eclass
             & `id'    == `id'[_n-1] ///
             & `trial' == `trial'[_n-1]
 
-        // Cumulative product of weights within (id, trial)
-        tempvar wt_cum
-        qui gen double `wt_cum' = `wt'
-        by `id' `trial': ///
-            replace `wt_cum' = `wt_cum' * `wt_cum'[_n-1] if _n > 1
+        if `weighted_pp' {
+            // Cumulative product of weights within (id, trial)
+            tempvar wt wt_cum
+            qui gen double `wt' = 1
+            forvalues i = `loop_start'/`t_max' {
+                local cond "`i' == `time_in_trial' + `trial' - 1 & `time_in_trial' > 1"
+                qui replace `wt' = `_wa`i'' if `cond'
+            }
+            qui gen double `wt_cum' = `wt'
+            by `id' `trial': ///
+                replace `wt_cum' = `wt_cum' * `wt_cum'[_n-1] if _n > 1
 
-        // Truncate extreme weights
-        qui replace `wt_cum' = `truncation' ///
-            if `wt_cum' > `truncation' & !missing(`wt_cum')
+            // Truncate extreme weights
+            qui replace `wt_cum' = `truncation' ///
+                if `wt_cum' > `truncation' & !missing(`wt_cum')
+        }
 
         qui count if `censored' == 0
         local n_pp = r(N)
@@ -355,12 +366,19 @@ program seqtte, eclass
                         c.`trial'##c.`trial' ///
                         `covariates', cluster(`bs_newid')
                 }
-                else {
+                else if `weighted_pp' {
                     qui logistic `event' `treatment' ///
                         c.`fu_time'##c.`fu_time' ///
                         c.`trial'##c.`trial' ///
                         `covariates' ///
                         if `censored' == 0 [pweight = `wt_cum'], cluster(`bs_newid')
+                }
+                else {
+                    qui logistic `event' `treatment' ///
+                        c.`fu_time'##c.`fu_time' ///
+                        c.`trial'##c.`trial' ///
+                        `covariates' ///
+                        if `censored' == 0, cluster(`bs_newid')
                 }
 
                 matrix `bs_b'[`b', 1] = _b[`treatment']
@@ -392,12 +410,19 @@ program seqtte, eclass
             c.`trial'##c.`trial' ///
             `covariates', cluster(`id')
     }
-    else {
+    else if `weighted_pp' {
         logistic `event' `treatment' ///
             c.`fu_time'##c.`fu_time' ///
             c.`trial'##c.`trial' ///
             `covariates' ///
             if `censored' == 0 [pweight = `wt_cum'], cluster(`id')
+    }
+    else {
+        logistic `event' `treatment' ///
+            c.`fu_time'##c.`fu_time' ///
+            c.`trial'##c.`trial' ///
+            `covariates' ///
+            if `censored' == 0, cluster(`id')
     }
 
     // Bootstrap summary (after the fit so the point OR is available)

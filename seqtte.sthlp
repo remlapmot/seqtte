@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 0.4.0  20may2026  Tom Palmer}{...}
+{* *! version 0.6.0  22may2026  Tom Palmer}{...}
 {vieweralsosee "seqtte" "help seqtte"}{...}
 {viewerjumpto "Syntax" "seqtte##syntax"}{...}
 {viewerjumpto "Description" "seqtte##description"}{...}
@@ -34,7 +34,7 @@
 {syntab:Optional}
 {synopt:{opt covariates(varlist)}}adjustment covariates for the outcome model{p_end}
 {synopt:{opt estimator(string)}}{cmd:itt} (default) or {cmd:pp}{p_end}
-{synopt:{opt wdenominator(varlist)}}denominator weight model covariates; required for {cmd:pp}{p_end}
+{synopt:{opt wdenominator(varlist)}}denominator weight model covariates; if omitted with {cmd:pp}, an unweighted per-protocol analysis is performed{p_end}
 {synopt:{opt wnumerator(varlist)}}numerator weight model covariates; if supplied, stabilized weights are used{p_end}
 {synopt:{opt truncation(#)}}truncation threshold for cumulative weights; default 25{p_end}
 {synoptline}
@@ -58,8 +58,11 @@ No weighting is used.
 {ul:Per-protocol (PP)} ({cmd:estimator(pp)}).
 Estimates the effect of sustained adherence to the assigned treatment strategy.
 Individuals are censored at the period in which they deviate from their
-assigned treatment, and inverse probability of censoring weights (IPCW)
-are used to adjust for informative censoring.
+assigned treatment.
+If {cmd:wdenominator()} is supplied, inverse probability of censoring weights
+(IPCW) are applied to adjust for informative censoring (weighted PP).
+If {cmd:wdenominator()} is omitted, censoring is applied but no weights are
+used (unweighted PP).
 
 {pstd}
 {ul:Input data.}
@@ -81,8 +84,9 @@ terms for follow-up time within trial and trial number, with standard errors
 clustered by individual.
 
 {pstd}
-{ul:Weight models (PP only).}
-Four logistic regression models are fitted on the pre-expansion data,
+{ul:Weight models (weighted PP only).}
+When {cmd:wdenominator()} is supplied with {cmd:estimator(pp)},
+four logistic regression models are fitted on the pre-expansion data,
 stratified by prior treatment status ({it:A_lag} = 0 or 1):
 a denominator model including {cmd:wdenominator()} covariates
 and a cubic polynomial in calendar time,
@@ -92,6 +96,8 @@ Unstabilized weights are used when {cmd:wnumerator()} is omitted;
 stabilized weights (numerator/denominator) are used when it is supplied.
 Cumulative products of per-period weights are formed within each trial,
 then truncated at {cmd:truncation()}.
+When {cmd:wdenominator()} is omitted, no weight models are fitted and the
+outcome model is fitted on the censored data without weighting.
 
 {marker options}{...}
 {title:Options}
@@ -128,7 +134,8 @@ for the intent-to-treat effect, or {cmd:pp} for the per-protocol effect.
 weight models.
 These are fitted on the pre-expansion data and should include all
 time-varying confounders of the treatment–outcome relationship.
-Required when {cmd:estimator(pp)} is specified.
+When supplied with {cmd:estimator(pp)}, IPCW weights are applied (weighted PP);
+when omitted, censoring is applied without weighting (unweighted PP).
 {help fvvarlist:Factor-variable notation} (e.g. {cmd:i.group}) is allowed.
 
 {phang}
@@ -165,6 +172,10 @@ Default is 25.
 {pstd}ITT estimator{p_end}
 
 {phang2}{cmd:. seqtte outcome, id(id) time(time) treatment(treatment) covariates(age)}{p_end}
+
+{pstd}Unweighted PP estimator (censoring applied, no IPCW weights){p_end}
+
+{phang2}{cmd:. seqtte outcome, id(id) time(time) treatment(treatment) covariates(age) estimator(pp)}{p_end}
 
 {pstd}PP estimator with unstabilized weights{p_end}
 
