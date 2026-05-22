@@ -97,9 +97,15 @@ seqtte outcome, id(id) time(time) treatment(treatment) ///
 assert e(N) > 0
 
 * ------------------------------------------------------------
-* Test 7: error if pp specified without wdenominator
+* Test 7: unweighted PP — censoring applied, no IPCW weights
 * ------------------------------------------------------------
-rcof `"seqtte outcome, id(id) time(time) treatment(treatment) estimator(pp)"' == 198
+seqtte outcome, id(id) time(time) treatment(treatment) ///
+    estimator(pp)
+
+assert e(N) > 0
+assert `"`e(estimator)'"' == "pp"
+* Post-censoring N must be <= expanded N (some controls are censored)
+assert e(N) <= e(N_exp)
 
 * ------------------------------------------------------------
 * Test 8: factor-variable notation in covariates and weight models
@@ -255,5 +261,40 @@ restore
 * Test 18: bootstrap invalid (negative)
 * ------------------------------------------------------------
 rcof `"seqtte outcome, id(id) time(time) treatment(treatment) bootstrap(-1)"' == 198
+
+* ------------------------------------------------------------
+* Test 19: unweighted PP with covariates
+* ------------------------------------------------------------
+seqtte outcome, id(id) time(time) treatment(treatment) ///
+    covariates(age_grp) estimator(pp)
+
+assert e(N) > 0
+assert `"`e(estimator)'"' == "pp"
+
+* ------------------------------------------------------------
+* Test 20: unweighted PP with selection_random
+* ------------------------------------------------------------
+seqtte outcome, id(id) time(time) treatment(treatment) ///
+    covariates(age_grp) estimator(pp) ///
+    selectionrandom selectionsample(0.5) seed(42)
+
+assert e(N) > 0
+assert `"`e(estimator)'"' == "pp"
+assert e(N_sel) <= e(N_exp)
+
+* ------------------------------------------------------------
+* Test 21: unweighted PP with bootstrap
+* ------------------------------------------------------------
+seqtte outcome, id(id) time(time) treatment(treatment) ///
+    covariates(age_grp) estimator(pp) ///
+    bootstrap(30) seed(7)
+
+assert e(N) > 0
+assert `"`e(estimator)'"' == "pp"
+assert e(N_boot) > 0
+assert !missing(e(bs_se))
+assert !missing(e(bs_ll))
+assert !missing(e(bs_ul))
+assert e(bs_ll) < e(bs_ul)
 
 di as txt "seqtte cscript passed"
