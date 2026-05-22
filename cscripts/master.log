@@ -2,7 +2,7 @@
       name:  master
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/master.log
   log type:  text
- opened on:  22 May 2026, 05:37:21
+ opened on:  22 May 2026, 05:57:03
 
 . 
 . cscript master
@@ -25,7 +25,7 @@
       name:  seqtte
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- opened on:  22 May 2026, 05:37:21
+ opened on:  22 May 2026, 05:57:03
 
 . cscript seqtte adofile seqtte
 -------------------------------------------------------------------BEGIN seqtte
@@ -845,7 +845,7 @@ Note: _cons estimates baseline odds.
 Bootstrap complete: 50/50 replicates succeeded
 Bootstrap SE (log-OR):       0.1329
 Bootstrap 95% CI (log-OR): [-0.4396,  0.0840]
-Estimated OR:  0.8519 with bootstrap 95% CI [ 0.6443,  1.0877]
+Estimated OR:  0.8519 with bootstrap 95% CI [0.6443,  1.0877]
 
 . 
 . assert e(N) > 0
@@ -920,7 +920,7 @@ Note: _cons estimates baseline odds.
 Bootstrap complete: 50/50 replicates succeeded
 Bootstrap SE (log-OR):       0.1329
 Bootstrap 95% CI (log-OR): [-0.4396,  0.0840]
-Estimated OR:  0.8519 with bootstrap 95% CI [ 0.6443,  1.0877]
+Estimated OR:  0.8519 with bootstrap 95% CI [0.6443,  1.0877]
 
 . 
 . assert reldif(e(bs_se), `se_rep1') < 1e-10
@@ -983,7 +983,7 @@ Note: _cons estimates baseline odds.
 Bootstrap complete: 30/30 replicates succeeded
 Bootstrap SE (log-OR):       0.3474
 Bootstrap 95% CI (log-OR): [-1.4190,  0.1070]
-Estimated OR:  0.5033 with bootstrap 95% CI [ 0.2420,  1.1129]
+Estimated OR:  0.5033 with bootstrap 95% CI [0.2420,  1.1129]
 
 . 
 . assert e(N) > 0
@@ -1049,7 +1049,7 @@ Note: _cons estimates baseline odds.
 Bootstrap complete: 30/30 replicates succeeded
 Bootstrap SE (log-OR):       0.1571
 Bootstrap 95% CI (log-OR): [-0.5242,  0.1217]
-Estimated OR:  0.9006 with bootstrap 95% CI [ 0.5920,  1.1294]
+Estimated OR:  0.9006 with bootstrap 95% CI [0.5920,  1.1294]
 
 . 
 . assert e(N) > 0
@@ -1167,7 +1167,7 @@ Note: _cons estimates baseline odds.
 Bootstrap complete: 30/30 replicates succeeded
 Bootstrap SE (log-OR):       0.2048
 Bootstrap 95% CI (log-OR): [-0.8072,  0.1002]
-Estimated OR:  0.7345 with bootstrap 95% CI [ 0.4461,  1.1054]
+Estimated OR:  0.7345 with bootstrap 95% CI [0.4461,  1.1054]
 
 . 
 . assert e(N) > 0
@@ -1359,7 +1359,7 @@ Note: _cons estimates baseline odds.
 Bootstrap complete: 30/30 replicates succeeded
 Bootstrap SE (log-OR):       0.2282
 Bootstrap 95% CI (log-OR): [-0.7444,  0.0941]
-Estimated OR:  0.6553 with bootstrap 95% CI [ 0.4750,  1.0987]
+Estimated OR:  0.6553 with bootstrap 95% CI [0.4750,  1.0987]
 
 . 
 . assert e(N) > 0
@@ -1385,7 +1385,7 @@ end of do-file
       name:  seqtte
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- closed on:  22 May 2026, 05:37:25
+ closed on:  22 May 2026, 05:57:07
 -------------------------------------------------------------------------------
 
 . 
@@ -1393,5 +1393,5 @@ end of do-file
       name:  master
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/master.log
   log type:  text
- closed on:  22 May 2026, 05:37:25
+ closed on:  22 May 2026, 05:57:07
 -------------------------------------------------------------------------------
