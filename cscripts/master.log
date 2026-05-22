@@ -2,7 +2,7 @@
       name:  master
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/master.log
   log type:  text
- opened on:  22 May 2026, 06:03:02
+ opened on:  22 May 2026, 06:09:53
 
 . 
 . cscript master
@@ -25,7 +25,7 @@
       name:  seqtte
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- opened on:  22 May 2026, 06:03:02
+ opened on:  22 May 2026, 06:09:53
 
 . cscript seqtte adofile seqtte
 -------------------------------------------------------------------BEGIN seqtte
@@ -106,7 +106,6 @@ Number of observations (_N) was 0, now 200.
 . seqtte outcome, id(id) time(time) treatment(treatment)
 
 Original dataset:        1,930 observations, 6 variables
-(1,080 missing values generated)
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
@@ -160,7 +159,6 @@ Note: _cons estimates baseline odds.
 >     covariates(age_grp)
 
 Original dataset:        1,930 observations, 6 variables
-(1,080 missing values generated)
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
@@ -206,7 +204,6 @@ Note: _cons estimates baseline odds.
 . seqtte outcome if time <= 7, id(id) time(time) treatment(treatment)
 
 Original dataset:        1,563 observations, 6 variables
-(984 missing values generated)
 Eligible observations:          770 (200 individuals)
 
 Expanding data...
@@ -251,7 +248,6 @@ Note: _cons estimates baseline odds.
 >     estimator(pp) wdenominator(age_grp)
 
 Original dataset:        1,930 observations, 6 variables
-(1,080 missing values generated)
 Eligible observations:          818 (200 individuals)
 
 Fitting weight models...
@@ -303,7 +299,6 @@ Note: _cons estimates baseline odds.
 >     estimator(pp) wdenominator(age_grp) wnumerator(age_grp_0)
 
 Original dataset:        1,930 observations, 6 variables
-(1,080 missing values generated)
 Eligible observations:          818 (200 individuals)
 
 Fitting weight models...
@@ -354,7 +349,6 @@ Note: _cons estimates baseline odds.
 >     estimator(pp) wdenominator(age_grp) truncation(10)
 
 Original dataset:        1,930 observations, 6 variables
-(1,080 missing values generated)
 Eligible observations:          818 (200 individuals)
 
 Fitting weight models...
@@ -402,7 +396,6 @@ Note: _cons estimates baseline odds.
 >     estimator(pp)
 
 Original dataset:        1,930 observations, 6 variables
-(1,080 missing values generated)
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
@@ -455,7 +448,6 @@ Note: _cons estimates baseline odds.
 >     covariates(i.age_grp i.grp)
 
 Original dataset:        1,930 observations, 7 variables
-(1,080 missing values generated)
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
@@ -506,7 +498,6 @@ Note: _cons estimates baseline odds.
 >     wdenominator(i.age_grp i.grp) wnumerator(i.age_grp)
 
 Original dataset:        1,930 observations, 7 variables
-(1,080 missing values generated)
 Eligible observations:          818 (200 individuals)
 
 Fitting weight models...
@@ -562,7 +553,6 @@ Note: _cons estimates baseline odds.
 >     selectionrandom selectionsample(0.5) seed(42)
 
 Original dataset:        1,930 observations, 7 variables
-(1,080 missing values generated)
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
@@ -616,7 +606,6 @@ Note: _cons estimates baseline odds.
 >     selectionrandom selectionsample(0.5) seed(42)
 
 Original dataset:        1,930 observations, 7 variables
-(1,080 missing values generated)
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
@@ -662,7 +651,6 @@ Note: _cons estimates baseline odds.
 >     selectionrandom selectionsample(0.3) seed(7)
 
 Original dataset:        1,930 observations, 7 variables
-(1,080 missing values generated)
 Eligible observations:          818 (200 individuals)
 
 Fitting weight models...
@@ -728,7 +716,6 @@ Note: _cons estimates baseline odds.
 >     bootstrap(50) seed(42)
 
 Original dataset:        1,930 observations, 7 variables
-(1,080 missing values generated)
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
@@ -798,7 +785,6 @@ Estimated OR:  0.8519 with bootstrap 95% CI [0.6443,  1.0877]
 >     bootstrap(50) seed(42)
 
 Original dataset:        1,930 observations, 7 variables
-(1,080 missing values generated)
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
@@ -850,7 +836,6 @@ Estimated OR:  0.8519 with bootstrap 95% CI [0.6443,  1.0877]
 >     bootstrap(30) seed(7)
 
 Original dataset:        1,930 observations, 7 variables
-(1,080 missing values generated)
 Eligible observations:          818 (200 individuals)
 
 Fitting weight models...
@@ -912,7 +897,6 @@ Estimated OR:  0.5033 with bootstrap 95% CI [0.2420,  1.1129]
 >     selectionrandom selectionsample(0.5) bootstrap(30) seed(99)
 
 Original dataset:        1,930 observations, 7 variables
-(1,080 missing values generated)
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
@@ -1022,7 +1006,6 @@ Number of observations (_N) was 0, now 300.
 >     selectionrandom selectionsample(0.5) bootstrap(30) seed(99)
 
 Original dataset:        1,306 observations, 5 variables
-(757 missing values generated)
 Eligible observations:          757 (300 individuals)
 
 Expanding data...
@@ -1094,7 +1077,6 @@ Estimated OR:  0.7345 with bootstrap 95% CI [0.4461,  1.1054]
 >     covariates(age_grp) estimator(pp)
 
 Original dataset:        1,930 observations, 7 variables
-(1,080 missing values generated)
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
@@ -1143,7 +1125,6 @@ Note: _cons estimates baseline odds.
 >     selectionrandom selectionsample(0.5) seed(42)
 
 Original dataset:        1,930 observations, 7 variables
-(1,080 missing values generated)
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
@@ -1195,7 +1176,6 @@ Note: _cons estimates baseline odds.
 >     bootstrap(30) seed(7)
 
 Original dataset:        1,930 observations, 7 variables
-(1,080 missing values generated)
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
@@ -1261,7 +1241,7 @@ end of do-file
       name:  seqtte
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- closed on:  22 May 2026, 06:03:07
+ closed on:  22 May 2026, 06:09:57
 -------------------------------------------------------------------------------
 
 . 
@@ -1269,5 +1249,5 @@ end of do-file
       name:  master
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/master.log
   log type:  text
- closed on:  22 May 2026, 06:03:07
+ closed on:  22 May 2026, 06:09:57
 -------------------------------------------------------------------------------
