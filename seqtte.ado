@@ -433,8 +433,9 @@ program seqtte, eclass
         di as txt _n "Bootstrap complete: " `bs_ok' "/" `bootstrap' " replicates succeeded"
         di as txt "Bootstrap SE (log-OR):      " %7.4f `bs_se'
         di as txt "Bootstrap 95% CI (log-OR): [" %7.4f `bs_ll' ", " %7.4f `bs_ul' "]"
+        local bs_ci_ll = ltrim(string(`bs_or_ll', "%7.4f"))
         di as txt "Estimated OR: " %7.4f `bs_or' ///
-            " with bootstrap 95% CI [" %7.4f `bs_or_ll' ", " %7.4f `bs_or_ul' "]"
+            " with bootstrap 95% CI [" "`bs_ci_ll'" ", " %7.4f `bs_or_ul' "]"
     }
 
     restore
