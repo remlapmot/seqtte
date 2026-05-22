@@ -70,7 +70,7 @@ program seqtte, eclass
         }
         markout `touse' `wden_base' `wnum_base'
     }
-    keep if `touse'
+    qui keep if `touse'
 
     sort `id' `time'
 
@@ -89,10 +89,10 @@ program seqtte, eclass
 
     // Eligibility: not treated in any earlier period
     tempvar A_lag eligible
-    by `id': gen byte `A_lag' = `treatment'[_n-1]
-    gen byte `eligible' = 1
+    qui by `id': gen byte `A_lag' = `treatment'[_n-1]
+    qui gen byte `eligible' = 1
     qui replace `eligible' = 0 if `A_lag' == 1
-    by `id': replace `eligible' = 0 ///
+    qui by `id': replace `eligible' = 0 ///
         if `eligible'[_n-1] == 0 & `id' == `id'[_n-1]
 
     qui count if `eligible' == 1
@@ -218,16 +218,16 @@ program seqtte, eclass
     di as txt _n "Expanding data..."
 
     tempvar max_t n_expand
-    by `id': gen long `max_t' = `time'[_N]
+    qui by `id': gen long `max_t' = `time'[_N]
     qui gen long `n_expand' = `max_t' - `time' + 1
-    expand `n_expand'
+    qui expand `n_expand'
 
     sort `id' `trial'
 
     tempvar time_in_trial
-    by `id' `trial': gen long `time_in_trial' = _n
+    qui by `id' `trial': gen long `time_in_trial' = _n
 
-    drop if `eligible' == 0
+    qui drop if `eligible' == 0
 
     qui count
     local n_exp = r(N)
@@ -259,7 +259,7 @@ program seqtte, eclass
                 qui replace `wt' = `_wa`i'' if `cond'
             }
             qui gen double `wt_cum' = `wt'
-            by `id' `trial': ///
+            qui by `id' `trial': ///
                 replace `wt_cum' = `wt_cum' * `wt_cum'[_n-1] if _n > 1
 
             // Truncate extreme weights
@@ -282,13 +282,13 @@ program seqtte, eclass
 
         // One random draw per (id, trial) pair; treatment is constant within pairs
         tempvar rnd_pair
-        bysort `id' `trial' (`time_in_trial'): ///
+        qui bysort `id' `trial' (`time_in_trial'): ///
             gen double `rnd_pair' = runiform() if _n == 1
-        bysort `id' `trial' (`time_in_trial'): ///
+        qui bysort `id' `trial' (`time_in_trial'): ///
             replace `rnd_pair' = `rnd_pair'[1]
 
         // Keep all treated-arm pairs; Bernoulli-sample control-arm pairs
-        keep if `treatment' == 1 | (`treatment' == 0 & `rnd_pair' <= `selectionsample')
+        qui keep if `treatment' == 1 | (`treatment' == 0 & `rnd_pair' <= `selectionsample')
 
         qui count
         local n_sel = r(N)
@@ -392,7 +392,7 @@ program seqtte, eclass
         // Bootstrap SE and percentile CI (95%) from log-OR distribution
         // svmat places values in obs 1..B; remaining obs are missing — both
         // sum and _pctile skip missing values automatically.
-        svmat double `bs_b', names(_seqtte_bs_)
+        qui svmat double `bs_b', names(_seqtte_bs_)
         qui sum _seqtte_bs_1
         local bs_se = r(sd)
         qui _pctile _seqtte_bs_1, p(2.5 97.5)
