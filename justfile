@@ -7,7 +7,7 @@
 [working-directory: 'cscripts']
 test:
     stata-mp -b "do master"
-install:
+in:
     printf 'ado uninstall seqtte\nnet install seqtte, from("https://raw.githubusercontent.com/remlapmot/seqtte/main/") replace\nado dir seqtte\n' | stata-mp -q
-uninstall:
+un:
     printf 'ado uninstall seqtte\nado dir seqtte\n' | stata-mp -q
