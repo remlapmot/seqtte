@@ -2,7 +2,7 @@
       name:  master
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/master.log
   log type:  text
- opened on:  22 May 2026, 05:57:03
+ opened on:  22 May 2026, 06:03:02
 
 . 
 . cscript master
@@ -25,7 +25,7 @@
       name:  seqtte
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- opened on:  22 May 2026, 05:57:03
+ opened on:  22 May 2026, 06:03:02
 
 . cscript seqtte adofile seqtte
 -------------------------------------------------------------------BEGIN seqtte
@@ -104,17 +104,12 @@ Number of observations (_N) was 0, now 200.
 . * Test 1: ITT, no covariates
 . * ------------------------------------------------------------
 . seqtte outcome, id(id) time(time) treatment(treatment)
-(0 observations deleted)
 
 Original dataset:        1,930 observations, 6 variables
 (1,080 missing values generated)
-(200 missing values generated)
-(453 real changes made)
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-(8,517 observations created)
-(4,581 observations deleted)
 Expanded dataset:        5,866 observations
 
 Fitting ITT model...
@@ -163,17 +158,12 @@ Note: _cons estimates baseline odds.
 . * ------------------------------------------------------------
 . seqtte outcome, id(id) time(time) treatment(treatment) ///
 >     covariates(age_grp)
-(0 observations deleted)
 
 Original dataset:        1,930 observations, 6 variables
 (1,080 missing values generated)
-(200 missing values generated)
-(453 real changes made)
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-(8,517 observations created)
-(4,581 observations deleted)
 Expanded dataset:        5,866 observations
 
 Fitting ITT model...
@@ -214,17 +204,12 @@ Note: _cons estimates baseline odds.
 . * Test 3: ITT, if/in restriction
 . * ------------------------------------------------------------
 . seqtte outcome if time <= 7, id(id) time(time) treatment(treatment)
-(367 observations deleted)
 
 Original dataset:        1,563 observations, 6 variables
 (984 missing values generated)
-(200 missing values generated)
-(283 real changes made)
 Eligible observations:          770 (200 individuals)
 
 Expanding data...
-(5,399 observations created)
-(2,601 observations deleted)
 Expanded dataset:        4,361 observations
 
 Fitting ITT model...
@@ -264,22 +249,16 @@ Note: _cons estimates baseline odds.
 . seqtte outcome, id(id) time(time) treatment(treatment) ///
 >     covariates(age_grp) ///
 >     estimator(pp) wdenominator(age_grp)
-(0 observations deleted)
 
 Original dataset:        1,930 observations, 6 variables
 (1,080 missing values generated)
-(200 missing values generated)
-(453 real changes made)
 Eligible observations:          818 (200 individuals)
 
 Fitting weight models...
 Weight models fitted
 
 Expanding data...
-(8,517 observations created)
-(4,581 observations deleted)
 Expanded dataset:        5,866 observations
-(4259 real changes made)
 Post-censoring dataset:        2,795 observations
 
 Fitting PP model...
@@ -322,22 +301,16 @@ Note: _cons estimates baseline odds.
 . seqtte outcome, id(id) time(time) treatment(treatment) ///
 >     covariates(age_grp) ///
 >     estimator(pp) wdenominator(age_grp) wnumerator(age_grp_0)
-(0 observations deleted)
 
 Original dataset:        1,930 observations, 6 variables
 (1,080 missing values generated)
-(200 missing values generated)
-(453 real changes made)
 Eligible observations:          818 (200 individuals)
 
 Fitting weight models...
 Weight models fitted
 
 Expanding data...
-(8,517 observations created)
-(4,581 observations deleted)
 Expanded dataset:        5,866 observations
-(0 real changes made)
 Post-censoring dataset:        2,795 observations
 
 Fitting PP model...
@@ -379,22 +352,16 @@ Note: _cons estimates baseline odds.
 . * ------------------------------------------------------------
 . seqtte outcome, id(id) time(time) treatment(treatment) ///
 >     estimator(pp) wdenominator(age_grp) truncation(10)
-(0 observations deleted)
 
 Original dataset:        1,930 observations, 6 variables
 (1,080 missing values generated)
-(200 missing values generated)
-(453 real changes made)
 Eligible observations:          818 (200 individuals)
 
 Fitting weight models...
 Weight models fitted
 
 Expanding data...
-(8,517 observations created)
-(4,581 observations deleted)
 Expanded dataset:        5,866 observations
-(4259 real changes made)
 Post-censoring dataset:        2,795 observations
 
 Fitting PP model...
@@ -433,17 +400,12 @@ Note: _cons estimates baseline odds.
 . * ------------------------------------------------------------
 . seqtte outcome, id(id) time(time) treatment(treatment) ///
 >     estimator(pp)
-(0 observations deleted)
 
 Original dataset:        1,930 observations, 6 variables
 (1,080 missing values generated)
-(200 missing values generated)
-(453 real changes made)
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-(8,517 observations created)
-(4,581 observations deleted)
 Expanded dataset:        5,866 observations
 Post-censoring dataset:        2,795 observations
 
@@ -491,17 +453,12 @@ Note: _cons estimates baseline odds.
 . 
 . seqtte outcome, id(id) time(time) treatment(treatment) ///
 >     covariates(i.age_grp i.grp)
-(0 observations deleted)
 
 Original dataset:        1,930 observations, 7 variables
 (1,080 missing values generated)
-(200 missing values generated)
-(453 real changes made)
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-(8,517 observations created)
-(4,581 observations deleted)
 Expanded dataset:        5,866 observations
 
 Fitting ITT model...
@@ -547,22 +504,16 @@ Note: _cons estimates baseline odds.
 >     covariates(i.age_grp i.grp) ///
 >     estimator(pp) ///
 >     wdenominator(i.age_grp i.grp) wnumerator(i.age_grp)
-(0 observations deleted)
 
 Original dataset:        1,930 observations, 7 variables
 (1,080 missing values generated)
-(200 missing values generated)
-(453 real changes made)
 Eligible observations:          818 (200 individuals)
 
 Fitting weight models...
 Weight models fitted
 
 Expanding data...
-(8,517 observations created)
-(4,581 observations deleted)
 Expanded dataset:        5,866 observations
-(3139 real changes made)
 Post-censoring dataset:        2,795 observations
 
 Fitting PP model...
@@ -609,21 +560,13 @@ Note: _cons estimates baseline odds.
 . * ------------------------------------------------------------
 . seqtte outcome, id(id) time(time) treatment(treatment) ///
 >     selectionrandom selectionsample(0.5) seed(42)
-(0 observations deleted)
 
 Original dataset:        1,930 observations, 7 variables
 (1,080 missing values generated)
-(200 missing values generated)
-(453 real changes made)
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-(8,517 observations created)
-(4,581 observations deleted)
 Expanded dataset:        5,866 observations
-(5,048 missing values generated)
-(5048 real changes made)
-(2,185 observations deleted)
 After random selection (0.500 of control-arm pairs):        3,681 observations
 
 Fitting ITT model...
@@ -671,21 +614,13 @@ Note: _cons estimates baseline odds.
 . 
 . seqtte outcome, id(id) time(time) treatment(treatment) ///
 >     selectionrandom selectionsample(0.5) seed(42)
-(0 observations deleted)
 
 Original dataset:        1,930 observations, 7 variables
 (1,080 missing values generated)
-(200 missing values generated)
-(453 real changes made)
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-(8,517 observations created)
-(4,581 observations deleted)
 Expanded dataset:        5,866 observations
-(5,048 missing values generated)
-(5048 real changes made)
-(2,185 observations deleted)
 After random selection (0.500 of control-arm pairs):        3,681 observations
 
 Fitting ITT model...
@@ -725,26 +660,17 @@ Note: _cons estimates baseline odds.
 . seqtte outcome, id(id) time(time) treatment(treatment) ///
 >     covariates(age_grp) estimator(pp) wdenominator(age_grp) ///
 >     selectionrandom selectionsample(0.3) seed(7)
-(0 observations deleted)
 
 Original dataset:        1,930 observations, 7 variables
 (1,080 missing values generated)
-(200 missing values generated)
-(453 real changes made)
 Eligible observations:          818 (200 individuals)
 
 Fitting weight models...
 Weight models fitted
 
 Expanding data...
-(8,517 observations created)
-(4,581 observations deleted)
 Expanded dataset:        5,866 observations
-(4259 real changes made)
 Post-censoring dataset:        2,795 observations
-(5,048 missing values generated)
-(5048 real changes made)
-(3,139 observations deleted)
 After random selection (0.300 of control-arm pairs):        2,727 observations
 
 Fitting PP model...
@@ -800,17 +726,12 @@ Note: _cons estimates baseline odds.
 . * ------------------------------------------------------------
 . seqtte outcome, id(id) time(time) treatment(treatment) ///
 >     bootstrap(50) seed(42)
-(0 observations deleted)
 
 Original dataset:        1,930 observations, 7 variables
 (1,080 missing values generated)
-(200 missing values generated)
-(453 real changes made)
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-(8,517 observations created)
-(4,581 observations deleted)
 Expanded dataset:        5,866 observations
 
 Running 50 bootstrap replicates...
@@ -875,17 +796,12 @@ Estimated OR:  0.8519 with bootstrap 95% CI [0.6443,  1.0877]
 . 
 . seqtte outcome, id(id) time(time) treatment(treatment) ///
 >     bootstrap(50) seed(42)
-(0 observations deleted)
 
 Original dataset:        1,930 observations, 7 variables
 (1,080 missing values generated)
-(200 missing values generated)
-(453 real changes made)
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-(8,517 observations created)
-(4,581 observations deleted)
 Expanded dataset:        5,866 observations
 
 Running 50 bootstrap replicates...
@@ -932,22 +848,16 @@ Estimated OR:  0.8519 with bootstrap 95% CI [0.6443,  1.0877]
 . seqtte outcome, id(id) time(time) treatment(treatment) ///
 >     covariates(age_grp) estimator(pp) wdenominator(age_grp) ///
 >     bootstrap(30) seed(7)
-(0 observations deleted)
 
 Original dataset:        1,930 observations, 7 variables
 (1,080 missing values generated)
-(200 missing values generated)
-(453 real changes made)
 Eligible observations:          818 (200 individuals)
 
 Fitting weight models...
 Weight models fitted
 
 Expanding data...
-(8,517 observations created)
-(4,581 observations deleted)
 Expanded dataset:        5,866 observations
-(4259 real changes made)
 Post-censoring dataset:        2,795 observations
 
 Running 30 bootstrap replicates...
@@ -1000,21 +910,13 @@ Estimated OR:  0.5033 with bootstrap 95% CI [0.2420,  1.1129]
 . * ------------------------------------------------------------
 . seqtte outcome, id(id) time(time) treatment(treatment) ///
 >     selectionrandom selectionsample(0.5) bootstrap(30) seed(99)
-(0 observations deleted)
 
 Original dataset:        1,930 observations, 7 variables
 (1,080 missing values generated)
-(200 missing values generated)
-(453 real changes made)
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-(8,517 observations created)
-(4,581 observations deleted)
 Expanded dataset:        5,866 observations
-(5,048 missing values generated)
-(5048 real changes made)
-(2,372 observations deleted)
 After random selection (0.500 of control-arm pairs):        3,494 observations
 
 Running 30 bootstrap replicates...
@@ -1118,21 +1020,13 @@ Number of observations (_N) was 0, now 300.
 . 
 . seqtte outcome, id(id) time(time) treatment(treatment) ///
 >     selectionrandom selectionsample(0.5) bootstrap(30) seed(99)
-(0 observations deleted)
 
 Original dataset:        1,306 observations, 5 variables
 (757 missing values generated)
-(300 missing values generated)
-(0 real changes made)
 Eligible observations:          757 (300 individuals)
 
 Expanding data...
-(3,960 observations created)
-(1,634 observations deleted)
 Expanded dataset:        3,632 observations
-(2,875 missing values generated)
-(2875 real changes made)
-(1,487 observations deleted)
 After random selection (0.500 of control-arm pairs):        2,145 observations
 
 Running 30 bootstrap replicates...
@@ -1198,17 +1092,12 @@ Estimated OR:  0.7345 with bootstrap 95% CI [0.4461,  1.1054]
 . * ------------------------------------------------------------
 . seqtte outcome, id(id) time(time) treatment(treatment) ///
 >     covariates(age_grp) estimator(pp)
-(0 observations deleted)
 
 Original dataset:        1,930 observations, 7 variables
 (1,080 missing values generated)
-(200 missing values generated)
-(453 real changes made)
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-(8,517 observations created)
-(4,581 observations deleted)
 Expanded dataset:        5,866 observations
 Post-censoring dataset:        2,795 observations
 
@@ -1252,22 +1141,14 @@ Note: _cons estimates baseline odds.
 . seqtte outcome, id(id) time(time) treatment(treatment) ///
 >     covariates(age_grp) estimator(pp) ///
 >     selectionrandom selectionsample(0.5) seed(42)
-(0 observations deleted)
 
 Original dataset:        1,930 observations, 7 variables
 (1,080 missing values generated)
-(200 missing values generated)
-(453 real changes made)
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-(8,517 observations created)
-(4,581 observations deleted)
 Expanded dataset:        5,866 observations
 Post-censoring dataset:        2,795 observations
-(5,048 missing values generated)
-(5048 real changes made)
-(2,185 observations deleted)
 After random selection (0.500 of control-arm pairs):        3,681 observations
 
 Fitting PP model...
@@ -1312,17 +1193,12 @@ Note: _cons estimates baseline odds.
 . seqtte outcome, id(id) time(time) treatment(treatment) ///
 >     covariates(age_grp) estimator(pp) ///
 >     bootstrap(30) seed(7)
-(0 observations deleted)
 
 Original dataset:        1,930 observations, 7 variables
 (1,080 missing values generated)
-(200 missing values generated)
-(453 real changes made)
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-(8,517 observations created)
-(4,581 observations deleted)
 Expanded dataset:        5,866 observations
 Post-censoring dataset:        2,795 observations
 
@@ -1385,7 +1261,7 @@ end of do-file
       name:  seqtte
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- closed on:  22 May 2026, 05:57:07
+ closed on:  22 May 2026, 06:03:07
 -------------------------------------------------------------------------------
 
 . 
@@ -1393,5 +1269,5 @@ end of do-file
       name:  master
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/master.log
   log type:  text
- closed on:  22 May 2026, 05:57:07
+ closed on:  22 May 2026, 06:03:07
 -------------------------------------------------------------------------------
