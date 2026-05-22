@@ -85,7 +85,7 @@ program seqtte, eclass
     tempvar evttime evttime_max
     qui gen double `evttime' = .
     qui replace `evttime' = `time' if `outcome' == 1
-    by `id': egen double `evttime_max' = max(`evttime')
+    qui by `id': egen double `evttime_max' = max(`evttime')
 
     // Eligibility: not treated in any earlier period
     tempvar A_lag eligible
@@ -121,7 +121,7 @@ program seqtte, eclass
         }
         forvalues i = `loop_start'/`t_max' {
             tempvar _ca`i'
-            by `id': egen byte `_ca`i'' = max(`_c`i'')
+            qui by `id': egen byte `_ca`i'' = max(`_c`i'')
         }
 
         // Weight models and weight snapshots (weighted PP only)
@@ -207,7 +207,7 @@ program seqtte, eclass
             }
             forvalues i = `loop_start'/`t_max' {
                 tempvar _wa`i'
-                by `id': egen double `_wa`i'' = max(`_w`i'')
+                qui by `id': egen double `_wa`i'' = max(`_w`i'')
             }
 
             di as txt "Weight models fitted"
