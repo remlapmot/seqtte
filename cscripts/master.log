@@ -2,7 +2,7 @@
       name:  master
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/master.log
   log type:  text
- opened on:  20 May 2026, 16:03:00
+ opened on:  22 May 2026, 05:37:21
 
 . 
 . cscript master
@@ -25,14 +25,14 @@
       name:  seqtte
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- opened on:  20 May 2026, 16:03:00
+ opened on:  22 May 2026, 05:37:21
 
 . cscript seqtte adofile seqtte
 -------------------------------------------------------------------BEGIN seqtte
 
 -> which seqtte, usesysdir
 /Users/tom/Documents/GitHub/seqtte/seqtte.ado
-*! version 0.5.0  20may2026  Tom Palmer
+*! version 0.6.0  22may2026  Tom Palmer
 
 . 
 . * ------------------------------------------------------------
@@ -429,10 +429,58 @@ Note: _cons estimates baseline odds.
 
 . 
 . * ------------------------------------------------------------
-. * Test 7: error if pp specified without wdenominator
+. * Test 7: unweighted PP — censoring applied, no IPCW weights
 . * ------------------------------------------------------------
-. rcof `"seqtte outcome, id(id) time(time) treatment(treatment) estimator(pp)"'
->  == 198
+. seqtte outcome, id(id) time(time) treatment(treatment) ///
+>     estimator(pp)
+(0 observations deleted)
+
+Original dataset:        1,930 observations, 6 variables
+(1,080 missing values generated)
+(200 missing values generated)
+(453 real changes made)
+Eligible observations:          818 (200 individuals)
+
+Expanding data...
+(8,517 observations created)
+(4,581 observations deleted)
+Expanded dataset:        5,866 observations
+Post-censoring dataset:        2,795 observations
+
+Fitting PP model...
+
+Logistic regression                                     Number of obs =  2,795
+                                                        Wald chi2(5)  =   7.79
+                                                        Prob > chi2   = 0.1680
+Log pseudolikelihood = -585.15231                       Pseudo R2     = 0.0088
+
+                                   (Std. err. adjusted for 200 clusters in id)
+------------------------------------------------------------------------------
+             |               Robust
+       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   treatment |   .6669825   .1874102    -1.44   0.149     .3845404    1.156876
+    followup |   .9327285   .0854917    -0.76   0.447     .7793563    1.116283
+             |
+  c.followup#|
+  c.followup |    1.01814   .0124145     1.47   0.140      .994097    1.042765
+             |
+       trial |   .8869772   .0835099    -1.27   0.203     .7375151    1.066729
+             |
+     c.trial#|
+     c.trial |   1.023812   .0121619     1.98   0.048      1.00025    1.047929
+             |
+       _cons |   .0614474   .0160875   -10.65   0.000     .0367834    .1026493
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+. 
+. assert e(N) > 0
+
+. assert `"`e(estimator)'"' == "pp"
+
+. * Post-censoring N must be <= expanded N (some controls are censored)
+. assert e(N) <= e(N_exp)
 
 . 
 . * ------------------------------------------------------------
@@ -1145,6 +1193,190 @@ Estimated OR:  0.7345 with bootstrap 95% CI [ 0.4461,  1.1054]
 >  == 198
 
 . 
+. * ------------------------------------------------------------
+. * Test 19: unweighted PP with covariates
+. * ------------------------------------------------------------
+. seqtte outcome, id(id) time(time) treatment(treatment) ///
+>     covariates(age_grp) estimator(pp)
+(0 observations deleted)
+
+Original dataset:        1,930 observations, 7 variables
+(1,080 missing values generated)
+(200 missing values generated)
+(453 real changes made)
+Eligible observations:          818 (200 individuals)
+
+Expanding data...
+(8,517 observations created)
+(4,581 observations deleted)
+Expanded dataset:        5,866 observations
+Post-censoring dataset:        2,795 observations
+
+Fitting PP model...
+
+Logistic regression                                     Number of obs =  2,795
+                                                        Wald chi2(6)  =   8.45
+                                                        Prob > chi2   = 0.2070
+Log pseudolikelihood = -581.02604                       Pseudo R2     = 0.0158
+
+                                   (Std. err. adjusted for 200 clusters in id)
+------------------------------------------------------------------------------
+             |               Robust
+       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   treatment |   .6553398   .1862556    -1.49   0.137     .3754435    1.143901
+    followup |   .9313866   .0859551    -0.77   0.441     .7772755    1.116053
+             |
+  c.followup#|
+  c.followup |    1.01877   .0124757     1.52   0.129     .9946091    1.043517
+             |
+       trial |   .8876157   .0840739    -1.26   0.208     .7372253    1.068685
+             |
+     c.trial#|
+     c.trial |   1.024262   .0122626     2.00   0.045     1.000508    1.048581
+             |
+     age_grp |   1.625581   .5174984     1.53   0.127     .8710261    3.033792
+       _cons |   .0467652    .015746    -9.10   0.000     .0241724    .0904742
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+. 
+. assert e(N) > 0
+
+. assert `"`e(estimator)'"' == "pp"
+
+. 
+. * ------------------------------------------------------------
+. * Test 20: unweighted PP with selection_random
+. * ------------------------------------------------------------
+. seqtte outcome, id(id) time(time) treatment(treatment) ///
+>     covariates(age_grp) estimator(pp) ///
+>     selectionrandom selectionsample(0.5) seed(42)
+(0 observations deleted)
+
+Original dataset:        1,930 observations, 7 variables
+(1,080 missing values generated)
+(200 missing values generated)
+(453 real changes made)
+Eligible observations:          818 (200 individuals)
+
+Expanding data...
+(8,517 observations created)
+(4,581 observations deleted)
+Expanded dataset:        5,866 observations
+Post-censoring dataset:        2,795 observations
+(5,048 missing values generated)
+(5048 real changes made)
+(2,185 observations deleted)
+After random selection (0.500 of control-arm pairs):        3,681 observations
+
+Fitting PP model...
+
+Logistic regression                                     Number of obs =  1,717
+                                                        Wald chi2(6)  =   4.72
+                                                        Prob > chi2   = 0.5802
+Log pseudolikelihood = -316.77574                       Pseudo R2     = 0.0113
+
+                                   (Std. err. adjusted for 200 clusters in id)
+------------------------------------------------------------------------------
+             |               Robust
+       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   treatment |   .7817592   .2343423    -0.82   0.411     .4344247    1.406797
+    followup |   .8860073   .1392329    -0.77   0.441     .6511395    1.205593
+             |
+  c.followup#|
+  c.followup |   1.025708   .0199081     1.31   0.191     .9874211    1.065478
+             |
+       trial |   .9455552   .1347712    -0.39   0.694     .7150954    1.250287
+             |
+     c.trial#|
+     c.trial |   1.012219   .0212905     0.58   0.564     .9713392     1.05482
+             |
+     age_grp |    1.50852   .5027268     1.23   0.217     .7850206    2.898819
+       _cons |   .0416455   .0162278    -8.16   0.000     .0194037    .0893822
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+. 
+. assert e(N) > 0
+
+. assert `"`e(estimator)'"' == "pp"
+
+. assert e(N_sel) <= e(N_exp)
+
+. 
+. * ------------------------------------------------------------
+. * Test 21: unweighted PP with bootstrap
+. * ------------------------------------------------------------
+. seqtte outcome, id(id) time(time) treatment(treatment) ///
+>     covariates(age_grp) estimator(pp) ///
+>     bootstrap(30) seed(7)
+(0 observations deleted)
+
+Original dataset:        1,930 observations, 7 variables
+(1,080 missing values generated)
+(200 missing values generated)
+(453 real changes made)
+Eligible observations:          818 (200 individuals)
+
+Expanding data...
+(8,517 observations created)
+(4,581 observations deleted)
+Expanded dataset:        5,866 observations
+Post-censoring dataset:        2,795 observations
+
+Running 30 bootstrap replicates...
+
+Fitting PP model...
+
+Logistic regression                                     Number of obs =  2,795
+                                                        Wald chi2(6)  =   8.45
+                                                        Prob > chi2   = 0.2070
+Log pseudolikelihood = -581.02604                       Pseudo R2     = 0.0158
+
+                                   (Std. err. adjusted for 200 clusters in id)
+------------------------------------------------------------------------------
+             |               Robust
+       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   treatment |   .6553398   .1862556    -1.49   0.137     .3754435    1.143901
+    followup |   .9313866   .0859551    -0.77   0.441     .7772755    1.116053
+             |
+  c.followup#|
+  c.followup |    1.01877   .0124757     1.52   0.129     .9946091    1.043517
+             |
+       trial |   .8876157   .0840739    -1.26   0.208     .7372253    1.068685
+             |
+     c.trial#|
+     c.trial |   1.024262   .0122626     2.00   0.045     1.000508    1.048581
+             |
+     age_grp |   1.625581   .5174984     1.53   0.127     .8710261    3.033792
+       _cons |   .0467652    .015746    -9.10   0.000     .0241724    .0904742
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+Bootstrap complete: 30/30 replicates succeeded
+Bootstrap SE (log-OR):       0.2282
+Bootstrap 95% CI (log-OR): [-0.7444,  0.0941]
+Estimated OR:  0.6553 with bootstrap 95% CI [ 0.4750,  1.0987]
+
+. 
+. assert e(N) > 0
+
+. assert `"`e(estimator)'"' == "pp"
+
+. assert e(N_boot) > 0
+
+. assert !missing(e(bs_se))
+
+. assert !missing(e(bs_ll))
+
+. assert !missing(e(bs_ul))
+
+. assert e(bs_ll) < e(bs_ul)
+
+. 
 . di as txt "seqtte cscript passed"
 seqtte cscript passed
 
@@ -1153,7 +1385,7 @@ end of do-file
       name:  seqtte
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- closed on:  20 May 2026, 16:03:04
+ closed on:  22 May 2026, 05:37:25
 -------------------------------------------------------------------------------
 
 . 
@@ -1161,5 +1393,5 @@ end of do-file
       name:  master
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/master.log
   log type:  text
- closed on:  20 May 2026, 16:03:04
+ closed on:  22 May 2026, 05:37:25
 -------------------------------------------------------------------------------
