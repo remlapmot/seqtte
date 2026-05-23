@@ -324,6 +324,38 @@ program seqtte, eclass
         local trial trial
     }
 
+    // ----- Follow-up counts per treatment arm -----
+    tempvar _fu_in0 _fu_in1 _fu_id1st
+    if "`estimator'" == "pp" {
+        qui bysort `id': egen byte `_fu_in0' = ///
+            max(cond(`censored' == 0 & `treatment' == 0, 1, 0))
+        qui bysort `id': egen byte `_fu_in1' = ///
+            max(cond(`censored' == 0 & `treatment' == 1, 1, 0))
+        qui count if `censored' == 0 & `treatment' == 0
+        local fu_nonuniq_0 = r(N)
+        qui count if `censored' == 0 & `treatment' == 1
+        local fu_nonuniq_1 = r(N)
+    }
+    else {
+        qui bysort `id': egen byte `_fu_in0' = max(`treatment' == 0)
+        qui bysort `id': egen byte `_fu_in1' = max(`treatment' == 1)
+        qui count if `treatment' == 0
+        local fu_nonuniq_0 = r(N)
+        qui count if `treatment' == 1
+        local fu_nonuniq_1 = r(N)
+    }
+    qui bysort `id': gen byte `_fu_id1st' = (_n == 1)
+    qui count if `_fu_id1st' & `_fu_in0'
+    local fu_uniq_0 = r(N)
+    qui count if `_fu_id1st' & `_fu_in1'
+    local fu_uniq_1 = r(N)
+
+    di as txt _n "Follow-up by treatment arm (arm 0 / arm 1):"
+    di as txt "  Intervals (nonunique):  " ///
+        %12.0fc `fu_nonuniq_0' " / " %12.0fc `fu_nonuniq_1'
+    di as txt "  Individuals (unique):   " ///
+        %12.0fc `fu_uniq_0' " / " %12.0fc `fu_uniq_1'
+
     // ----- Bootstrap -----
     if `do_bs' {
 
@@ -454,6 +486,10 @@ program seqtte, eclass
         ereturn scalar bs_ul  = `bs_ul'
         ereturn matrix bs_b   = `bs_b'
     }
+    ereturn scalar N_nonuniq_arm0 = `fu_nonuniq_0'
+    ereturn scalar N_nonuniq_arm1 = `fu_nonuniq_1'
+    ereturn scalar N_uniq_arm0    = `fu_uniq_0'
+    ereturn scalar N_uniq_arm1    = `fu_uniq_1'
     ereturn local  estimator "`estimator'"
     ereturn local  cmd       "seqtte"
 end

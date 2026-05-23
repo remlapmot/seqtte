@@ -297,4 +297,65 @@ assert !missing(e(bs_ll))
 assert !missing(e(bs_ul))
 assert e(bs_ll) < e(bs_ul)
 
+* ------------------------------------------------------------
+* Test 22: follow-up counts — ITT
+*   - all four scalars returned, positive, non-missing
+*   - nonunique totals partition the expanded dataset
+*   - unique <= nonunique (can't have more individuals than intervals)
+*   - unique <= N_indiv (can't exceed original sample size)
+* ------------------------------------------------------------
+seqtte outcome, id(id) time(time) treatment(treatment)
+
+assert !missing(e(N_nonuniq_arm0)) & e(N_nonuniq_arm0) > 0
+assert !missing(e(N_nonuniq_arm1)) & e(N_nonuniq_arm1) > 0
+assert !missing(e(N_uniq_arm0))    & e(N_uniq_arm0)    > 0
+assert !missing(e(N_uniq_arm1))    & e(N_uniq_arm1)    > 0
+
+* intervals sum to the expanded N (= regression N for ITT)
+assert e(N_nonuniq_arm0) + e(N_nonuniq_arm1) == e(N_exp)
+assert e(N_nonuniq_arm0) + e(N_nonuniq_arm1) == e(N)
+
+* unique individuals bounded by intervals and total sample
+assert e(N_uniq_arm0) <= e(N_nonuniq_arm0)
+assert e(N_uniq_arm1) <= e(N_nonuniq_arm1)
+assert e(N_uniq_arm0) <= e(N_indiv)
+assert e(N_uniq_arm1) <= e(N_indiv)
+
+* ------------------------------------------------------------
+* Test 23: follow-up counts — unweighted PP
+*   nonunique totals must equal the post-censoring regression N
+* ------------------------------------------------------------
+seqtte outcome, id(id) time(time) treatment(treatment) ///
+    estimator(pp)
+
+assert !missing(e(N_nonuniq_arm0)) & e(N_nonuniq_arm0) > 0
+assert !missing(e(N_nonuniq_arm1)) & e(N_nonuniq_arm1) > 0
+assert !missing(e(N_uniq_arm0))    & e(N_uniq_arm0)    > 0
+assert !missing(e(N_uniq_arm1))    & e(N_uniq_arm1)    > 0
+
+* intervals sum to post-censoring regression N (< N_exp due to censoring)
+assert e(N_nonuniq_arm0) + e(N_nonuniq_arm1) == e(N)
+assert e(N_nonuniq_arm0) + e(N_nonuniq_arm1) < e(N_exp)
+
+assert e(N_uniq_arm0) <= e(N_nonuniq_arm0)
+assert e(N_uniq_arm1) <= e(N_nonuniq_arm1)
+
+* ------------------------------------------------------------
+* Test 24: follow-up counts — ITT with selectionrandom
+*   nonunique totals must equal the post-selection regression N
+* ------------------------------------------------------------
+seqtte outcome, id(id) time(time) treatment(treatment) ///
+    selectionrandom selectionsample(0.5) seed(42)
+
+assert !missing(e(N_nonuniq_arm0)) & e(N_nonuniq_arm0) > 0
+assert !missing(e(N_nonuniq_arm1)) & e(N_nonuniq_arm1) > 0
+assert !missing(e(N_uniq_arm0))    & e(N_uniq_arm0)    > 0
+assert !missing(e(N_uniq_arm1))    & e(N_uniq_arm1)    > 0
+
+assert e(N_nonuniq_arm0) + e(N_nonuniq_arm1) == e(N)
+assert e(N_nonuniq_arm0) + e(N_nonuniq_arm1) == e(N_sel)
+
+assert e(N_uniq_arm0) <= e(N_nonuniq_arm0)
+assert e(N_uniq_arm1) <= e(N_nonuniq_arm1)
+
 di as txt "seqtte cscript passed"
