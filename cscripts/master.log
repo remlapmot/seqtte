@@ -2,7 +2,7 @@
       name:  master
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/master.log
   log type:  text
- opened on:  22 May 2026, 06:09:53
+ opened on:  23 May 2026, 18:19:31
 
 . 
 . cscript master
@@ -25,7 +25,7 @@
       name:  seqtte
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- opened on:  22 May 2026, 06:09:53
+ opened on:  23 May 2026, 18:19:31
 
 . cscript seqtte adofile seqtte
 -------------------------------------------------------------------BEGIN seqtte
@@ -111,6 +111,10 @@ Eligible observations:          818 (200 individuals)
 Expanding data...
 Expanded dataset:        5,866 observations
 
+Follow-up by treatment arm (arm 0 / arm 1):
+  Intervals (nonunique):         4,577 /        1,289
+  Individuals (unique):            158 /          177
+
 Fitting ITT model...
 
 Logistic regression                                     Number of obs =  5,866
@@ -164,6 +168,10 @@ Eligible observations:          818 (200 individuals)
 Expanding data...
 Expanded dataset:        5,866 observations
 
+Follow-up by treatment arm (arm 0 / arm 1):
+  Intervals (nonunique):         4,577 /        1,289
+  Individuals (unique):            158 /          177
+
 Fitting ITT model...
 
 Logistic regression                                     Number of obs =  5,866
@@ -208,6 +216,10 @@ Eligible observations:          770 (200 individuals)
 
 Expanding data...
 Expanded dataset:        4,361 observations
+
+Follow-up by treatment arm (arm 0 / arm 1):
+  Intervals (nonunique):         3,398 /          963
+  Individuals (unique):            158 /          170
 
 Fitting ITT model...
 
@@ -256,6 +268,10 @@ Weight models fitted
 Expanding data...
 Expanded dataset:        5,866 observations
 Post-censoring dataset:        2,795 observations
+
+Follow-up by treatment arm (arm 0 / arm 1):
+  Intervals (nonunique):         2,318 /          477
+  Individuals (unique):            158 /          177
 
 Fitting PP model...
 
@@ -308,6 +324,10 @@ Expanding data...
 Expanded dataset:        5,866 observations
 Post-censoring dataset:        2,795 observations
 
+Follow-up by treatment arm (arm 0 / arm 1):
+  Intervals (nonunique):         2,318 /          477
+  Individuals (unique):            158 /          177
+
 Fitting PP model...
 
 Logistic regression                                     Number of obs =  2,795
@@ -358,6 +378,10 @@ Expanding data...
 Expanded dataset:        5,866 observations
 Post-censoring dataset:        2,795 observations
 
+Follow-up by treatment arm (arm 0 / arm 1):
+  Intervals (nonunique):         2,318 /          477
+  Individuals (unique):            158 /          177
+
 Fitting PP model...
 
 Logistic regression                                     Number of obs =  2,795
@@ -401,6 +425,10 @@ Eligible observations:          818 (200 individuals)
 Expanding data...
 Expanded dataset:        5,866 observations
 Post-censoring dataset:        2,795 observations
+
+Follow-up by treatment arm (arm 0 / arm 1):
+  Intervals (nonunique):         2,318 /          477
+  Individuals (unique):            158 /          177
 
 Fitting PP model...
 
@@ -452,6 +480,10 @@ Eligible observations:          818 (200 individuals)
 
 Expanding data...
 Expanded dataset:        5,866 observations
+
+Follow-up by treatment arm (arm 0 / arm 1):
+  Intervals (nonunique):         4,577 /        1,289
+  Individuals (unique):            158 /          177
 
 Fitting ITT model...
 
@@ -507,6 +539,10 @@ Expanding data...
 Expanded dataset:        5,866 observations
 Post-censoring dataset:        2,795 observations
 
+Follow-up by treatment arm (arm 0 / arm 1):
+  Intervals (nonunique):         2,318 /          477
+  Individuals (unique):            158 /          177
+
 Fitting PP model...
 
 Logistic regression                                     Number of obs =  2,795
@@ -558,6 +594,10 @@ Eligible observations:          818 (200 individuals)
 Expanding data...
 Expanded dataset:        5,866 observations
 After random selection (0.500 of control-arm pairs):        3,681 observations
+
+Follow-up by treatment arm (arm 0 / arm 1):
+  Intervals (nonunique):         2,392 /        1,289
+  Individuals (unique):            125 /          177
 
 Fitting ITT model...
 
@@ -612,6 +652,10 @@ Expanding data...
 Expanded dataset:        5,866 observations
 After random selection (0.500 of control-arm pairs):        3,681 observations
 
+Follow-up by treatment arm (arm 0 / arm 1):
+  Intervals (nonunique):         2,392 /        1,289
+  Individuals (unique):            125 /          177
+
 Fitting ITT model...
 
 Logistic regression                                     Number of obs =  3,681
@@ -660,6 +704,10 @@ Expanding data...
 Expanded dataset:        5,866 observations
 Post-censoring dataset:        2,795 observations
 After random selection (0.300 of control-arm pairs):        2,727 observations
+
+Follow-up by treatment arm (arm 0 / arm 1):
+  Intervals (nonunique):           707 /          477
+  Individuals (unique):            108 /          177
 
 Fitting PP model...
 
@@ -720,6 +768,10 @@ Eligible observations:          818 (200 individuals)
 
 Expanding data...
 Expanded dataset:        5,866 observations
+
+Follow-up by treatment arm (arm 0 / arm 1):
+  Intervals (nonunique):         4,577 /        1,289
+  Individuals (unique):            158 /          177
 
 Running 50 bootstrap replicates...
 
@@ -790,6 +842,10 @@ Eligible observations:          818 (200 individuals)
 Expanding data...
 Expanded dataset:        5,866 observations
 
+Follow-up by treatment arm (arm 0 / arm 1):
+  Intervals (nonunique):         4,577 /        1,289
+  Individuals (unique):            158 /          177
+
 Running 50 bootstrap replicates...
 
 Fitting ITT model...
@@ -844,6 +900,10 @@ Weight models fitted
 Expanding data...
 Expanded dataset:        5,866 observations
 Post-censoring dataset:        2,795 observations
+
+Follow-up by treatment arm (arm 0 / arm 1):
+  Intervals (nonunique):         2,318 /          477
+  Individuals (unique):            158 /          177
 
 Running 30 bootstrap replicates...
 
@@ -902,6 +962,10 @@ Eligible observations:          818 (200 individuals)
 Expanding data...
 Expanded dataset:        5,866 observations
 After random selection (0.500 of control-arm pairs):        3,494 observations
+
+Follow-up by treatment arm (arm 0 / arm 1):
+  Intervals (nonunique):         2,205 /        1,289
+  Individuals (unique):            132 /          177
 
 Running 30 bootstrap replicates...
 
@@ -1012,6 +1076,10 @@ Expanding data...
 Expanded dataset:        3,632 observations
 After random selection (0.500 of control-arm pairs):        2,145 observations
 
+Follow-up by treatment arm (arm 0 / arm 1):
+  Intervals (nonunique):         1,460 /          685
+  Individuals (unique):            195 /          136
+
 Running 30 bootstrap replicates...
 
 Fitting ITT model...
@@ -1083,6 +1151,10 @@ Expanding data...
 Expanded dataset:        5,866 observations
 Post-censoring dataset:        2,795 observations
 
+Follow-up by treatment arm (arm 0 / arm 1):
+  Intervals (nonunique):         2,318 /          477
+  Individuals (unique):            158 /          177
+
 Fitting PP model...
 
 Logistic regression                                     Number of obs =  2,795
@@ -1131,6 +1203,10 @@ Expanding data...
 Expanded dataset:        5,866 observations
 Post-censoring dataset:        2,795 observations
 After random selection (0.500 of control-arm pairs):        3,681 observations
+
+Follow-up by treatment arm (arm 0 / arm 1):
+  Intervals (nonunique):         1,240 /          477
+  Individuals (unique):            125 /          177
 
 Fitting PP model...
 
@@ -1181,6 +1257,10 @@ Eligible observations:          818 (200 individuals)
 Expanding data...
 Expanded dataset:        5,866 observations
 Post-censoring dataset:        2,795 observations
+
+Follow-up by treatment arm (arm 0 / arm 1):
+  Intervals (nonunique):         2,318 /          477
+  Individuals (unique):            158 /          177
 
 Running 30 bootstrap replicates...
 
@@ -1233,6 +1313,209 @@ Estimated OR:  0.6553 with bootstrap 95% CI [0.4750,  1.0987]
 . assert e(bs_ll) < e(bs_ul)
 
 . 
+. * ------------------------------------------------------------
+. * Test 22: follow-up counts — ITT
+. *   - all four scalars returned, positive, non-missing
+. *   - nonunique totals partition the expanded dataset
+. *   - unique <= nonunique (can't have more individuals than intervals)
+. *   - unique <= N_indiv (can't exceed original sample size)
+. * ------------------------------------------------------------
+. seqtte outcome, id(id) time(time) treatment(treatment)
+
+Original dataset:        1,930 observations, 7 variables
+Eligible observations:          818 (200 individuals)
+
+Expanding data...
+Expanded dataset:        5,866 observations
+
+Follow-up by treatment arm (arm 0 / arm 1):
+  Intervals (nonunique):         4,577 /        1,289
+  Individuals (unique):            158 /          177
+
+Fitting ITT model...
+
+Logistic regression                                     Number of obs =  5,866
+                                                        Wald chi2(5)  =   6.73
+                                                        Prob > chi2   = 0.2412
+Log pseudolikelihood = -1073.8885                       Pseudo R2     = 0.0025
+
+                                   (Std. err. adjusted for 200 clusters in id)
+------------------------------------------------------------------------------
+             |               Robust
+       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   treatment |   .8519499   .1211415    -1.13   0.260     .6447316    1.125769
+    followup |   .9672518   .0863713    -0.37   0.709     .8119533    1.152254
+             |
+  c.followup#|
+  c.followup |   1.002209   .0095857     0.23   0.818     .9835961    1.021173
+             |
+       trial |   .8852631   .0704297    -1.53   0.126     .7574475    1.034647
+             |
+     c.trial#|
+     c.trial |   1.022453   .0129066     1.76   0.079     .9974667    1.048065
+             |
+       _cons |   .0556938   .0130565   -12.32   0.000     .0351769    .0881773
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+. 
+. assert !missing(e(N_nonuniq_arm0)) & e(N_nonuniq_arm0) > 0
+
+. assert !missing(e(N_nonuniq_arm1)) & e(N_nonuniq_arm1) > 0
+
+. assert !missing(e(N_uniq_arm0))    & e(N_uniq_arm0)    > 0
+
+. assert !missing(e(N_uniq_arm1))    & e(N_uniq_arm1)    > 0
+
+. 
+. * intervals sum to the expanded N (= regression N for ITT)
+. assert e(N_nonuniq_arm0) + e(N_nonuniq_arm1) == e(N_exp)
+
+. assert e(N_nonuniq_arm0) + e(N_nonuniq_arm1) == e(N)
+
+. 
+. * unique individuals bounded by intervals and total sample
+. assert e(N_uniq_arm0) <= e(N_nonuniq_arm0)
+
+. assert e(N_uniq_arm1) <= e(N_nonuniq_arm1)
+
+. assert e(N_uniq_arm0) <= e(N_indiv)
+
+. assert e(N_uniq_arm1) <= e(N_indiv)
+
+. 
+. * ------------------------------------------------------------
+. * Test 23: follow-up counts — unweighted PP
+. *   nonunique totals must equal the post-censoring regression N
+. * ------------------------------------------------------------
+. seqtte outcome, id(id) time(time) treatment(treatment) ///
+>     estimator(pp)
+
+Original dataset:        1,930 observations, 7 variables
+Eligible observations:          818 (200 individuals)
+
+Expanding data...
+Expanded dataset:        5,866 observations
+Post-censoring dataset:        2,795 observations
+
+Follow-up by treatment arm (arm 0 / arm 1):
+  Intervals (nonunique):         2,318 /          477
+  Individuals (unique):            158 /          177
+
+Fitting PP model...
+
+Logistic regression                                     Number of obs =  2,795
+                                                        Wald chi2(5)  =   7.79
+                                                        Prob > chi2   = 0.1680
+Log pseudolikelihood = -585.15231                       Pseudo R2     = 0.0088
+
+                                   (Std. err. adjusted for 200 clusters in id)
+------------------------------------------------------------------------------
+             |               Robust
+       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   treatment |   .6669825   .1874102    -1.44   0.149     .3845404    1.156876
+    followup |   .9327285   .0854917    -0.76   0.447     .7793563    1.116283
+             |
+  c.followup#|
+  c.followup |    1.01814   .0124145     1.47   0.140      .994097    1.042765
+             |
+       trial |   .8869772   .0835099    -1.27   0.203     .7375151    1.066729
+             |
+     c.trial#|
+     c.trial |   1.023812   .0121619     1.98   0.048      1.00025    1.047929
+             |
+       _cons |   .0614474   .0160875   -10.65   0.000     .0367834    .1026493
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+. 
+. assert !missing(e(N_nonuniq_arm0)) & e(N_nonuniq_arm0) > 0
+
+. assert !missing(e(N_nonuniq_arm1)) & e(N_nonuniq_arm1) > 0
+
+. assert !missing(e(N_uniq_arm0))    & e(N_uniq_arm0)    > 0
+
+. assert !missing(e(N_uniq_arm1))    & e(N_uniq_arm1)    > 0
+
+. 
+. * intervals sum to post-censoring regression N (< N_exp due to censoring)
+. assert e(N_nonuniq_arm0) + e(N_nonuniq_arm1) == e(N)
+
+. assert e(N_nonuniq_arm0) + e(N_nonuniq_arm1) < e(N_exp)
+
+. 
+. assert e(N_uniq_arm0) <= e(N_nonuniq_arm0)
+
+. assert e(N_uniq_arm1) <= e(N_nonuniq_arm1)
+
+. 
+. * ------------------------------------------------------------
+. * Test 24: follow-up counts — ITT with selectionrandom
+. *   nonunique totals must equal the post-selection regression N
+. * ------------------------------------------------------------
+. seqtte outcome, id(id) time(time) treatment(treatment) ///
+>     selectionrandom selectionsample(0.5) seed(42)
+
+Original dataset:        1,930 observations, 7 variables
+Eligible observations:          818 (200 individuals)
+
+Expanding data...
+Expanded dataset:        5,866 observations
+After random selection (0.500 of control-arm pairs):        3,681 observations
+
+Follow-up by treatment arm (arm 0 / arm 1):
+  Intervals (nonunique):         2,392 /        1,289
+  Individuals (unique):            125 /          177
+
+Fitting ITT model...
+
+Logistic regression                                     Number of obs =  3,681
+                                                        Wald chi2(5)  =   0.63
+                                                        Prob > chi2   = 0.9867
+Log pseudolikelihood = -626.66001                       Pseudo R2     = 0.0005
+
+                                   (Std. err. adjusted for 200 clusters in id)
+------------------------------------------------------------------------------
+             |               Robust
+       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+   treatment |   .9570317   .1505597    -0.28   0.780     .7030979    1.302677
+    followup |   .9597697   .1193315    -0.33   0.741     .7522016    1.224616
+             |
+  c.followup#|
+  c.followup |   1.004617   .0137442     0.34   0.736     .9780366    1.031919
+             |
+       trial |   .9461335   .1040642    -0.50   0.615     .7626577    1.173749
+             |
+     c.trial#|
+     c.trial |   1.009099   .0194545     0.47   0.638     .9716802    1.047958
+             |
+       _cons |   .0473291   .0136464   -10.58   0.000     .0268968    .0832829
+------------------------------------------------------------------------------
+Note: _cons estimates baseline odds.
+
+. 
+. assert !missing(e(N_nonuniq_arm0)) & e(N_nonuniq_arm0) > 0
+
+. assert !missing(e(N_nonuniq_arm1)) & e(N_nonuniq_arm1) > 0
+
+. assert !missing(e(N_uniq_arm0))    & e(N_uniq_arm0)    > 0
+
+. assert !missing(e(N_uniq_arm1))    & e(N_uniq_arm1)    > 0
+
+. 
+. assert e(N_nonuniq_arm0) + e(N_nonuniq_arm1) == e(N)
+
+. assert e(N_nonuniq_arm0) + e(N_nonuniq_arm1) == e(N_sel)
+
+. 
+. assert e(N_uniq_arm0) <= e(N_nonuniq_arm0)
+
+. assert e(N_uniq_arm1) <= e(N_nonuniq_arm1)
+
+. 
 . di as txt "seqtte cscript passed"
 seqtte cscript passed
 
@@ -1241,7 +1524,7 @@ end of do-file
       name:  seqtte
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- closed on:  22 May 2026, 06:09:57
+ closed on:  23 May 2026, 18:19:36
 -------------------------------------------------------------------------------
 
 . 
@@ -1249,5 +1532,5 @@ end of do-file
       name:  master
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/master.log
   log type:  text
- closed on:  22 May 2026, 06:09:57
+ closed on:  23 May 2026, 18:19:36
 -------------------------------------------------------------------------------
