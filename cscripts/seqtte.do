@@ -358,4 +358,47 @@ assert e(N_nonuniq_arm0) + e(N_nonuniq_arm1) == e(N_sel)
 assert e(N_uniq_arm0) <= e(N_nonuniq_arm0)
 assert e(N_uniq_arm1) <= e(N_nonuniq_arm1)
 
+* ------------------------------------------------------------
+* Test 25: plot option — ITT
+*   e(cif) matrix has 3 columns, CIF values in [0,1], non-decreasing
+* ------------------------------------------------------------
+seqtte outcome, id(id) time(time) treatment(treatment) plot
+
+local nr = rowsof(e(cif))
+assert `nr' > 0
+assert colsof(e(cif)) == 3
+
+forvalues i = 1/`nr' {
+    assert e(cif)[`i', 2] >= 0 & e(cif)[`i', 2] <= 1
+    assert e(cif)[`i', 3] >= 0 & e(cif)[`i', 3] <= 1
+}
+forvalues i = 2/`nr' {
+    assert e(cif)[`i', 2] >= e(cif)[`i'-1, 2] - 1e-10
+    assert e(cif)[`i', 3] >= e(cif)[`i'-1, 3] - 1e-10
+}
+
+* without plot option, e(cif) should not be returned
+seqtte outcome, id(id) time(time) treatment(treatment)
+capture matrix list e(cif)
+assert _rc != 0
+
+* ------------------------------------------------------------
+* Test 26: plot option — PP (unweighted)
+* ------------------------------------------------------------
+seqtte outcome, id(id) time(time) treatment(treatment) ///
+    estimator(pp) plot
+
+local nr = rowsof(e(cif))
+assert `nr' > 0
+assert colsof(e(cif)) == 3
+
+forvalues i = 1/`nr' {
+    assert e(cif)[`i', 2] >= 0 & e(cif)[`i', 2] <= 1
+    assert e(cif)[`i', 3] >= 0 & e(cif)[`i', 3] <= 1
+}
+forvalues i = 2/`nr' {
+    assert e(cif)[`i', 2] >= e(cif)[`i'-1, 2] - 1e-10
+    assert e(cif)[`i', 3] >= e(cif)[`i'-1, 3] - 1e-10
+}
+
 di as txt "seqtte cscript passed"
