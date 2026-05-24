@@ -481,23 +481,28 @@ program seqtte, eclass
         qui predict double `_pp1', pr
         qui replace `treatment' = `_trt_sv'
 
-        preserve
-            if "`estimator'" == "pp" qui keep if `censored' == 0
-            collapse (mean) _mp0=`_pp0' _mp1=`_pp1', by(`fu_time')
-            sort `fu_time'
-            qui gen double _cif0 = 1 - exp(sum(ln(1 - _mp0)))
-            qui gen double _cif1 = 1 - exp(sum(ln(1 - _mp1)))
-            qui count
-            local _n_t = r(N)
-            tempname _cif_mat
-            matrix `_cif_mat' = J(`_n_t', 3, .)
-            matrix colnames `_cif_mat' = fu_time cif0 cif1
-            forvalues _i = 1/`_n_t' {
-                matrix `_cif_mat'[`_i', 1] = `fu_time'[`_i']
-                matrix `_cif_mat'[`_i', 2] = _cif0[`_i']
-                matrix `_cif_mat'[`_i', 3] = _cif1[`_i']
-            }
-        restore
+        // Save current state so we can reload after collapse
+        // (nested preserve is not allowed — r(621))
+        tempfile _cif_base
+        qui save `_cif_base'
+
+        if "`estimator'" == "pp" qui keep if `censored' == 0
+        collapse (mean) _mp0=`_pp0' _mp1=`_pp1', by(`fu_time')
+        sort `fu_time'
+        qui gen double _cif0 = 1 - exp(sum(ln(1 - _mp0)))
+        qui gen double _cif1 = 1 - exp(sum(ln(1 - _mp1)))
+        qui count
+        local _n_t = r(N)
+        tempname _cif_mat
+        matrix `_cif_mat' = J(`_n_t', 3, .)
+        matrix colnames `_cif_mat' = fu_time cif0 cif1
+        forvalues _i = 1/`_n_t' {
+            matrix `_cif_mat'[`_i', 1] = `fu_time'[`_i']
+            matrix `_cif_mat'[`_i', 2] = _cif0[`_i']
+            matrix `_cif_mat'[`_i', 3] = _cif1[`_i']
+        }
+
+        qui use `_cif_base', clear
     }
 
     restore
