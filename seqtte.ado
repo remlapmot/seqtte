@@ -492,7 +492,10 @@ program seqtte, eclass
         if "`estimator'" == "pp" qui keep if `censored' == 0
         qui keep if `treatment' == 1
         qui bysort `fu_time': gen int `_cnt_ft' = _N
-        qui sum `fu_time' if `_cnt_ft' >= 20, meanonly
+        // Adaptive threshold: 10% of arm-1 baseline count (minimum 5)
+        qui sum `_cnt_ft' if `fu_time' == 0, meanonly
+        local _thresh = max(5, floor(r(mean) * 0.10))
+        qui sum `fu_time' if `_cnt_ft' >= `_thresh', meanonly
         if r(N) > 0 local _max_fu = r(max)
         else {
             qui sum `fu_time', meanonly
