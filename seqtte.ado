@@ -576,7 +576,7 @@ program seqtte, eclass
         matrix `_tmp' = e(cif)
         qui svmat double `_tmp', names(col)
         twoway (line cif0 fu_time, lcolor(navy) lwidth(medthick)) ///
-               (line cif1 fu_time, lcolor(maroon) lwidth(medthick)), ///
+               (line cif1 fu_time, lcolor(red) lwidth(medthick)), ///
             ytitle("Cumulative incidence") ///
             xtitle("Follow-up time") ///
             title("Cumulative incidence by treatment arm") ///
