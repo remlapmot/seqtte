@@ -14,7 +14,8 @@ program seqtte, eclass
          SELECTIONrandom ///
          SELECTIONsample(real 0.5) ///
          SEEd(integer -1) ///
-         BOOTstrap(integer 0)]
+         BOOTstrap(integer 0) ///
+         PLOT]
 
     local outcome `varlist'
 
@@ -470,6 +471,35 @@ program seqtte, eclass
             " with bootstrap 95% CI [" "`bs_ci_ll'" ", " %7.4f `bs_or_ul' "]"
     }
 
+    // ----- Cumulative incidence by g-computation -----
+    if "`plot'" != "" {
+        tempvar _trt_sv _pp0 _pp1
+        qui gen byte `_trt_sv' = `treatment'
+        qui replace `treatment' = 0
+        qui predict double `_pp0', pr
+        qui replace `treatment' = 1
+        qui predict double `_pp1', pr
+        qui replace `treatment' = `_trt_sv'
+
+        preserve
+            if "`estimator'" == "pp" qui keep if `censored' == 0
+            collapse (mean) _mp0=`_pp0' _mp1=`_pp1', by(`fu_time')
+            sort `fu_time'
+            qui gen double _cif0 = 1 - exp(sum(ln(1 - _mp0)))
+            qui gen double _cif1 = 1 - exp(sum(ln(1 - _mp1)))
+            qui count
+            local _n_t = r(N)
+            tempname _cif_mat
+            matrix `_cif_mat' = J(`_n_t', 3, .)
+            matrix colnames `_cif_mat' = fu_time cif0 cif1
+            forvalues _i = 1/`_n_t' {
+                matrix `_cif_mat'[`_i', 1] = `fu_time'[`_i']
+                matrix `_cif_mat'[`_i', 2] = _cif0[`_i']
+                matrix `_cif_mat'[`_i', 3] = _cif1[`_i']
+            }
+        restore
+    }
+
     restore
 
     ereturn scalar N_indiv   = `n_indiv'
@@ -490,6 +520,30 @@ program seqtte, eclass
     ereturn scalar N_nonuniq_arm1 = `fu_nonuniq_1'
     ereturn scalar N_uniq_arm0    = `fu_uniq_0'
     ereturn scalar N_uniq_arm1    = `fu_uniq_1'
+    if "`plot'" != "" {
+        ereturn matrix cif = `_cif_mat'
+    }
     ereturn local  estimator "`estimator'"
     ereturn local  cmd       "seqtte"
+
+    // ----- Cumulative incidence plot -----
+    if "`plot'" != "" {
+        preserve
+        clear
+        qui set obs `_n_t'
+        tempname _tmp
+        matrix `_tmp' = e(cif)
+        qui svmat double `_tmp', names(col)
+        rename col1 fu_time
+        rename col2 cif0
+        rename col3 cif1
+        twoway (line cif0 fu_time, lcolor(navy) lwidth(medthick)) ///
+               (line cif1 fu_time, lcolor(maroon) lwidth(medthick)), ///
+            ytitle("Cumulative incidence") ///
+            xtitle("Follow-up time") ///
+            title("Cumulative incidence by treatment arm") ///
+            legend(label(1 "Arm 0 (control)") label(2 "Arm 1 (treated)")) ///
+            name(seqtte_cif, replace)
+        restore
+    }
 end
