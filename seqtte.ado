@@ -472,13 +472,15 @@ program seqtte, eclass
     }
 
     // ----- Cumulative incidence by g-computation -----
-    // Predict within each arm separately using observed treatment values.
-    // Mixing arm-1 covariate trajectories into the arm-0 average distorts
-    // the CIF at long follow-up (arm-1 observations dominate once arm-0
-    // controls are censored). For weighted PP, IPCW weights are applied when
-    // averaging arm-0 predictions to correct for informative censoring.
+    // G-formula: for each person-trial compute the individual-level cumulative
+    // survival S_i(t) = prod_{s<=t}(1 - h_i(s)), then average S_i(t) across
+    // all person-trials at each follow-up time. CIF = 1 - mean(S_i(t)).
+    // This matches the R SEQTaRget implementation and avoids the Jensen's
+    // inequality distortion of the "average hazard then product-limit" approach.
+    // For weighted PP, IPCW weights are applied when averaging arm-0 survival
+    // to correct for informative censoring.
     if "`plot'" != "" {
-        tempvar _pred
+        tempvar _pred _logsurv _surv
         qui predict double `_pred', pr
 
         tempfile _cif_base _arm0_data
@@ -487,23 +489,29 @@ program seqtte, eclass
         // --- Arm 0 ---
         if "`estimator'" == "pp" qui keep if `censored' == 0
         qui keep if `treatment' == 0
+        qui bysort `id' `trial' (`fu_time'): ///
+            gen double `_logsurv' = sum(ln(1 - `_pred'))
+        qui gen double `_surv' = exp(`_logsurv')
         if `weighted_pp' {
-            collapse (mean) _mp0=`_pred' [iweight=`wt_cum'], by(`fu_time')
+            collapse (mean) _msurv0=`_surv' [iweight=`wt_cum'], by(`fu_time')
         }
         else {
-            collapse (mean) _mp0=`_pred', by(`fu_time')
+            collapse (mean) _msurv0=`_surv', by(`fu_time')
         }
         sort `fu_time'
-        qui gen double _cif0 = 1 - exp(sum(ln(1 - _mp0)))
+        qui gen double _cif0 = 1 - _msurv0
         qui save `_arm0_data'
 
         // --- Arm 1 ---
         qui use `_cif_base', clear
         if "`estimator'" == "pp" qui keep if `censored' == 0
         qui keep if `treatment' == 1
-        collapse (mean) _mp1=`_pred', by(`fu_time')
+        qui bysort `id' `trial' (`fu_time'): ///
+            gen double `_logsurv' = sum(ln(1 - `_pred'))
+        qui gen double `_surv' = exp(`_logsurv')
+        collapse (mean) _msurv1=`_surv', by(`fu_time')
         sort `fu_time'
-        qui gen double _cif1 = 1 - exp(sum(ln(1 - _mp1)))
+        qui gen double _cif1 = 1 - _msurv1
 
         // --- Combine ---
         qui merge 1:1 `fu_time' using `_arm0_data', nogen
