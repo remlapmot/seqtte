@@ -501,6 +501,8 @@ program seqtte, eclass
             qui sum `fu_time', meanonly
             local _max_fu = r(max)
         }
+        di as txt _n "CIF truncation: arm-1 threshold = " `_thresh' ///
+            " person-trials; max follow-up = " `_max_fu'
         qui bysort `id' `trial' (`fu_time'): ///
             gen double `_logsurv' = sum(ln(1 - `_pred'))
         qui gen double `_surv' = exp(`_logsurv')
