@@ -492,7 +492,7 @@ program seqtte, eclass
         if "`estimator'" == "pp" qui keep if `censored' == 0
         qui keep if `treatment' == 1
         qui bysort `fu_time': gen int `_cnt_ft' = _N
-        qui sum `fu_time' if `_cnt_ft' >= 5, meanonly
+        qui sum `fu_time' if `_cnt_ft' >= 20, meanonly
         if r(N) > 0 local _max_fu = r(max)
         else {
             qui sum `fu_time', meanonly
