@@ -539,9 +539,6 @@ program seqtte, eclass
         tempname _tmp
         matrix `_tmp' = e(cif)
         qui svmat double `_tmp', names(col)
-        rename col1 fu_time
-        rename col2 cif0
-        rename col3 cif1
         twoway (line cif0 fu_time, lcolor(navy) lwidth(medthick)) ///
                (line cif1 fu_time, lcolor(maroon) lwidth(medthick)), ///
             ytitle("Cumulative incidence") ///
