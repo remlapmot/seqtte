@@ -6,7 +6,7 @@
 #     mv site/_site/* docs/
 [working-directory: 'cscripts']
 test:
-    printf 'qui ado dir seqtte\nif r(pkgs) > 0 ado uninstall seqtte\n' | stata-mp -q
+    printf 'cap noi ado uninstall seqtte\n' | stata-mp -q
     stata-mp -b "do master"
 in:
     printf 'ado uninstall seqtte\nnet install seqtte, from("https://raw.githubusercontent.com/remlapmot/seqtte/main/") replace\nado dir seqtte\n' | stata-mp -q
