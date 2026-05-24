@@ -2,7 +2,7 @@
       name:  master
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/master.log
   log type:  text
- opened on:  24 May 2026, 07:21:21
+ opened on:  24 May 2026, 07:37:09
 
 . 
 . cscript master
@@ -25,7 +25,7 @@
       name:  seqtte
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- opened on:  24 May 2026, 07:21:21
+ opened on:  24 May 2026, 07:37:09
 
 . cscript seqtte adofile seqtte
 -------------------------------------------------------------------BEGIN seqtte
@@ -1694,7 +1694,7 @@ end of do-file
       name:  seqtte
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- closed on:  24 May 2026, 07:21:26
+ closed on:  24 May 2026, 07:37:15
 -------------------------------------------------------------------------------
 
 . 
@@ -1702,5 +1702,5 @@ end of do-file
       name:  master
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/master.log
   log type:  text
- closed on:  24 May 2026, 07:21:26
+ closed on:  24 May 2026, 07:37:15
 -------------------------------------------------------------------------------
