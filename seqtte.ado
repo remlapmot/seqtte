@@ -479,14 +479,36 @@ program seqtte, eclass
     // inequality distortion of the "average hazard then product-limit" approach.
     // For weighted PP, IPCW weights are applied when averaging arm-0 survival
     // to correct for informative censoring.
+    // Follow-up is truncated where arm-1 has fewer than 5 person-trials to
+    // avoid unstable estimates in the sparse tail.
     if "`plot'" != "" {
-        tempvar _pred _logsurv _surv
+        tempvar _pred _logsurv _surv _cnt_ft
         qui predict double `_pred', pr
 
-        tempfile _cif_base _arm0_data
+        tempfile _cif_base _arm1_data
         qui save `_cif_base'
 
+        // --- Arm 1 (first, to determine the truncation point) ---
+        if "`estimator'" == "pp" qui keep if `censored' == 0
+        qui keep if `treatment' == 1
+        qui bysort `fu_time': gen int `_cnt_ft' = _N
+        qui sum `fu_time' if `_cnt_ft' >= 5, meanonly
+        if r(N) > 0 local _max_fu = r(max)
+        else {
+            qui sum `fu_time', meanonly
+            local _max_fu = r(max)
+        }
+        qui bysort `id' `trial' (`fu_time'): ///
+            gen double `_logsurv' = sum(ln(1 - `_pred'))
+        qui gen double `_surv' = exp(`_logsurv')
+        collapse (mean) _msurv1=`_surv', by(`fu_time')
+        sort `fu_time'
+        qui keep if `fu_time' <= `_max_fu'
+        qui gen double _cif1 = 1 - _msurv1
+        qui save `_arm1_data'
+
         // --- Arm 0 ---
+        qui use `_cif_base', clear
         if "`estimator'" == "pp" qui keep if `censored' == 0
         qui keep if `treatment' == 0
         qui bysort `id' `trial' (`fu_time'): ///
@@ -499,22 +521,11 @@ program seqtte, eclass
             collapse (mean) _msurv0=`_surv', by(`fu_time')
         }
         sort `fu_time'
+        qui keep if `fu_time' <= `_max_fu'
         qui gen double _cif0 = 1 - _msurv0
-        qui save `_arm0_data'
-
-        // --- Arm 1 ---
-        qui use `_cif_base', clear
-        if "`estimator'" == "pp" qui keep if `censored' == 0
-        qui keep if `treatment' == 1
-        qui bysort `id' `trial' (`fu_time'): ///
-            gen double `_logsurv' = sum(ln(1 - `_pred'))
-        qui gen double `_surv' = exp(`_logsurv')
-        collapse (mean) _msurv1=`_surv', by(`fu_time')
-        sort `fu_time'
-        qui gen double _cif1 = 1 - _msurv1
 
         // --- Combine ---
-        qui merge 1:1 `fu_time' using `_arm0_data', nogen
+        qui merge 1:1 `fu_time' using `_arm1_data', nogen
         sort `fu_time'
         qui count
         local _n_t = r(N)
