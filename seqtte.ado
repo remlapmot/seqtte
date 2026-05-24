@@ -472,25 +472,42 @@ program seqtte, eclass
     }
 
     // ----- Cumulative incidence by g-computation -----
+    // Predict within each arm separately using observed treatment values.
+    // Mixing arm-1 covariate trajectories into the arm-0 average distorts
+    // the CIF at long follow-up (arm-1 observations dominate once arm-0
+    // controls are censored). For weighted PP, IPCW weights are applied when
+    // averaging arm-0 predictions to correct for informative censoring.
     if "`plot'" != "" {
-        tempvar _trt_sv _pp0 _pp1
-        qui gen byte `_trt_sv' = `treatment'
-        qui replace `treatment' = 0
-        qui predict double `_pp0', pr
-        qui replace `treatment' = 1
-        qui predict double `_pp1', pr
-        qui replace `treatment' = `_trt_sv'
+        tempvar _pred
+        qui predict double `_pred', pr
 
-        // Save current state so we can reload after collapse
-        // (nested preserve is not allowed — r(621))
-        tempfile _cif_base
+        tempfile _cif_base _arm0_data
         qui save `_cif_base'
 
+        // --- Arm 0 ---
         if "`estimator'" == "pp" qui keep if `censored' == 0
-        collapse (mean) _mp0=`_pp0' _mp1=`_pp1', by(`fu_time')
+        qui keep if `treatment' == 0
+        if `weighted_pp' {
+            collapse (mean) _mp0=`_pred' [iweight=`wt_cum'], by(`fu_time')
+        }
+        else {
+            collapse (mean) _mp0=`_pred', by(`fu_time')
+        }
         sort `fu_time'
         qui gen double _cif0 = 1 - exp(sum(ln(1 - _mp0)))
+        qui save `_arm0_data'
+
+        // --- Arm 1 ---
+        qui use `_cif_base', clear
+        if "`estimator'" == "pp" qui keep if `censored' == 0
+        qui keep if `treatment' == 1
+        collapse (mean) _mp1=`_pred', by(`fu_time')
+        sort `fu_time'
         qui gen double _cif1 = 1 - exp(sum(ln(1 - _mp1)))
+
+        // --- Combine ---
+        qui merge 1:1 `fu_time' using `_arm0_data', nogen
+        sort `fu_time'
         qui count
         local _n_t = r(N)
         tempname _cif_mat
