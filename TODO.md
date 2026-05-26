@@ -3,5 +3,5 @@
 * [x] Print observation numbers at the various stages
 * [ ] Add some plots
 * [ ] Add bootstrapping for standard errors
-* [ ] Add selection random percentage - and some more of options from SEQTaRget
-* [ ] Make version of short course practical using this
+* [x] Add selection random percentage - and some more of options from SEQTaRget
+* [x] Make version of short course practical using this
