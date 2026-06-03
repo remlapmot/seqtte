@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 0.7.0  03jun2026  Tom Palmer}{...}
+{* *! version 0.8.0  03jun2026  Tom Palmer}{...}
 {vieweralsosee "seqtte" "help seqtte"}{...}
 {viewerjumpto "Syntax" "seqtte##syntax"}{...}
 {viewerjumpto "Description" "seqtte##description"}{...}
@@ -37,6 +37,7 @@
 {synopt:{opt wdenominator(varlist)}}denominator weight model covariates; if omitted with {cmd:pp}, an unweighted per-protocol analysis is performed{p_end}
 {synopt:{opt wnumerator(varlist)}}numerator weight model covariates; if supplied, stabilized weights are used{p_end}
 {synopt:{opt truncation(#)}}truncation threshold for cumulative weights; default 25{p_end}
+{synopt:{opt expandonly}}return the expanded sequential-trial dataset and skip the analysis{p_end}
 {synoptline}
 
 {marker description}{...}
@@ -152,6 +153,18 @@ When omitted, unstabilized weights are used.
 {opt truncation(#)} specifies the upper truncation threshold applied
 to the cumulative IPW weights.
 Default is 25.
+
+{phang}
+{opt expandonly} performs the data expansion only and leaves the expanded
+sequential-trial dataset in memory, skipping the weight models, outcome model,
+bootstrap, and cumulative-incidence steps.
+The returned data contain the original variables together with {cmd:trial}
+(calendar time of trial entry), {cmd:followup} (time since trial entry),
+{cmd:period} (calendar time, equal to {cmd:trial} + {cmd:followup}), and
+{cmd:event} (the period-specific outcome indicator); for {cmd:estimator(pp)} a
+{cmd:censored} indicator (and, for weighted PP, the cumulative {cmd:weight}) are
+also included.
+This option cannot be combined with {cmd:bootstrap()} or {cmd:plot}.
 
 {marker examples}{...}
 {title:Examples}

@@ -1,4 +1,4 @@
-*! version 0.7.0  03jun2026  Tom Palmer
+*! version 0.8.0  03jun2026  Tom Palmer
 program seqtte, eclass
     version 16
 
@@ -15,7 +15,8 @@ program seqtte, eclass
          SELECTIONsample(real 0.5) ///
          SEEd(integer -1) ///
          BOOTstrap(integer 0) ///
-         PLOT]
+         PLOT ///
+         expandonly]
 
     local outcome `varlist'
 
@@ -43,6 +44,19 @@ program seqtte, eclass
         exit 198
     }
     local do_bs = (`bootstrap' > 0)
+
+    // expandonly returns the expanded dataset without fitting any model, so it
+    // is incompatible with the analysis-dependent options.
+    if "`expandonly'" != "" {
+        if `do_bs' {
+            di as err "expandonly cannot be combined with bootstrap()"
+            exit 198
+        }
+        if "`plot'" != "" {
+            di as err "expandonly cannot be combined with plot"
+            exit 198
+        }
+    }
 
     // Capture variable count before tempvars are created
     local k_orig = c(k)
@@ -323,6 +337,44 @@ program seqtte, eclass
     if !_rc {
         rename `trial' trial
         local trial trial
+    }
+
+    // ----- expandonly: return the expanded dataset, skip the analysis -----
+    if "`expandonly'" != "" {
+        // period = calendar time within each trial (trial entry + follow-up)
+        capture confirm new variable period
+        if !_rc qui gen long period = `trial' + `fu_time'
+
+        // Keep the per-period censoring flag (and weights) for per-protocol
+        if "`estimator'" == "pp" {
+            capture confirm new variable censored
+            if !_rc {
+                rename `censored' censored
+                local censored censored
+            }
+            if `weighted_pp' {
+                capture confirm new variable weight
+                if !_rc rename `wt_cum' weight
+            }
+        }
+
+        di as txt _n "expandonly: returning expanded dataset (" ///
+            %12.0fc `n_exp' " observations); analysis steps skipped"
+
+        // Post the expansion summary to e() (no model is fitted)
+        ereturn clear
+        ereturn scalar N_exp    = `n_exp'
+        ereturn scalar N_indiv  = `n_indiv'
+        ereturn scalar N_orig   = `n_orig'
+        if "`selectionrandom'" != "" ereturn scalar N_sel = `n_sel'
+        ereturn local  estimator "`estimator'"
+        ereturn local  cmd       "seqtte"
+
+        // restore, not cancels the automatic restore scheduled by preserve,
+        // leaving the expanded sequential-trial dataset in memory. Temporary
+        // variables are dropped automatically when the program ends.
+        restore, not
+        exit
     }
 
     // ----- Follow-up counts per treatment arm -----
