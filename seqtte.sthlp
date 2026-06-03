@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 0.6.0  22may2026  Tom Palmer}{...}
+{* *! version 0.7.0  03jun2026  Tom Palmer}{...}
 {vieweralsosee "seqtte" "help seqtte"}{...}
 {viewerjumpto "Syntax" "seqtte##syntax"}{...}
 {viewerjumpto "Description" "seqtte##description"}{...}
@@ -82,6 +82,8 @@ Data are expanded so that each person can contribute to multiple trials.
 A pooled logistic regression model is then fitted with quadratic polynomial
 terms for follow-up time within trial and trial number, with standard errors
 clustered by individual.
+The pooled logistic regression approximates a discrete-time hazard model, so
+the exponentiated treatment coefficient is reported as a hazard ratio.
 
 {pstd}
 {ul:Weight models (weighted PP only).}
@@ -208,7 +210,7 @@ Default is 25.
 {synopt:{cmd:e(vcetype)}}{cmd:Robust}{p_end}
 
 {p2col 5 20 24 2: Matrices}{p_end}
-{synopt:{cmd:e(b)}}coefficient vector (log-odds scale){p_end}
+{synopt:{cmd:e(b)}}coefficient vector (log scale; exponentiated values reported as hazard ratios){p_end}
 {synopt:{cmd:e(V)}}variance-covariance matrix{p_end}
 
 {marker references}{...}

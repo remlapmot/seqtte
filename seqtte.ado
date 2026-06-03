@@ -1,4 +1,4 @@
-*! version 0.6.0  22may2026  Tom Palmer
+*! version 0.7.0  03jun2026  Tom Palmer
 program seqtte, eclass
     version 16
 
@@ -422,7 +422,7 @@ program seqtte, eclass
         // Reload processed data so the main regression has the correct dataset
         qui use `bsdata', clear
 
-        // Bootstrap SE and percentile CI (95%) from log-OR distribution
+        // Bootstrap SE and percentile CI (95%) from log-HR distribution
         // svmat places values in obs 1..B; remaining obs are missing — both
         // sum and _pctile skip missing values automatically.
         qui svmat double `bs_b', names(_seqtte_bs_)
@@ -437,38 +437,45 @@ program seqtte, eclass
     // ----- Pooled logistic regression -----
     di as txt _n "Fitting " upper("`estimator'") " model..."
 
+    // Fit with logit (quietly) and display the exponentiated estimates labelled
+    // as hazard ratios. The pooled logistic regression approximates a discrete-
+    // time hazard model, so exp(coef) is reported as a hazard ratio to match the
+    // R and Python implementations of this method.
     if "`estimator'" == "itt" {
-        logistic `event' `treatment' ///
+        qui logit `event' `treatment' ///
             c.`fu_time'##c.`fu_time' ///
             c.`trial'##c.`trial' ///
             `covariates', cluster(`id')
     }
     else if `weighted_pp' {
-        logistic `event' `treatment' ///
+        qui logit `event' `treatment' ///
             c.`fu_time'##c.`fu_time' ///
             c.`trial'##c.`trial' ///
             `covariates' ///
             if `censored' == 0 [pweight = `wt_cum'], cluster(`id')
     }
     else {
-        logistic `event' `treatment' ///
+        qui logit `event' `treatment' ///
             c.`fu_time'##c.`fu_time' ///
             c.`trial'##c.`trial' ///
             `covariates' ///
             if `censored' == 0, cluster(`id')
     }
 
-    // Bootstrap summary (after the fit so the point OR is available)
+    _coef_table_header
+    ereturn display, eform("Haz. ratio")
+
+    // Bootstrap summary (after the fit so the point HR is available)
     if `do_bs' {
-        local bs_or    = exp(_b[`treatment'])
-        local bs_or_ll = exp(`bs_ll')
-        local bs_or_ul = exp(`bs_ul')
+        local bs_hr    = exp(_b[`treatment'])
+        local bs_hr_ll = exp(`bs_ll')
+        local bs_hr_ul = exp(`bs_ul')
         di as txt _n "Bootstrap complete: " `bs_ok' "/" `bootstrap' " replicates succeeded"
-        di as txt "Bootstrap SE (log-OR):      " %7.4f `bs_se'
-        di as txt "Bootstrap 95% CI (log-OR): [" %7.4f `bs_ll' ", " %7.4f `bs_ul' "]"
-        local bs_ci_ll = ltrim(string(`bs_or_ll', "%7.4f"))
-        di as txt "Estimated OR: " %7.4f `bs_or' ///
-            " with bootstrap 95% CI [" "`bs_ci_ll'" ", " %7.4f `bs_or_ul' "]"
+        di as txt "Bootstrap SE (log-HR):      " %7.4f `bs_se'
+        di as txt "Bootstrap 95% CI (log-HR): [" %7.4f `bs_ll' ", " %7.4f `bs_ul' "]"
+        local bs_ci_ll = ltrim(string(`bs_hr_ll', "%7.4f"))
+        di as txt "Estimated HR: " %7.4f `bs_hr' ///
+            " with bootstrap 95% CI [" "`bs_ci_ll'" ", " %7.4f `bs_hr_ul' "]"
     }
 
     // ----- Cumulative incidence by g-computation -----
