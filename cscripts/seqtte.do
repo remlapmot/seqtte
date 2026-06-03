@@ -401,4 +401,57 @@ forvalues i = 2/`nr' {
     assert e(cif)[`i', 3] >= e(cif)[`i'-1, 3] - 1e-10
 }
 
+* ------------------------------------------------------------
+* Test 27: expandonly — returns the expanded dataset, skips analysis
+* ------------------------------------------------------------
+* ITT: expanded data left in memory with readable columns
+preserve
+seqtte outcome, id(id) time(time) treatment(treatment) covariates(age_grp) ///
+    estimator(itt) expandonly
+
+assert e(N_exp) > 0
+assert `"`e(estimator)'"' == "itt"
+assert `"`e(cmd)'"' == "seqtte"
+confirm variable trial
+confirm variable followup
+confirm variable period
+confirm variable event
+* period = trial + followup
+assert period == trial + followup
+* treatment is constant within each (id, trial) = baseline assignment
+bysort id trial: assert treatment == treatment[1]
+* in-memory N matches the reported expanded N
+qui count
+assert r(N) == e(N_exp)
+* ITT applies no censoring, so no censored variable is created
+capture confirm variable censored
+assert _rc != 0
+restore
+
+* PP: a censored indicator is additionally returned
+preserve
+seqtte outcome, id(id) time(time) treatment(treatment) covariates(age_grp) ///
+    estimator(pp) expandonly
+
+assert e(N_exp) > 0
+assert `"`e(estimator)'"' == "pp"
+confirm variable trial
+confirm variable censored
+assert inlist(censored, 0, 1)
+restore
+
+* weighted PP: a cumulative weight is additionally returned
+preserve
+seqtte outcome, id(id) time(time) treatment(treatment) covariates(age_grp) ///
+    estimator(pp) wdenominator(age_grp) expandonly
+
+confirm variable censored
+confirm variable weight
+assert weight >= 0 if !missing(weight)
+restore
+
+* expandonly is incompatible with bootstrap() and plot
+rcof `"seqtte outcome, id(id) time(time) treatment(treatment) expandonly bootstrap(10)"' == 198
+rcof `"seqtte outcome, id(id) time(time) treatment(treatment) expandonly plot"' == 198
+
 di as txt "seqtte cscript passed"
