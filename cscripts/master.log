@@ -2,7 +2,7 @@
       name:  master
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/master.log
   log type:  text
- opened on:   3 Jun 2026, 14:26:35
+ opened on:   3 Jun 2026, 15:09:34
 
 . 
 . cscript master
@@ -25,14 +25,14 @@
       name:  seqtte
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- opened on:   3 Jun 2026, 14:26:35
+ opened on:   3 Jun 2026, 15:09:34
 
 . cscript seqtte adofile seqtte
 -------------------------------------------------------------------BEGIN seqtte
 
 -> which seqtte, usesysdir
 /Users/tom/Documents/GitHub/seqtte/seqtte.ado
-*! version 0.7.0  03jun2026  Tom Palmer
+*! version 0.8.0  03jun2026  Tom Palmer
 
 . 
 . * ------------------------------------------------------------
@@ -1690,6 +1690,128 @@ CIF truncation: arm-1 threshold = 17 person-trials; max follow-up = 4
   4. }
 
 . 
+. * ------------------------------------------------------------
+. * Test 27: expandonly — returns the expanded dataset, skips analysis
+. * ------------------------------------------------------------
+. * ITT: expanded data left in memory with readable columns
+. preserve
+
+. seqtte outcome, id(id) time(time) treatment(treatment) covariates(age_grp) //
+> /
+>     estimator(itt) expandonly
+
+Original dataset:        1,930 observations, 7 variables
+Eligible observations:          818 (200 individuals)
+
+Expanding data...
+Expanded dataset:        5,866 observations
+
+expandonly: returning expanded dataset (       5,866 observations); analysis st
+> eps skipped
+
+. 
+. assert e(N_exp) > 0
+
+. assert `"`e(estimator)'"' == "itt"
+
+. assert `"`e(cmd)'"' == "seqtte"
+
+. confirm variable trial
+
+. confirm variable followup
+
+. confirm variable period
+
+. confirm variable event
+
+. * period = trial + followup
+. assert period == trial + followup
+
+. * treatment is constant within each (id, trial) = baseline assignment
+. bysort id trial: assert treatment == treatment[1]
+
+. * in-memory N matches the reported expanded N
+. qui count
+
+. assert r(N) == e(N_exp)
+
+. * ITT applies no censoring, so no censored variable is created
+. capture confirm variable censored
+
+. assert _rc != 0
+
+. restore
+
+. 
+. * PP: a censored indicator is additionally returned
+. preserve
+
+. seqtte outcome, id(id) time(time) treatment(treatment) covariates(age_grp) //
+> /
+>     estimator(pp) expandonly
+
+Original dataset:        1,930 observations, 7 variables
+Eligible observations:          818 (200 individuals)
+
+Expanding data...
+Expanded dataset:        5,866 observations
+Post-censoring dataset:        2,795 observations
+
+expandonly: returning expanded dataset (       5,866 observations); analysis st
+> eps skipped
+
+. 
+. assert e(N_exp) > 0
+
+. assert `"`e(estimator)'"' == "pp"
+
+. confirm variable trial
+
+. confirm variable censored
+
+. assert inlist(censored, 0, 1)
+
+. restore
+
+. 
+. * weighted PP: a cumulative weight is additionally returned
+. preserve
+
+. seqtte outcome, id(id) time(time) treatment(treatment) covariates(age_grp) //
+> /
+>     estimator(pp) wdenominator(age_grp) expandonly
+
+Original dataset:        1,930 observations, 7 variables
+Eligible observations:          818 (200 individuals)
+
+Fitting weight models...
+Weight models fitted
+
+Expanding data...
+Expanded dataset:        5,866 observations
+Post-censoring dataset:        2,795 observations
+
+expandonly: returning expanded dataset (       5,866 observations); analysis st
+> eps skipped
+
+. 
+. confirm variable censored
+
+. confirm variable weight
+
+. assert weight >= 0 if !missing(weight)
+
+. restore
+
+. 
+. * expandonly is incompatible with bootstrap() and plot
+. rcof `"seqtte outcome, id(id) time(time) treatment(treatment) expandonly boot
+> strap(10)"' == 198
+
+. rcof `"seqtte outcome, id(id) time(time) treatment(treatment) expandonly plot
+> "' == 198
+
+. 
 . di as txt "seqtte cscript passed"
 seqtte cscript passed
 
@@ -1698,7 +1820,7 @@ end of do-file
       name:  seqtte
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- closed on:   3 Jun 2026, 14:26:40
+ closed on:   3 Jun 2026, 15:09:39
 -------------------------------------------------------------------------------
 
 . 
@@ -1706,5 +1828,5 @@ end of do-file
       name:  master
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/master.log
   log type:  text
- closed on:   3 Jun 2026, 14:26:40
+ closed on:   3 Jun 2026, 15:09:39
 -------------------------------------------------------------------------------
