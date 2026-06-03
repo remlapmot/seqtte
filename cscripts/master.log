@@ -2,7 +2,7 @@
       name:  master
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/master.log
   log type:  text
- opened on:  24 May 2026, 09:46:36
+ opened on:   3 Jun 2026, 14:26:35
 
 . 
 . cscript master
@@ -25,14 +25,14 @@
       name:  seqtte
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- opened on:  24 May 2026, 09:46:36
+ opened on:   3 Jun 2026, 14:26:35
 
 . cscript seqtte adofile seqtte
 -------------------------------------------------------------------BEGIN seqtte
 
 -> which seqtte, usesysdir
 /Users/tom/Documents/GitHub/seqtte/seqtte.ado
-*! version 0.6.0  22may2026  Tom Palmer
+*! version 0.7.0  03jun2026  Tom Palmer
 
 . 
 . * ------------------------------------------------------------
@@ -121,12 +121,12 @@ Logistic regression                                     Number of obs =  5,866
                                                         Wald chi2(5)  =   6.73
                                                         Prob > chi2   = 0.2412
 Log pseudolikelihood = -1073.8885                       Pseudo R2     = 0.0025
-
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Haz. ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
+event        |
    treatment |   .8519499   .1211415    -1.13   0.260     .6447316    1.125769
     followup |   .9672518   .0863713    -0.37   0.709     .8119533    1.152254
              |
@@ -140,7 +140,7 @@ Log pseudolikelihood = -1073.8885                       Pseudo R2     = 0.0025
              |
        _cons |   .0556938   .0130565   -12.32   0.000     .0351769    .0881773
 ------------------------------------------------------------------------------
-Note: _cons estimates baseline odds.
+Note: _cons estimates baseline hazard.
 
 . 
 . assert e(N)       > 0
@@ -178,12 +178,12 @@ Logistic regression                                     Number of obs =  5,866
                                                         Wald chi2(6)  =   6.77
                                                         Prob > chi2   = 0.3427
 Log pseudolikelihood = -1073.1731                       Pseudo R2     = 0.0032
-
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Haz. ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
+event        |
    treatment |   .8509309    .121162    -1.13   0.257     .6437151    1.124851
     followup |   .9672047    .086409    -0.37   0.709     .8118448    1.152295
              |
@@ -198,7 +198,7 @@ Log pseudolikelihood = -1073.1731                       Pseudo R2     = 0.0032
      age_grp |   1.163051   .2607572     0.67   0.500     .7494771    1.804841
        _cons |   .0515335   .0140795   -10.85   0.000      .030167    .0880333
 ------------------------------------------------------------------------------
-Note: _cons estimates baseline odds.
+Note: _cons estimates baseline hazard.
 
 . 
 . assert e(N) > 0
@@ -227,12 +227,12 @@ Logistic regression                                     Number of obs =  4,361
                                                         Wald chi2(5)  =   4.08
                                                         Prob > chi2   = 0.5385
 Log pseudolikelihood = -791.99732                       Pseudo R2     = 0.0018
-
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Haz. ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
+event        |
    treatment |   .9147963   .1477508    -0.55   0.581     .6665687    1.255463
     followup |   .8922942   .0999469    -1.02   0.309     .7164139    1.111353
              |
@@ -246,7 +246,7 @@ Log pseudolikelihood = -791.99732                       Pseudo R2     = 0.0018
              |
        _cons |   .0603429   .0142604   -11.88   0.000     .0379724    .0958924
 ------------------------------------------------------------------------------
-Note: _cons estimates baseline odds.
+Note: _cons estimates baseline hazard.
 
 . 
 . assert e(N) > 0
@@ -279,12 +279,12 @@ Logistic regression                                     Number of obs =  2,795
                                                         Wald chi2(6)  =   9.82
                                                         Prob > chi2   = 0.1324
 Log pseudolikelihood = -1284.7328                       Pseudo R2     = 0.0263
-
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Haz. ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
+event        |
    treatment |   .5032836   .1816938    -1.90   0.057      .248036      1.0212
     followup |    .924474   .1067231    -0.68   0.496     .7372764    1.159202
              |
@@ -299,7 +299,7 @@ Log pseudolikelihood = -1284.7328                       Pseudo R2     = 0.0263
      age_grp |   1.992418   .8756128     1.57   0.117     .8419781    4.714765
        _cons |   .0360684   .0170568    -7.03   0.000     .0142756      .09113
 ------------------------------------------------------------------------------
-Note: _cons estimates baseline odds.
+Note: _cons estimates baseline hazard.
 
 . 
 . assert e(N) > 0
@@ -334,12 +334,12 @@ Logistic regression                                     Number of obs =  2,795
                                                         Wald chi2(6)  =   8.45
                                                         Prob > chi2   = 0.2070
 Log pseudolikelihood = -581.02604                       Pseudo R2     = 0.0158
-
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Haz. ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
+event        |
    treatment |   .6553398   .1862556    -1.49   0.137     .3754435    1.143901
     followup |   .9313866   .0859551    -0.77   0.441     .7772755    1.116053
              |
@@ -354,7 +354,7 @@ Log pseudolikelihood = -581.02604                       Pseudo R2     = 0.0158
      age_grp |   1.625581   .5174984     1.53   0.127     .8710261    3.033792
        _cons |   .0467652    .015746    -9.10   0.000     .0241724    .0904742
 ------------------------------------------------------------------------------
-Note: _cons estimates baseline odds.
+Note: _cons estimates baseline hazard.
 
 . 
 . assert e(N) > 0
@@ -388,12 +388,12 @@ Logistic regression                                     Number of obs =  2,795
                                                         Wald chi2(5)  =   9.60
                                                         Prob > chi2   = 0.0874
 Log pseudolikelihood = -1297.3976                       Pseudo R2     = 0.0129
-
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Haz. ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
+event        |
    treatment |   .5865787   .1917975    -1.63   0.103      .309032    1.113395
     followup |   .8984417   .1040038    -0.93   0.355     .7160685    1.127263
              |
@@ -407,7 +407,7 @@ Log pseudolikelihood = -1297.3976                       Pseudo R2     = 0.0129
              |
        _cons |   .0544195   .0171555    -9.23   0.000     .0293372    .1009465
 ------------------------------------------------------------------------------
-Note: _cons estimates baseline odds.
+Note: _cons estimates baseline hazard.
 
 . 
 . assert e(N) > 0
@@ -436,12 +436,12 @@ Logistic regression                                     Number of obs =  2,795
                                                         Wald chi2(5)  =   7.79
                                                         Prob > chi2   = 0.1680
 Log pseudolikelihood = -585.15231                       Pseudo R2     = 0.0088
-
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Haz. ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
+event        |
    treatment |   .6669825   .1874102    -1.44   0.149     .3845404    1.156876
     followup |   .9327285   .0854917    -0.76   0.447     .7793563    1.116283
              |
@@ -455,7 +455,7 @@ Log pseudolikelihood = -585.15231                       Pseudo R2     = 0.0088
              |
        _cons |   .0614474   .0160875   -10.65   0.000     .0367834    .1026493
 ------------------------------------------------------------------------------
-Note: _cons estimates baseline odds.
+Note: _cons estimates baseline hazard.
 
 . 
 . assert e(N) > 0
@@ -491,12 +491,12 @@ Logistic regression                                     Number of obs =  5,866
                                                         Wald chi2(8)  =   8.61
                                                         Prob > chi2   = 0.3759
 Log pseudolikelihood = -1071.5822                       Pseudo R2     = 0.0047
-
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Haz. ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
+event        |
    treatment |   .8586673   .1219067    -1.07   0.283      .650097    1.134153
     followup |   .9669522   .0864091    -0.38   0.707     .8115955    1.152047
              |
@@ -516,7 +516,7 @@ Log pseudolikelihood = -1071.5822                       Pseudo R2     = 0.0047
              |
        _cons |   .0592056   .0177021    -9.45   0.000     .0329502    .1063817
 ------------------------------------------------------------------------------
-Note: _cons estimates baseline odds.
+Note: _cons estimates baseline hazard.
 
 . 
 . assert e(N) > 0
@@ -549,12 +549,12 @@ Logistic regression                                     Number of obs =  2,795
                                                         Wald chi2(8)  =   9.32
                                                         Prob > chi2   = 0.3162
 Log pseudolikelihood = -586.45887                       Pseudo R2     = 0.0173
-
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Haz. ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
+event        |
    treatment |     .64909   .1864859    -1.50   0.133     .3696168    1.139877
     followup |   .9295571   .0852592    -0.80   0.426     .7766113    1.112624
              |
@@ -574,7 +574,7 @@ Log pseudolikelihood = -586.45887                       Pseudo R2     = 0.0173
              |
        _cons |    .046721   .0198693    -7.20   0.000     .0203009    .1075247
 ------------------------------------------------------------------------------
-Note: _cons estimates baseline odds.
+Note: _cons estimates baseline hazard.
 
 . 
 . assert e(N) > 0
@@ -605,12 +605,12 @@ Logistic regression                                     Number of obs =  3,681
                                                         Wald chi2(5)  =   0.63
                                                         Prob > chi2   = 0.9867
 Log pseudolikelihood = -626.66001                       Pseudo R2     = 0.0005
-
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Haz. ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
+event        |
    treatment |   .9570317   .1505597    -0.28   0.780     .7030979    1.302677
     followup |   .9597697   .1193315    -0.33   0.741     .7522016    1.224616
              |
@@ -624,7 +624,7 @@ Log pseudolikelihood = -626.66001                       Pseudo R2     = 0.0005
              |
        _cons |   .0473291   .0136464   -10.58   0.000     .0268968    .0832829
 ------------------------------------------------------------------------------
-Note: _cons estimates baseline odds.
+Note: _cons estimates baseline hazard.
 
 . 
 . assert e(N) > 0
@@ -662,12 +662,12 @@ Logistic regression                                     Number of obs =  3,681
                                                         Wald chi2(5)  =   0.63
                                                         Prob > chi2   = 0.9867
 Log pseudolikelihood = -626.66001                       Pseudo R2     = 0.0005
-
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Haz. ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
+event        |
    treatment |   .9570317   .1505597    -0.28   0.780     .7030979    1.302677
     followup |   .9597697   .1193315    -0.33   0.741     .7522016    1.224616
              |
@@ -681,7 +681,7 @@ Log pseudolikelihood = -626.66001                       Pseudo R2     = 0.0005
              |
        _cons |   .0473291   .0136464   -10.58   0.000     .0268968    .0832829
 ------------------------------------------------------------------------------
-Note: _cons estimates baseline odds.
+Note: _cons estimates baseline hazard.
 
 . 
 . assert e(N) == `n_rep1'
@@ -715,12 +715,12 @@ Logistic regression                                     Number of obs =  1,184
                                                         Wald chi2(6)  =   9.09
                                                         Prob > chi2   = 0.1687
 Log pseudolikelihood = -475.85018                       Pseudo R2     = 0.0160
-
                                    (Std. err. adjusted for 199 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Haz. ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
+event        |
    treatment |   .5478439   .2049807    -1.61   0.108     .2631311    1.140621
     followup |    1.14789   .2956624     0.54   0.592     .6928765    1.901711
              |
@@ -735,7 +735,7 @@ Log pseudolikelihood = -475.85018                       Pseudo R2     = 0.0160
      age_grp |   1.211043   .4882173     0.47   0.635     .5495509     2.66877
        _cons |   .0604604   .0199158    -8.52   0.000     .0317017    .1153079
 ------------------------------------------------------------------------------
-Note: _cons estimates baseline odds.
+Note: _cons estimates baseline hazard.
 
 . 
 . assert e(N) > 0
@@ -781,12 +781,12 @@ Logistic regression                                     Number of obs =  5,866
                                                         Wald chi2(5)  =   6.73
                                                         Prob > chi2   = 0.2412
 Log pseudolikelihood = -1073.8885                       Pseudo R2     = 0.0025
-
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Haz. ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
+event        |
    treatment |   .8519499   .1211415    -1.13   0.260     .6447316    1.125769
     followup |   .9672518   .0863713    -0.37   0.709     .8119533    1.152254
              |
@@ -800,12 +800,12 @@ Log pseudolikelihood = -1073.8885                       Pseudo R2     = 0.0025
              |
        _cons |   .0556938   .0130565   -12.32   0.000     .0351769    .0881773
 ------------------------------------------------------------------------------
-Note: _cons estimates baseline odds.
+Note: _cons estimates baseline hazard.
 
 Bootstrap complete: 50/50 replicates succeeded
-Bootstrap SE (log-OR):       0.1329
-Bootstrap 95% CI (log-OR): [-0.4396,  0.0840]
-Estimated OR:  0.8519 with bootstrap 95% CI [0.6443,  1.0877]
+Bootstrap SE (log-HR):       0.1329
+Bootstrap 95% CI (log-HR): [-0.4396,  0.0840]
+Estimated HR:  0.8519 with bootstrap 95% CI [0.6443,  1.0877]
 
 . 
 . assert e(N) > 0
@@ -854,12 +854,12 @@ Logistic regression                                     Number of obs =  5,866
                                                         Wald chi2(5)  =   6.73
                                                         Prob > chi2   = 0.2412
 Log pseudolikelihood = -1073.8885                       Pseudo R2     = 0.0025
-
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Haz. ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
+event        |
    treatment |   .8519499   .1211415    -1.13   0.260     .6447316    1.125769
     followup |   .9672518   .0863713    -0.37   0.709     .8119533    1.152254
              |
@@ -873,12 +873,12 @@ Log pseudolikelihood = -1073.8885                       Pseudo R2     = 0.0025
              |
        _cons |   .0556938   .0130565   -12.32   0.000     .0351769    .0881773
 ------------------------------------------------------------------------------
-Note: _cons estimates baseline odds.
+Note: _cons estimates baseline hazard.
 
 Bootstrap complete: 50/50 replicates succeeded
-Bootstrap SE (log-OR):       0.1329
-Bootstrap 95% CI (log-OR): [-0.4396,  0.0840]
-Estimated OR:  0.8519 with bootstrap 95% CI [0.6443,  1.0877]
+Bootstrap SE (log-HR):       0.1329
+Bootstrap 95% CI (log-HR): [-0.4396,  0.0840]
+Estimated HR:  0.8519 with bootstrap 95% CI [0.6443,  1.0877]
 
 . 
 . assert reldif(e(bs_se), `se_rep1') < 1e-10
@@ -913,12 +913,12 @@ Logistic regression                                     Number of obs =  2,795
                                                         Wald chi2(6)  =   9.82
                                                         Prob > chi2   = 0.1324
 Log pseudolikelihood = -1284.7328                       Pseudo R2     = 0.0263
-
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Haz. ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
+event        |
    treatment |   .5032836   .1816938    -1.90   0.057      .248036      1.0212
     followup |    .924474   .1067231    -0.68   0.496     .7372764    1.159202
              |
@@ -933,12 +933,12 @@ Log pseudolikelihood = -1284.7328                       Pseudo R2     = 0.0263
      age_grp |   1.992418   .8756128     1.57   0.117     .8419781    4.714765
        _cons |   .0360684   .0170568    -7.03   0.000     .0142756      .09113
 ------------------------------------------------------------------------------
-Note: _cons estimates baseline odds.
+Note: _cons estimates baseline hazard.
 
 Bootstrap complete: 30/30 replicates succeeded
-Bootstrap SE (log-OR):       0.3474
-Bootstrap 95% CI (log-OR): [-1.4190,  0.1070]
-Estimated OR:  0.5033 with bootstrap 95% CI [0.2420,  1.1129]
+Bootstrap SE (log-HR):       0.3474
+Bootstrap 95% CI (log-HR): [-1.4190,  0.1070]
+Estimated HR:  0.5033 with bootstrap 95% CI [0.2420,  1.1129]
 
 . 
 . assert e(N) > 0
@@ -975,12 +975,12 @@ Logistic regression                                     Number of obs =  3,494
                                                         Wald chi2(5)  =   5.54
                                                         Prob > chi2   = 0.3530
 Log pseudolikelihood = -609.95692                       Pseudo R2     = 0.0045
-
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Haz. ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
+event        |
    treatment |   .9006041   .1362361    -0.69   0.489     .6695315    1.211426
     followup |   .9725951   .1208259    -0.22   0.823     .7624071     1.24073
              |
@@ -994,12 +994,12 @@ Log pseudolikelihood = -609.95692                       Pseudo R2     = 0.0045
              |
        _cons |   .0582487   .0155783   -10.63   0.000     .0344855    .0983867
 ------------------------------------------------------------------------------
-Note: _cons estimates baseline odds.
+Note: _cons estimates baseline hazard.
 
 Bootstrap complete: 30/30 replicates succeeded
-Bootstrap SE (log-OR):       0.1571
-Bootstrap 95% CI (log-OR): [-0.5242,  0.1217]
-Estimated OR:  0.9006 with bootstrap 95% CI [0.5920,  1.1294]
+Bootstrap SE (log-HR):       0.1571
+Bootstrap 95% CI (log-HR): [-0.5242,  0.1217]
+Estimated HR:  0.9006 with bootstrap 95% CI [0.5920,  1.1294]
 
 . 
 . assert e(N) > 0
@@ -1088,12 +1088,12 @@ Logistic regression                                     Number of obs =  2,145
                                                         Wald chi2(5)  =   6.84
                                                         Prob > chi2   = 0.2326
 Log pseudolikelihood = -463.5515                        Pseudo R2     = 0.0100
-
                                    (Std. err. adjusted for 226 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Haz. ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
+event        |
    treatment |   .7344823   .1531125    -1.48   0.139     .4881319    1.105161
     followup |   .8941722   .1283983    -0.78   0.436     .6748282    1.184811
              |
@@ -1107,12 +1107,12 @@ Log pseudolikelihood = -463.5515                        Pseudo R2     = 0.0100
              |
        _cons |    .095692   .0203856   -11.02   0.000     .0630292    .1452813
 ------------------------------------------------------------------------------
-Note: _cons estimates baseline odds.
+Note: _cons estimates baseline hazard.
 
 Bootstrap complete: 30/30 replicates succeeded
-Bootstrap SE (log-OR):       0.2048
-Bootstrap 95% CI (log-OR): [-0.8072,  0.1002]
-Estimated OR:  0.7345 with bootstrap 95% CI [0.4461,  1.1054]
+Bootstrap SE (log-HR):       0.2048
+Bootstrap 95% CI (log-HR): [-0.8072,  0.1002]
+Estimated HR:  0.7345 with bootstrap 95% CI [0.4461,  1.1054]
 
 . 
 . assert e(N) > 0
@@ -1161,12 +1161,12 @@ Logistic regression                                     Number of obs =  2,795
                                                         Wald chi2(6)  =   8.45
                                                         Prob > chi2   = 0.2070
 Log pseudolikelihood = -581.02604                       Pseudo R2     = 0.0158
-
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Haz. ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
+event        |
    treatment |   .6553398   .1862556    -1.49   0.137     .3754435    1.143901
     followup |   .9313866   .0859551    -0.77   0.441     .7772755    1.116053
              |
@@ -1181,7 +1181,7 @@ Log pseudolikelihood = -581.02604                       Pseudo R2     = 0.0158
      age_grp |   1.625581   .5174984     1.53   0.127     .8710261    3.033792
        _cons |   .0467652    .015746    -9.10   0.000     .0241724    .0904742
 ------------------------------------------------------------------------------
-Note: _cons estimates baseline odds.
+Note: _cons estimates baseline hazard.
 
 . 
 . assert e(N) > 0
@@ -1214,12 +1214,12 @@ Logistic regression                                     Number of obs =  1,717
                                                         Wald chi2(6)  =   4.72
                                                         Prob > chi2   = 0.5802
 Log pseudolikelihood = -316.77574                       Pseudo R2     = 0.0113
-
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Haz. ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
+event        |
    treatment |   .7817592   .2343423    -0.82   0.411     .4344247    1.406797
     followup |   .8860073   .1392329    -0.77   0.441     .6511395    1.205593
              |
@@ -1234,7 +1234,7 @@ Log pseudolikelihood = -316.77574                       Pseudo R2     = 0.0113
      age_grp |    1.50852   .5027268     1.23   0.217     .7850206    2.898819
        _cons |   .0416455   .0162278    -8.16   0.000     .0194037    .0893822
 ------------------------------------------------------------------------------
-Note: _cons estimates baseline odds.
+Note: _cons estimates baseline hazard.
 
 . 
 . assert e(N) > 0
@@ -1270,12 +1270,12 @@ Logistic regression                                     Number of obs =  2,795
                                                         Wald chi2(6)  =   8.45
                                                         Prob > chi2   = 0.2070
 Log pseudolikelihood = -581.02604                       Pseudo R2     = 0.0158
-
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Haz. ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
+event        |
    treatment |   .6553398   .1862556    -1.49   0.137     .3754435    1.143901
     followup |   .9313866   .0859551    -0.77   0.441     .7772755    1.116053
              |
@@ -1290,12 +1290,12 @@ Log pseudolikelihood = -581.02604                       Pseudo R2     = 0.0158
      age_grp |   1.625581   .5174984     1.53   0.127     .8710261    3.033792
        _cons |   .0467652    .015746    -9.10   0.000     .0241724    .0904742
 ------------------------------------------------------------------------------
-Note: _cons estimates baseline odds.
+Note: _cons estimates baseline hazard.
 
 Bootstrap complete: 30/30 replicates succeeded
-Bootstrap SE (log-OR):       0.2282
-Bootstrap 95% CI (log-OR): [-0.7444,  0.0941]
-Estimated OR:  0.6553 with bootstrap 95% CI [0.4750,  1.0987]
+Bootstrap SE (log-HR):       0.2282
+Bootstrap 95% CI (log-HR): [-0.7444,  0.0941]
+Estimated HR:  0.6553 with bootstrap 95% CI [0.4750,  1.0987]
 
 . 
 . assert e(N) > 0
@@ -1338,12 +1338,12 @@ Logistic regression                                     Number of obs =  5,866
                                                         Wald chi2(5)  =   6.73
                                                         Prob > chi2   = 0.2412
 Log pseudolikelihood = -1073.8885                       Pseudo R2     = 0.0025
-
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Haz. ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
+event        |
    treatment |   .8519499   .1211415    -1.13   0.260     .6447316    1.125769
     followup |   .9672518   .0863713    -0.37   0.709     .8119533    1.152254
              |
@@ -1357,7 +1357,7 @@ Log pseudolikelihood = -1073.8885                       Pseudo R2     = 0.0025
              |
        _cons |   .0556938   .0130565   -12.32   0.000     .0351769    .0881773
 ------------------------------------------------------------------------------
-Note: _cons estimates baseline odds.
+Note: _cons estimates baseline hazard.
 
 . 
 . assert !missing(e(N_nonuniq_arm0)) & e(N_nonuniq_arm0) > 0
@@ -1409,12 +1409,12 @@ Logistic regression                                     Number of obs =  2,795
                                                         Wald chi2(5)  =   7.79
                                                         Prob > chi2   = 0.1680
 Log pseudolikelihood = -585.15231                       Pseudo R2     = 0.0088
-
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Haz. ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
+event        |
    treatment |   .6669825   .1874102    -1.44   0.149     .3845404    1.156876
     followup |   .9327285   .0854917    -0.76   0.447     .7793563    1.116283
              |
@@ -1428,7 +1428,7 @@ Log pseudolikelihood = -585.15231                       Pseudo R2     = 0.0088
              |
        _cons |   .0614474   .0160875   -10.65   0.000     .0367834    .1026493
 ------------------------------------------------------------------------------
-Note: _cons estimates baseline odds.
+Note: _cons estimates baseline hazard.
 
 . 
 . assert !missing(e(N_nonuniq_arm0)) & e(N_nonuniq_arm0) > 0
@@ -1475,12 +1475,12 @@ Logistic regression                                     Number of obs =  3,681
                                                         Wald chi2(5)  =   0.63
                                                         Prob > chi2   = 0.9867
 Log pseudolikelihood = -626.66001                       Pseudo R2     = 0.0005
-
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Haz. ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
+event        |
    treatment |   .9570317   .1505597    -0.28   0.780     .7030979    1.302677
     followup |   .9597697   .1193315    -0.33   0.741     .7522016    1.224616
              |
@@ -1494,7 +1494,7 @@ Log pseudolikelihood = -626.66001                       Pseudo R2     = 0.0005
              |
        _cons |   .0473291   .0136464   -10.58   0.000     .0268968    .0832829
 ------------------------------------------------------------------------------
-Note: _cons estimates baseline odds.
+Note: _cons estimates baseline hazard.
 
 . 
 . assert !missing(e(N_nonuniq_arm0)) & e(N_nonuniq_arm0) > 0
@@ -1538,12 +1538,12 @@ Logistic regression                                     Number of obs =  5,866
                                                         Wald chi2(5)  =   6.73
                                                         Prob > chi2   = 0.2412
 Log pseudolikelihood = -1073.8885                       Pseudo R2     = 0.0025
-
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Haz. ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
+event        |
    treatment |   .8519499   .1211415    -1.13   0.260     .6447316    1.125769
     followup |   .9672518   .0863713    -0.37   0.709     .8119533    1.152254
              |
@@ -1557,7 +1557,7 @@ Log pseudolikelihood = -1073.8885                       Pseudo R2     = 0.0025
              |
        _cons |   .0556938   .0130565   -12.32   0.000     .0351769    .0881773
 ------------------------------------------------------------------------------
-Note: _cons estimates baseline odds.
+Note: _cons estimates baseline hazard.
 
 CIF truncation: arm-1 threshold = 17 person-trials; max follow-up = 9
 
@@ -1599,12 +1599,12 @@ Logistic regression                                     Number of obs =  5,866
                                                         Wald chi2(5)  =   6.73
                                                         Prob > chi2   = 0.2412
 Log pseudolikelihood = -1073.8885                       Pseudo R2     = 0.0025
-
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Haz. ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
+event        |
    treatment |   .8519499   .1211415    -1.13   0.260     .6447316    1.125769
     followup |   .9672518   .0863713    -0.37   0.709     .8119533    1.152254
              |
@@ -1618,7 +1618,7 @@ Log pseudolikelihood = -1073.8885                       Pseudo R2     = 0.0025
              |
        _cons |   .0556938   .0130565   -12.32   0.000     .0351769    .0881773
 ------------------------------------------------------------------------------
-Note: _cons estimates baseline odds.
+Note: _cons estimates baseline hazard.
 
 . capture matrix list e(cif)
 
@@ -1648,12 +1648,12 @@ Logistic regression                                     Number of obs =  2,795
                                                         Wald chi2(5)  =   7.79
                                                         Prob > chi2   = 0.1680
 Log pseudolikelihood = -585.15231                       Pseudo R2     = 0.0088
-
                                    (Std. err. adjusted for 200 clusters in id)
 ------------------------------------------------------------------------------
              |               Robust
-       event | Odds ratio   std. err.      z    P>|z|     [95% conf. interval]
+       event | Haz. ratio   std. err.      z    P>|z|     [95% conf. interval]
 -------------+----------------------------------------------------------------
+event        |
    treatment |   .6669825   .1874102    -1.44   0.149     .3845404    1.156876
     followup |   .9327285   .0854917    -0.76   0.447     .7793563    1.116283
              |
@@ -1667,7 +1667,7 @@ Log pseudolikelihood = -585.15231                       Pseudo R2     = 0.0088
              |
        _cons |   .0614474   .0160875   -10.65   0.000     .0367834    .1026493
 ------------------------------------------------------------------------------
-Note: _cons estimates baseline odds.
+Note: _cons estimates baseline hazard.
 
 CIF truncation: arm-1 threshold = 17 person-trials; max follow-up = 4
 
@@ -1698,7 +1698,7 @@ end of do-file
       name:  seqtte
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- closed on:  24 May 2026, 09:46:41
+ closed on:   3 Jun 2026, 14:26:40
 -------------------------------------------------------------------------------
 
 . 
@@ -1706,5 +1706,5 @@ end of do-file
       name:  master
        log:  /Users/tom/Documents/GitHub/seqtte/cscripts/master.log
   log type:  text
- closed on:  24 May 2026, 09:46:41
+ closed on:   3 Jun 2026, 14:26:40
 -------------------------------------------------------------------------------
