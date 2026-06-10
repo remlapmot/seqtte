@@ -37,6 +37,11 @@
 {synopt:{opt wdenominator(varlist)}}denominator weight model covariates; if omitted with {cmd:pp}, an unweighted per-protocol analysis is performed{p_end}
 {synopt:{opt wnumerator(varlist)}}numerator weight model covariates; if supplied, stabilized weights are used{p_end}
 {synopt:{opt truncation(#)}}truncation threshold for cumulative weights; default 25{p_end}
+{synopt:{opt selectionrandom}}randomly subsample the control-arm (id, trial) pairs{p_end}
+{synopt:{opt selectionsample(#)}}proportion of control-arm pairs to retain under {cmd:selectionrandom}; default 0.5{p_end}
+{synopt:{opt bootstrap(#)}}number of bootstrap replicates for the standard error and 95% percentile CI; default 0{p_end}
+{synopt:{opt seed(#)}}random-number seed; default {cmd:-1} (seed not set){p_end}
+{synopt:{opt plot}}plot cumulative incidence curves for each treatment arm{p_end}
 {synopt:{opt expandonly}}return the expanded sequential-trial dataset and skip the analysis{p_end}
 {synoptline}
 
@@ -155,6 +160,36 @@ to the cumulative IPW weights.
 Default is 25.
 
 {phang}
+{opt selectionrandom} randomly subsamples the control-arm (id, trial) pairs
+(Bernoulli sampling), retaining all treated-arm pairs.
+This reduces the size of the expanded dataset and is useful when the expanded
+data are very large.
+By default no subsampling is applied (all pairs are used).
+
+{phang}
+{opt selectionsample(#)} specifies the proportion of control-arm pairs to
+retain when {cmd:selectionrandom} is specified.
+Must be in (0, 1]; default is 0.5.
+It has no effect unless {cmd:selectionrandom} is also specified.
+
+{phang}
+{opt bootstrap(#)} requests {it:#} bootstrap replicates (resampling individuals
+with replacement) to compute a bootstrap standard error and 95% percentile
+confidence interval for the log-hazard ratio, reported below the regression
+table.
+Default is 0 (no bootstrap).
+
+{phang}
+{opt seed(#)} sets the random-number seed, for reproducibility of the bootstrap
+resampling and of {cmd:selectionrandom}.
+Default is {cmd:-1}, meaning the seed is not set.
+
+{phang}
+{opt plot} produces cumulative incidence (1 - survival) curves for each
+treatment arm by g-computation from the fitted outcome model.
+Cannot be combined with {cmd:expandonly}.
+
+{phang}
 {opt expandonly} performs the data expansion only and leaves the expanded
 sequential-trial dataset in memory, skipping the weight models, outcome model,
 bootstrap, and cumulative-incidence steps.
@@ -214,6 +249,16 @@ This option cannot be combined with {cmd:bootstrap()} or {cmd:plot}.
 {synopt:{cmd:e(N_exp)}}number of observations in the expanded dataset{p_end}
 {synopt:{cmd:e(r2_p)}}pseudo R-squared{p_end}
 {synopt:{cmd:e(ll)}}log likelihood{p_end}
+{synopt:{cmd:e(N_uniq_arm0)}}number of individuals contributing follow-up to arm 0{p_end}
+{synopt:{cmd:e(N_uniq_arm1)}}number of individuals contributing follow-up to arm 1{p_end}
+{synopt:{cmd:e(N_nonuniq_arm0)}}number of follow-up intervals in arm 0{p_end}
+{synopt:{cmd:e(N_nonuniq_arm1)}}number of follow-up intervals in arm 1{p_end}
+{synopt:{cmd:e(N_sel)}}observations after random selection (if {cmd:selectionrandom}){p_end}
+{synopt:{cmd:e(selection_sample)}}control-arm sampling proportion (if {cmd:selectionrandom}){p_end}
+{synopt:{cmd:e(N_boot)}}number of successful bootstrap replicates (if {cmd:bootstrap()}){p_end}
+{synopt:{cmd:e(bs_se)}}bootstrap standard error of the log-hazard ratio (if {cmd:bootstrap()}){p_end}
+{synopt:{cmd:e(bs_ll)}}lower bound of the bootstrap 95% percentile CI for the hazard ratio (if {cmd:bootstrap()}){p_end}
+{synopt:{cmd:e(bs_ul)}}upper bound of the bootstrap 95% percentile CI for the hazard ratio (if {cmd:bootstrap()}){p_end}
 
 {p2col 5 20 24 2: Macros}{p_end}
 {synopt:{cmd:e(cmd)}}{cmd:seqtte}{p_end}
@@ -225,6 +270,8 @@ This option cannot be combined with {cmd:bootstrap()} or {cmd:plot}.
 {p2col 5 20 24 2: Matrices}{p_end}
 {synopt:{cmd:e(b)}}coefficient vector (log scale; exponentiated values reported as hazard ratios){p_end}
 {synopt:{cmd:e(V)}}variance-covariance matrix{p_end}
+{synopt:{cmd:e(bs_b)}}bootstrap log-hazard-ratio replicates (if {cmd:bootstrap()}){p_end}
+{synopt:{cmd:e(cif)}}cumulative incidence by arm and follow-up time (if {cmd:plot}){p_end}
 
 {marker references}{...}
 {title:References}
