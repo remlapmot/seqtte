@@ -8,6 +8,12 @@ Stata package for sequential target trial emulation.
 net install seqtte, from("https://raw.githubusercontent.com/remlapmot/seqtte/main/") replace
 ```
 
+After installation has succeeded launch the helpfile with
+
+```stata
+help seqtte
+```
+
 To check for an update run
 
 ```stata
@@ -67,4 +73,4 @@ just test
 
 ## References
 
-Hernán MA, Robins JM (2016). Using Big Data to Emulate a Target Trial When a Randomized Trial Is Not Available. *American Journal of Epidemiology* 183(8): 758–764.
+Hernán MA, Robins JM (2016). Using Big Data to Emulate a Target Trial When a Randomized Trial Is Not Available. *American Journal of Epidemiology* 183(8): 758–764. <https://doi.org/10.1093/aje/kwv254>
