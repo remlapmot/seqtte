@@ -8,6 +8,38 @@ Stata package for sequential target trial emulation.
 net install seqtte, from("https://raw.githubusercontent.com/remlapmot/seqtte/main/") replace
 ```
 
+### If installation fails with a permission error
+
+On managed machines Stata's default installation directory (`PLUS`) is sometimes not writable, and `net install` fails with an error such as `cannot write in directory ...` (`r(603)`). In that case redirect the installation to a directory you can write to using `net set ado`.
+
+**Option 1 — install into your current working directory.** In Stata, `cd` to a folder you know you can write to (for example your Documents folder or your project folder), then run:
+
+```stata
+net set ado "`c(pwd)'"
+net install seqtte, from("https://raw.githubusercontent.com/remlapmot/seqtte/main/") replace
+```
+
+Stata always searches the current working directory for programs, so `seqtte` will work whenever Stata's working directory is that folder. To use it from other folders as well, run `adopath + "<that folder>"` (per session, or add that line to your `profile.do`).
+
+**Option 2 — install into your PERSONAL ado directory.** Run `sysdir` to see where `PERSONAL` points on your machine and create that folder if it does not exist (including any missing parent folders — note Stata's `mkdir` only creates one level at a time, so it may be easier in File Explorer/Finder). Then run:
+
+```stata
+// Find PERSONAL location with either
+sysdir
+// or
+adopath
+// or
+di c(sysdir_personal)
+// create the directory if it does not exist
+
+net set ado PERSONAL
+net install seqtte, from("https://raw.githubusercontent.com/remlapmot/seqtte/main/") replace
+```
+
+`PERSONAL` is on Stata's search path in every session, so the package will then be found automatically.
+
+Note that `net set ado` only lasts for the current Stata session; subsequent `net install`/`adoupdate` runs in a new session will need it set again.
+
 After installation has succeeded launch the helpfile with
 
 ```stata
