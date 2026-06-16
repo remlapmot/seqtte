@@ -246,7 +246,7 @@ program seqtte, eclass
 
     qui count
     local n_exp = r(N)
-    di as txt "Expanded dataset: " %12.0fc `n_exp' " observations"
+    di as txt "Expanded dataset: " %12.0fc `n_exp' " observations (person-trial periods)"
 
     // ----- PP: fill censoring and cumulative weights into expanded data -----
     if "`estimator'" == "pp" {
@@ -284,7 +284,7 @@ program seqtte, eclass
 
         qui count if `censored' == 0
         local n_pp = r(N)
-        di as txt "Post-censoring dataset: " %12.0fc `n_pp' " observations"
+        di as txt "Post-censoring dataset: " %12.0fc `n_pp' " observations (non-censored person-trial periods)"
     }
 
     // ----- Random selection of control-arm (id, trial) pairs -----
