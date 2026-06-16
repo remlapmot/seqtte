@@ -1,14 +1,14 @@
 -------------------------------------------------------------------------------
       name:  seqtte
-       log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
+       log:  /Users/eptmp/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- opened on:   3 Jun 2026, 15:09:34
+ opened on:  16 Jun 2026, 12:41:34
 
 . cscript seqtte adofile seqtte
 -------------------------------------------------------------------BEGIN seqtte
 
 -> which seqtte, usesysdir
-/Users/tom/Documents/GitHub/seqtte/seqtte.ado
+/Users/eptmp/Documents/GitHub/seqtte/seqtte.ado
 *! version 0.8.0  03jun2026  Tom Palmer
 
 . 
@@ -86,7 +86,7 @@ Original dataset:        1,930 observations, 6 variables
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-Expanded dataset:        5,866 observations
+Expanded dataset:        5,866 observations (person-trial periods)
 
 Follow-up by treatment arm (arm 0 / arm 1):
   Intervals (nonunique):         4,577 /        1,289
@@ -143,7 +143,7 @@ Original dataset:        1,930 observations, 6 variables
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-Expanded dataset:        5,866 observations
+Expanded dataset:        5,866 observations (person-trial periods)
 
 Follow-up by treatment arm (arm 0 / arm 1):
   Intervals (nonunique):         4,577 /        1,289
@@ -192,7 +192,7 @@ Original dataset:        1,563 observations, 6 variables
 Eligible observations:          770 (200 individuals)
 
 Expanding data...
-Expanded dataset:        4,361 observations
+Expanded dataset:        4,361 observations (person-trial periods)
 
 Follow-up by treatment arm (arm 0 / arm 1):
   Intervals (nonunique):         3,398 /          963
@@ -243,8 +243,9 @@ Fitting weight models...
 Weight models fitted
 
 Expanding data...
-Expanded dataset:        5,866 observations
-Post-censoring dataset:        2,795 observations
+Expanded dataset:        5,866 observations (person-trial periods)
+Post-censoring dataset:        2,795 observations (non-censored person-trial pe
+> riods)
 
 Follow-up by treatment arm (arm 0 / arm 1):
   Intervals (nonunique):         2,318 /          477
@@ -298,8 +299,9 @@ Fitting weight models...
 Weight models fitted
 
 Expanding data...
-Expanded dataset:        5,866 observations
-Post-censoring dataset:        2,795 observations
+Expanded dataset:        5,866 observations (person-trial periods)
+Post-censoring dataset:        2,795 observations (non-censored person-trial pe
+> riods)
 
 Follow-up by treatment arm (arm 0 / arm 1):
   Intervals (nonunique):         2,318 /          477
@@ -352,8 +354,9 @@ Fitting weight models...
 Weight models fitted
 
 Expanding data...
-Expanded dataset:        5,866 observations
-Post-censoring dataset:        2,795 observations
+Expanded dataset:        5,866 observations (person-trial periods)
+Post-censoring dataset:        2,795 observations (non-censored person-trial pe
+> riods)
 
 Follow-up by treatment arm (arm 0 / arm 1):
   Intervals (nonunique):         2,318 /          477
@@ -400,8 +403,9 @@ Original dataset:        1,930 observations, 6 variables
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-Expanded dataset:        5,866 observations
-Post-censoring dataset:        2,795 observations
+Expanded dataset:        5,866 observations (person-trial periods)
+Post-censoring dataset:        2,795 observations (non-censored person-trial pe
+> riods)
 
 Follow-up by treatment arm (arm 0 / arm 1):
   Intervals (nonunique):         2,318 /          477
@@ -456,7 +460,7 @@ Original dataset:        1,930 observations, 7 variables
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-Expanded dataset:        5,866 observations
+Expanded dataset:        5,866 observations (person-trial periods)
 
 Follow-up by treatment arm (arm 0 / arm 1):
   Intervals (nonunique):         4,577 /        1,289
@@ -513,8 +517,9 @@ Fitting weight models...
 Weight models fitted
 
 Expanding data...
-Expanded dataset:        5,866 observations
-Post-censoring dataset:        2,795 observations
+Expanded dataset:        5,866 observations (person-trial periods)
+Post-censoring dataset:        2,795 observations (non-censored person-trial pe
+> riods)
 
 Follow-up by treatment arm (arm 0 / arm 1):
   Intervals (nonunique):         2,318 /          477
@@ -569,7 +574,7 @@ Original dataset:        1,930 observations, 7 variables
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-Expanded dataset:        5,866 observations
+Expanded dataset:        5,866 observations (person-trial periods)
 After random selection (0.500 of control-arm pairs):        3,681 observations
 
 Follow-up by treatment arm (arm 0 / arm 1):
@@ -626,7 +631,7 @@ Original dataset:        1,930 observations, 7 variables
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-Expanded dataset:        5,866 observations
+Expanded dataset:        5,866 observations (person-trial periods)
 After random selection (0.500 of control-arm pairs):        3,681 observations
 
 Follow-up by treatment arm (arm 0 / arm 1):
@@ -678,8 +683,9 @@ Fitting weight models...
 Weight models fitted
 
 Expanding data...
-Expanded dataset:        5,866 observations
-Post-censoring dataset:        2,795 observations
+Expanded dataset:        5,866 observations (person-trial periods)
+Post-censoring dataset:        2,795 observations (non-censored person-trial pe
+> riods)
 After random selection (0.300 of control-arm pairs):        2,727 observations
 
 Follow-up by treatment arm (arm 0 / arm 1):
@@ -744,7 +750,7 @@ Original dataset:        1,930 observations, 7 variables
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-Expanded dataset:        5,866 observations
+Expanded dataset:        5,866 observations (person-trial periods)
 
 Follow-up by treatment arm (arm 0 / arm 1):
   Intervals (nonunique):         4,577 /        1,289
@@ -817,7 +823,7 @@ Original dataset:        1,930 observations, 7 variables
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-Expanded dataset:        5,866 observations
+Expanded dataset:        5,866 observations (person-trial periods)
 
 Follow-up by treatment arm (arm 0 / arm 1):
   Intervals (nonunique):         4,577 /        1,289
@@ -875,8 +881,9 @@ Fitting weight models...
 Weight models fitted
 
 Expanding data...
-Expanded dataset:        5,866 observations
-Post-censoring dataset:        2,795 observations
+Expanded dataset:        5,866 observations (person-trial periods)
+Post-censoring dataset:        2,795 observations (non-censored person-trial pe
+> riods)
 
 Follow-up by treatment arm (arm 0 / arm 1):
   Intervals (nonunique):         2,318 /          477
@@ -937,7 +944,7 @@ Original dataset:        1,930 observations, 7 variables
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-Expanded dataset:        5,866 observations
+Expanded dataset:        5,866 observations (person-trial periods)
 After random selection (0.500 of control-arm pairs):        3,494 observations
 
 Follow-up by treatment arm (arm 0 / arm 1):
@@ -1050,7 +1057,7 @@ Original dataset:        1,306 observations, 5 variables
 Eligible observations:          757 (300 individuals)
 
 Expanding data...
-Expanded dataset:        3,632 observations
+Expanded dataset:        3,632 observations (person-trial periods)
 After random selection (0.500 of control-arm pairs):        2,145 observations
 
 Follow-up by treatment arm (arm 0 / arm 1):
@@ -1125,8 +1132,9 @@ Original dataset:        1,930 observations, 7 variables
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-Expanded dataset:        5,866 observations
-Post-censoring dataset:        2,795 observations
+Expanded dataset:        5,866 observations (person-trial periods)
+Post-censoring dataset:        2,795 observations (non-censored person-trial pe
+> riods)
 
 Follow-up by treatment arm (arm 0 / arm 1):
   Intervals (nonunique):         2,318 /          477
@@ -1177,8 +1185,9 @@ Original dataset:        1,930 observations, 7 variables
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-Expanded dataset:        5,866 observations
-Post-censoring dataset:        2,795 observations
+Expanded dataset:        5,866 observations (person-trial periods)
+Post-censoring dataset:        2,795 observations (non-censored person-trial pe
+> riods)
 After random selection (0.500 of control-arm pairs):        3,681 observations
 
 Follow-up by treatment arm (arm 0 / arm 1):
@@ -1232,8 +1241,9 @@ Original dataset:        1,930 observations, 7 variables
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-Expanded dataset:        5,866 observations
-Post-censoring dataset:        2,795 observations
+Expanded dataset:        5,866 observations (person-trial periods)
+Post-censoring dataset:        2,795 observations (non-censored person-trial pe
+> riods)
 
 Follow-up by treatment arm (arm 0 / arm 1):
   Intervals (nonunique):         2,318 /          477
@@ -1303,7 +1313,7 @@ Original dataset:        1,930 observations, 7 variables
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-Expanded dataset:        5,866 observations
+Expanded dataset:        5,866 observations (person-trial periods)
 
 Follow-up by treatment arm (arm 0 / arm 1):
   Intervals (nonunique):         4,577 /        1,289
@@ -1373,8 +1383,9 @@ Original dataset:        1,930 observations, 7 variables
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-Expanded dataset:        5,866 observations
-Post-censoring dataset:        2,795 observations
+Expanded dataset:        5,866 observations (person-trial periods)
+Post-censoring dataset:        2,795 observations (non-censored person-trial pe
+> riods)
 
 Follow-up by treatment arm (arm 0 / arm 1):
   Intervals (nonunique):         2,318 /          477
@@ -1439,7 +1450,7 @@ Original dataset:        1,930 observations, 7 variables
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-Expanded dataset:        5,866 observations
+Expanded dataset:        5,866 observations (person-trial periods)
 After random selection (0.500 of control-arm pairs):        3,681 observations
 
 Follow-up by treatment arm (arm 0 / arm 1):
@@ -1503,7 +1514,7 @@ Original dataset:        1,930 observations, 7 variables
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-Expanded dataset:        5,866 observations
+Expanded dataset:        5,866 observations (person-trial periods)
 
 Follow-up by treatment arm (arm 0 / arm 1):
   Intervals (nonunique):         4,577 /        1,289
@@ -1564,7 +1575,7 @@ Original dataset:        1,930 observations, 7 variables
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-Expanded dataset:        5,866 observations
+Expanded dataset:        5,866 observations (person-trial periods)
 
 Follow-up by treatment arm (arm 0 / arm 1):
   Intervals (nonunique):         4,577 /        1,289
@@ -1612,8 +1623,9 @@ Original dataset:        1,930 observations, 7 variables
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-Expanded dataset:        5,866 observations
-Post-censoring dataset:        2,795 observations
+Expanded dataset:        5,866 observations (person-trial periods)
+Post-censoring dataset:        2,795 observations (non-censored person-trial pe
+> riods)
 
 Follow-up by treatment arm (arm 0 / arm 1):
   Intervals (nonunique):         2,318 /          477
@@ -1681,7 +1693,7 @@ Original dataset:        1,930 observations, 7 variables
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-Expanded dataset:        5,866 observations
+Expanded dataset:        5,866 observations (person-trial periods)
 
 expandonly: returning expanded dataset (       5,866 observations); analysis st
 > eps skipped
@@ -1731,8 +1743,9 @@ Original dataset:        1,930 observations, 7 variables
 Eligible observations:          818 (200 individuals)
 
 Expanding data...
-Expanded dataset:        5,866 observations
-Post-censoring dataset:        2,795 observations
+Expanded dataset:        5,866 observations (person-trial periods)
+Post-censoring dataset:        2,795 observations (non-censored person-trial pe
+> riods)
 
 expandonly: returning expanded dataset (       5,866 observations); analysis st
 > eps skipped
@@ -1765,8 +1778,9 @@ Fitting weight models...
 Weight models fitted
 
 Expanding data...
-Expanded dataset:        5,866 observations
-Post-censoring dataset:        2,795 observations
+Expanded dataset:        5,866 observations (person-trial periods)
+Post-censoring dataset:        2,795 observations (non-censored person-trial pe
+> riods)
 
 expandonly: returning expanded dataset (       5,866 observations); analysis st
 > eps skipped
@@ -1795,7 +1809,7 @@ seqtte cscript passed
 . 
 end of do-file
       name:  seqtte
-       log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
+       log:  /Users/eptmp/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- closed on:   3 Jun 2026, 15:09:39
+ closed on:  16 Jun 2026, 12:41:43
 -------------------------------------------------------------------------------
