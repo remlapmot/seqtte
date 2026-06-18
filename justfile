@@ -27,3 +27,10 @@ uninstall:
 test:
     printf 'cap noi ado uninstall seqtte\n' | stata-mp -q
     stata-mp -b "do master"
+
+[working-directory('qmd')]
+render-r:
+    quarto render comparison-trialemulation.qmd
+[working-directory('qmd')]
+render-st:
+    ./render-comparison-seqtte.py
