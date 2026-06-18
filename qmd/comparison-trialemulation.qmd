@@ -1,0 +1,98 @@
+---
+title: "Comparison: TrialEmulation R package"
+format:
+  html:
+    embed-resources: true
+execute:
+  warning: false
+  message: false
+---
+
+This document runs sequential target trial emulation using the
+[TrialEmulation](https://cran.r-project.org/package=TrialEmulation) R package
+on the `trial_example` dataset. It is the companion to
+`comparison-seqtte.qmd`, which runs the same analysis using the
+`seqtte` Stata package via nbstata.
+
+## Setup
+
+```{r}
+#| label: setup
+library(TrialEmulation)
+library(haven)
+```
+
+## Data
+
+The `trial_example` dataset ships with TrialEmulation. It contains 503
+individuals observed over up to 396 calendar periods.
+
+```{r}
+#| label: data
+data("trial_example")
+dim(trial_example)
+str(trial_example)
+```
+
+**Note on eligibility.** TrialEmulation uses the `eligible` column supplied in
+the data to define which person-periods serve as trial entry points. The `seqtte`
+Stata package determines eligibility internally as "not previously treated"
+(`A_lag != 1`). These two criteria differ slightly in `trial_example` (there are
+some rows where the supplied `eligible` departs from the not-previously-treated
+rule), so small differences in estimates between the two documents are expected.
+
+## Intent-to-treat (ITT) analysis
+
+The model adjusts for `catvarA`, `catvarB`, `nvarA`, `nvarB`, and `nvarC` at
+trial entry, with quadratic polynomial terms for follow-up time and trial
+(calendar) period. Standard errors are clustered by individual.
+
+```{r}
+#| label: itt
+te_itt <- initiators(
+  data              = trial_example,
+  id                = "id",
+  period            = "period",
+  treatment         = "treatment",
+  eligible          = "eligible",
+  outcome           = "outcome",
+  estimand_type     = "ITT",
+  outcome_cov       = ~ catvarA + catvarB + nvarA + nvarB + nvarC,
+  model_var         = "assigned_treatment",
+  save_weight_models = FALSE
+)
+```
+
+### Regression table
+
+```{r}
+#| label: itt-table
+print(te_itt)
+```
+
+### Treatment effect
+
+```{r}
+#| label: itt-coef
+m <- te_itt$model
+coef_trt   <- coef(m)["assigned_treatment"]
+se_trt     <- sqrt(vcov(m)["assigned_treatment", "assigned_treatment"])
+or_trt     <- exp(coef_trt)
+ci_trt     <- exp(coef_trt + c(-1, 1) * qnorm(0.975) * se_trt)
+
+cat(sprintf(
+  "assigned_treatment log-OR: %.4f (SE %.4f)\nOR: %.4f (95%% CI %.4f to %.4f)\n",
+  coef_trt, se_trt, or_trt, ci_trt[1], ci_trt[2]
+))
+```
+
+## Save data for Stata comparison
+
+The dataset is saved as a Stata `.dta` file so it can be loaded in
+`comparison-seqtte.qmd`.
+
+```{r}
+#| label: save-dta
+write_dta(trial_example, "trial_example.dta")
+cat("Saved trial_example.dta\n")
+```
