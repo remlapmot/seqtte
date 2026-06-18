@@ -1,0 +1,66 @@
+---
+title: "Comparison: seqtte Stata package"
+format:
+  html:
+    embed-resources: true
+jupyter: nbstata
+---
+
+This document runs sequential target trial emulation using the `seqtte` Stata
+package on the `trial_example` dataset. It is the companion to
+`comparison-trialemulation.qmd`, which runs the same analysis using the
+TrialEmulation R package.
+
+**Prerequisite.** Render `comparison-trialemulation.qmd` first; that document
+saves `trial_example.dta` into the `cscripts/` directory used here.
+
+## Setup
+
+Add the package root to the ado-path so `seqtte` can be found when rendering
+from this directory.
+
+```{stata}
+adopath ++ ".."
+which seqtte
+```
+
+## Data
+
+```{stata}
+use "trial_example.dta", clear
+describe
+```
+
+```{stata}
+summarize period outcome treatment catvarA catvarB nvarA nvarB nvarC
+```
+
+**Note on eligibility.** `seqtte` determines eligibility internally as
+"not previously treated" (A\_lag ≠ 1). The `eligible` column in
+`trial_example` reflects additional eligibility criteria used by TrialEmulation,
+so small differences in estimates between the two documents are expected.
+
+## Intent-to-treat (ITT) analysis
+
+The model adjusts for `catvarA`, `catvarB`, `nvarA`, `nvarB`, and `nvarC`
+(matching the TrialEmulation covariates). Quadratic polynomial terms for
+follow-up time and trial (calendar) period are included automatically by
+`seqtte`. Standard errors are clustered by individual.
+
+```{stata}
+seqtte outcome, id(id) time(period) treatment(treatment) ///
+    covariates(catvarA catvarB nvarA nvarB nvarC)
+```
+
+## Comparison with TrialEmulation
+
+The TrialEmulation R package produces the following ITT estimates on the same
+dataset and covariate specification:
+
+| Package        | log-OR  | SE     | OR    | 95% CI            |
+|----------------|---------|--------|-------|-------------------|
+| TrialEmulation | −0.2829 | 0.0462 | 0.754 | (0.688, 0.825)    |
+| seqtte         | (above) | —      | —     | —                 |
+
+Differences are expected to be small and attributable to the differing
+eligibility criteria (see note above).
