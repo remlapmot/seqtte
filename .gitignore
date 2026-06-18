@@ -5,3 +5,4 @@
 .quarto/
 .positai
 *.quarto_ipynb
+qmd/*_files/
