@@ -409,6 +409,8 @@ program seqtte, eclass
     di as txt "  Individuals (unique):   " ///
         %12.0fc `fu_uniq_0' " / " %12.0fc `fu_uniq_1'
 
+    local bs_ok = 0
+
     // ----- Bootstrap -----
     if `do_bs' {
 
@@ -430,6 +432,28 @@ program seqtte, eclass
         // Save fully processed dataset (weights, outcome, renaming applied)
         tempfile bsdata
         qui save `bsdata'
+
+        // Pre-compute CIF truncation point and allocate bootstrap CIF matrices
+        if "`plot'" != "" {
+            tempfile _bs_cur_data
+            tempvar _pre_cnt
+            if "`estimator'" == "pp" qui keep if `censored' == 0
+            qui keep if `treatment' == 1
+            qui bysort `fu_time': gen int `_pre_cnt' = _N
+            qui sum `_pre_cnt' if `fu_time' == 0, meanonly
+            local _bs_thresh = max(5, floor(r(mean) * 0.10))
+            qui sum `fu_time' if `_pre_cnt' >= `_bs_thresh', meanonly
+            if r(N) > 0 local _max_fu = r(max)
+            else {
+                qui sum `fu_time', meanonly
+                local _max_fu = r(max)
+            }
+            local _n_t_bs = `_max_fu' + 1
+            tempname bs_cif0 bs_cif1
+            matrix `bs_cif0' = J(`bootstrap', `_n_t_bs', .)
+            matrix `bs_cif1' = J(`bootstrap', `_n_t_bs', .)
+            qui use `bsdata', clear
+        }
 
         di as txt _n "Running " `bootstrap' " bootstrap replicates..."
 
@@ -468,6 +492,44 @@ program seqtte, eclass
 
                 matrix `bs_b'[`b', 1] = _b[`treatment']
                 local bs_ok = `bs_ok' + 1
+                if "`plot'" != "" {
+                    qui predict double _bsp, pr
+                    qui save `_bs_cur_data'
+                    if "`estimator'" == "pp" qui keep if `censored' == 0
+                    qui keep if `treatment' == 1
+                    qui bysort `id' `trial' (`fu_time'): ///
+                        gen double _bsls = sum(ln(1 - _bsp))
+                    qui gen double _bssv = exp(_bsls)
+                    collapse (mean) _sv1=_bssv, by(`fu_time')
+                    qui keep if `fu_time' <= `_max_fu'
+                    qui count
+                    local _nb = r(N)
+                    forvalues _j = 1/`_nb' {
+                        local _ft = `fu_time'[`_j']
+                        local _col = `_ft' + 1
+                        matrix `bs_cif1'[`b', `_col'] = 1 - _sv1[`_j']
+                    }
+                    qui use `_bs_cur_data', clear
+                    if "`estimator'" == "pp" qui keep if `censored' == 0
+                    qui keep if `treatment' == 0
+                    qui bysort `id' `trial' (`fu_time'): ///
+                        gen double _bsls = sum(ln(1 - _bsp))
+                    qui gen double _bssv = exp(_bsls)
+                    if `weighted_pp' {
+                        collapse (mean) _sv0=_bssv [iweight=`wt_cum'], by(`fu_time')
+                    }
+                    else {
+                        collapse (mean) _sv0=_bssv, by(`fu_time')
+                    }
+                    qui keep if `fu_time' <= `_max_fu'
+                    qui count
+                    local _nb = r(N)
+                    forvalues _j = 1/`_nb' {
+                        local _ft = `fu_time'[`_j']
+                        local _col = `_ft' + 1
+                        matrix `bs_cif0'[`b', `_col'] = 1 - _sv0[`_j']
+                    }
+                }
             }
         }
 
@@ -602,6 +664,47 @@ program seqtte, eclass
             matrix `_cif_mat'[`_i', 3] = _cif1[`_i']
         }
 
+        // --- Bootstrap CI bands ---
+        if `do_bs' & `bs_ok' > 0 {
+            local _n_t_bs = `_max_fu' + 1
+            clear
+            qui set obs `bootstrap'
+            qui svmat double `bs_cif0', names(_c0_)
+            qui svmat double `bs_cif1', names(_c1_)
+            tempname _ci0_lo _ci0_hi _ci1_lo _ci1_hi
+            matrix `_ci0_lo' = J(`_n_t_bs', 1, .)
+            matrix `_ci0_hi' = J(`_n_t_bs', 1, .)
+            matrix `_ci1_lo' = J(`_n_t_bs', 1, .)
+            matrix `_ci1_hi' = J(`_n_t_bs', 1, .)
+            forvalues _j = 1/`_n_t_bs' {
+                capture qui _pctile _c0_`_j', p(2.5 97.5)
+                if _rc == 0 {
+                    matrix `_ci0_lo'[`_j', 1] = r(r1)
+                    matrix `_ci0_hi'[`_j', 1] = r(r2)
+                }
+                capture qui _pctile _c1_`_j', p(2.5 97.5)
+                if _rc == 0 {
+                    matrix `_ci1_lo'[`_j', 1] = r(r1)
+                    matrix `_ci1_hi'[`_j', 1] = r(r2)
+                }
+            }
+            tempname _cif_mat_ci
+            matrix `_cif_mat_ci' = J(`_n_t', 7, .)
+            matrix colnames `_cif_mat_ci' = fu_time cif0 cif0_lo cif0_hi cif1 cif1_lo cif1_hi
+            forvalues _i = 1/`_n_t' {
+                local _ft  = round(`_cif_mat'[`_i', 1])
+                local _col = `_ft' + 1
+                matrix `_cif_mat_ci'[`_i', 1] = `_cif_mat'[`_i', 1]
+                matrix `_cif_mat_ci'[`_i', 2] = `_cif_mat'[`_i', 2]
+                matrix `_cif_mat_ci'[`_i', 3] = `_ci0_lo'[`_col', 1]
+                matrix `_cif_mat_ci'[`_i', 4] = `_ci0_hi'[`_col', 1]
+                matrix `_cif_mat_ci'[`_i', 5] = `_cif_mat'[`_i', 3]
+                matrix `_cif_mat_ci'[`_i', 6] = `_ci1_lo'[`_col', 1]
+                matrix `_cif_mat_ci'[`_i', 7] = `_ci1_hi'[`_col', 1]
+            }
+            matrix `_cif_mat' = `_cif_mat_ci'
+        }
+
         qui use `_cif_base', clear
     }
 
@@ -635,17 +738,33 @@ program seqtte, eclass
     if "`plot'" != "" {
         preserve
         clear
-        qui set obs `_n_t'
         tempname _tmp
         matrix `_tmp' = e(cif)
+        local _nr = rowsof(`_tmp')
+        local _nc = colsof(`_tmp')
+        qui set obs `_nr'
         qui svmat double `_tmp', names(col)
-        twoway (line cif0 fu_time, lcolor(navy) lwidth(medthick)) ///
-               (line cif1 fu_time, lcolor(red) lwidth(medthick)), ///
-            ytitle("Cumulative incidence") ///
-            xtitle("Follow-up time") ///
-            title("Cumulative incidence by treatment arm") ///
-            legend(label(1 "Arm 0 (control)") label(2 "Arm 1 (treated)")) ///
-            name(seqtte_cif, replace)
+        if `_nc' == 7 {
+            twoway ///
+                (rarea cif0_lo cif0_hi fu_time, fcolor(navy%20) lwidth(none)) ///
+                (rarea cif1_lo cif1_hi fu_time, fcolor(red%20)  lwidth(none)) ///
+                (line cif0 fu_time, lcolor(navy) lwidth(medthick)) ///
+                (line cif1 fu_time, lcolor(red)  lwidth(medthick)), ///
+                ytitle("Cumulative incidence") ///
+                xtitle("Follow-up time") ///
+                title("Cumulative incidence by treatment arm") ///
+                legend(order(3 "Arm 0 (control)" 4 "Arm 1 (treated)")) ///
+                name(seqtte_cif, replace)
+        }
+        else {
+            twoway (line cif0 fu_time, lcolor(navy) lwidth(medthick)) ///
+                   (line cif1 fu_time, lcolor(red)  lwidth(medthick)), ///
+                ytitle("Cumulative incidence") ///
+                xtitle("Follow-up time") ///
+                title("Cumulative incidence by treatment arm") ///
+                legend(label(1 "Arm 0 (control)") label(2 "Arm 1 (treated)")) ///
+                name(seqtte_cif, replace)
+        }
         restore
     }
 end

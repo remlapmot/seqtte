@@ -402,7 +402,29 @@ forvalues i = 2/`nr' {
 }
 
 * ------------------------------------------------------------
-* Test 27: expandonly — returns the expanded dataset, skips analysis
+* Test 27: plot + bootstrap — e(cif) has 7 columns with CI bands
+* ------------------------------------------------------------
+seqtte outcome, id(id) time(time) treatment(treatment) ///
+    bootstrap(20) seed(42) plot
+
+assert colsof(e(cif)) == 7
+local nr = rowsof(e(cif))
+assert `nr' > 0
+forvalues i = 1/`nr' {
+    assert e(cif)[`i', 3] >= -1e-10 & e(cif)[`i', 3] <= 1 + 1e-10
+    assert e(cif)[`i', 4] >= -1e-10 & e(cif)[`i', 4] <= 1 + 1e-10
+    assert e(cif)[`i', 6] >= -1e-10 & e(cif)[`i', 6] <= 1 + 1e-10
+    assert e(cif)[`i', 7] >= -1e-10 & e(cif)[`i', 7] <= 1 + 1e-10
+    assert e(cif)[`i', 3] <= e(cif)[`i', 4] + 1e-10
+    assert e(cif)[`i', 6] <= e(cif)[`i', 7] + 1e-10
+}
+
+* without bootstrap, e(cif) still has 3 columns
+seqtte outcome, id(id) time(time) treatment(treatment) plot
+assert colsof(e(cif)) == 3
+
+* ------------------------------------------------------------
+* Test 28: expandonly — returns the expanded dataset, skips analysis
 * ------------------------------------------------------------
 * ITT: expanded data left in memory with readable columns
 preserve
