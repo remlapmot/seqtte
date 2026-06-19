@@ -1,8 +1,8 @@
 -------------------------------------------------------------------------------
       name:  master
-       log:  /Users/eptmp/Documents/GitHub/seqtte/cscripts/master.log
+       log:  /Users/tom/Documents/GitHub/seqtte/cscripts/master.log
   log type:  text
- opened on:  16 Jun 2026, 12:41:34
+ opened on:  19 Jun 2026, 07:04:08
 
 . 
 . cscript master
@@ -23,15 +23,15 @@
   5. }
 -------------------------------------------------------------------------------
       name:  seqtte
-       log:  /Users/eptmp/Documents/GitHub/seqtte/cscripts/seqtte.log
+       log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- opened on:  16 Jun 2026, 12:41:34
+ opened on:  19 Jun 2026, 07:04:08
 
 . cscript seqtte adofile seqtte
 -------------------------------------------------------------------BEGIN seqtte
 
 -> which seqtte, usesysdir
-/Users/eptmp/Documents/GitHub/seqtte/seqtte.ado
+/Users/tom/Documents/GitHub/seqtte/seqtte.ado
 *! version 0.8.0  03jun2026  Tom Palmer
 
 . 
@@ -1703,7 +1703,121 @@ CIF truncation: arm-1 threshold = 17 person-trials; max follow-up = 4
 
 . 
 . * ------------------------------------------------------------
-. * Test 27: expandonly — returns the expanded dataset, skips analysis
+. * Test 27: plot + bootstrap — e(cif) has 7 columns with CI bands
+. * ------------------------------------------------------------
+. seqtte outcome, id(id) time(time) treatment(treatment) ///
+>     bootstrap(20) seed(42) plot
+
+Original dataset:        1,930 observations, 7 variables
+Eligible observations:          818 (200 individuals)
+
+Expanding data...
+Expanded dataset:        5,866 observations (person-trial periods)
+
+Follow-up by treatment arm (arm 0 / arm 1):
+  Intervals (nonunique):         4,577 /        1,289
+  Individuals (unique):            158 /          177
+
+Running 20 bootstrap replicates...
+
+Fitting ITT model...
+
+Logistic regression                                     Number of obs =  5,866
+                                                        Wald chi2(5)  =   6.73
+                                                        Prob > chi2   = 0.2412
+Log pseudolikelihood = -1073.8885                       Pseudo R2     = 0.0025
+                                   (Std. err. adjusted for 200 clusters in id)
+------------------------------------------------------------------------------
+             |               Robust
+       event | Haz. ratio   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+event        |
+   treatment |   .8519499   .1211415    -1.13   0.260     .6447316    1.125769
+    followup |   .9672518   .0863713    -0.37   0.709     .8119533    1.152254
+             |
+  c.followup#|
+  c.followup |   1.002209   .0095857     0.23   0.818     .9835961    1.021173
+             |
+       trial |   .8852631   .0704297    -1.53   0.126     .7574475    1.034647
+             |
+     c.trial#|
+     c.trial |   1.022453   .0129066     1.76   0.079     .9974667    1.048065
+             |
+       _cons |   .0556938   .0130565   -12.32   0.000     .0351769    .0881773
+------------------------------------------------------------------------------
+Note: _cons estimates baseline hazard.
+
+Bootstrap complete: 20/20 replicates succeeded
+Bootstrap SE (log-HR):       0.1430
+Bootstrap 95% CI (log-HR): [-0.4396,  0.1083]
+Estimated HR:  0.8519 with bootstrap 95% CI [0.6443,  1.1143]
+
+CIF truncation: arm-1 threshold = 17 person-trials; max follow-up = 9
+
+. 
+. assert colsof(e(cif)) == 7
+
+. local nr = rowsof(e(cif))
+
+. assert `nr' > 0
+
+. forvalues i = 1/`nr' {
+  2.     assert e(cif)[`i', 3] >= -1e-10 & e(cif)[`i', 3] <= 1 + 1e-10
+  3.     assert e(cif)[`i', 4] >= -1e-10 & e(cif)[`i', 4] <= 1 + 1e-10
+  4.     assert e(cif)[`i', 6] >= -1e-10 & e(cif)[`i', 6] <= 1 + 1e-10
+  5.     assert e(cif)[`i', 7] >= -1e-10 & e(cif)[`i', 7] <= 1 + 1e-10
+  6.     assert e(cif)[`i', 3] <= e(cif)[`i', 4] + 1e-10
+  7.     assert e(cif)[`i', 6] <= e(cif)[`i', 7] + 1e-10
+  8. }
+
+. 
+. * without bootstrap, e(cif) still has 3 columns
+. seqtte outcome, id(id) time(time) treatment(treatment) plot
+
+Original dataset:        1,930 observations, 7 variables
+Eligible observations:          818 (200 individuals)
+
+Expanding data...
+Expanded dataset:        5,866 observations (person-trial periods)
+
+Follow-up by treatment arm (arm 0 / arm 1):
+  Intervals (nonunique):         4,577 /        1,289
+  Individuals (unique):            158 /          177
+
+Fitting ITT model...
+
+Logistic regression                                     Number of obs =  5,866
+                                                        Wald chi2(5)  =   6.73
+                                                        Prob > chi2   = 0.2412
+Log pseudolikelihood = -1073.8885                       Pseudo R2     = 0.0025
+                                   (Std. err. adjusted for 200 clusters in id)
+------------------------------------------------------------------------------
+             |               Robust
+       event | Haz. ratio   std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+event        |
+   treatment |   .8519499   .1211415    -1.13   0.260     .6447316    1.125769
+    followup |   .9672518   .0863713    -0.37   0.709     .8119533    1.152254
+             |
+  c.followup#|
+  c.followup |   1.002209   .0095857     0.23   0.818     .9835961    1.021173
+             |
+       trial |   .8852631   .0704297    -1.53   0.126     .7574475    1.034647
+             |
+     c.trial#|
+     c.trial |   1.022453   .0129066     1.76   0.079     .9974667    1.048065
+             |
+       _cons |   .0556938   .0130565   -12.32   0.000     .0351769    .0881773
+------------------------------------------------------------------------------
+Note: _cons estimates baseline hazard.
+
+CIF truncation: arm-1 threshold = 17 person-trials; max follow-up = 9
+
+. assert colsof(e(cif)) == 3
+
+. 
+. * ------------------------------------------------------------
+. * Test 28: expandonly — returns the expanded dataset, skips analysis
 . * ------------------------------------------------------------
 . * ITT: expanded data left in memory with readable columns
 . preserve
@@ -1832,15 +1946,15 @@ seqtte cscript passed
 . 
 end of do-file
       name:  seqtte
-       log:  /Users/eptmp/Documents/GitHub/seqtte/cscripts/seqtte.log
+       log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- closed on:  16 Jun 2026, 12:41:43
+ closed on:  19 Jun 2026, 07:04:14
 -------------------------------------------------------------------------------
 
 . 
 . log close _all
       name:  master
-       log:  /Users/eptmp/Documents/GitHub/seqtte/cscripts/master.log
+       log:  /Users/tom/Documents/GitHub/seqtte/cscripts/master.log
   log type:  text
- closed on:  16 Jun 2026, 12:41:43
+ closed on:  19 Jun 2026, 07:04:14
 -------------------------------------------------------------------------------
