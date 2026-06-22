@@ -494,7 +494,7 @@ program seqtte, eclass
                 local bs_ok = `bs_ok' + 1
                 if "`plot'" != "" {
                     qui predict double _bsp, pr
-                    qui save `_bs_cur_data'
+                    qui save `_bs_cur_data', replace
                     if "`estimator'" == "pp" qui keep if `censored' == 0
                     qui keep if `treatment' == 1
                     qui bysort `id' `trial' (`fu_time'): ///
