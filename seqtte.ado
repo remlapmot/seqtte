@@ -747,12 +747,14 @@ program seqtte, eclass
         local _nc = colsof(`_tmp')
         qui set obs `_nr'
         qui svmat double `_tmp', names(col)
+        // Arm colours match the R/Python (ggplot2) defaults: arm 0 = "#F8766D"
+        // (RGB 248 118 109), arm 1 = "#00BFC4" (RGB 0 191 196)
         if `_nc' == 7 {
             twoway ///
-                (rarea cif0_lo cif0_hi fu_time, fcolor(navy%20) lwidth(none)) ///
-                (rarea cif1_lo cif1_hi fu_time, fcolor(red%20)  lwidth(none)) ///
-                (line cif0 fu_time, lcolor(navy) lwidth(medthick)) ///
-                (line cif1 fu_time, lcolor(red)  lwidth(medthick)), ///
+                (rarea cif0_lo cif0_hi fu_time, fcolor("248 118 109%20") lwidth(none)) ///
+                (rarea cif1_lo cif1_hi fu_time, fcolor("0 191 196%20")   lwidth(none)) ///
+                (line cif0 fu_time, lcolor("248 118 109") lwidth(medthick)) ///
+                (line cif1 fu_time, lcolor("0 191 196")   lwidth(medthick)), ///
                 ytitle("Cumulative incidence") ///
                 xtitle("Follow-up time") ///
                 title("Cumulative incidence by treatment arm") ///
@@ -760,8 +762,8 @@ program seqtte, eclass
                 name(seqtte_cif, replace)
         }
         else {
-            twoway (line cif0 fu_time, lcolor(navy) lwidth(medthick)) ///
-                   (line cif1 fu_time, lcolor(red)  lwidth(medthick)), ///
+            twoway (line cif0 fu_time, lcolor("248 118 109") lwidth(medthick)) ///
+                   (line cif1 fu_time, lcolor("0 191 196")   lwidth(medthick)), ///
                 ytitle("Cumulative incidence") ///
                 xtitle("Follow-up time") ///
                 title("Cumulative incidence by treatment arm") ///
