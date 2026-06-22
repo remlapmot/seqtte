@@ -497,7 +497,10 @@ program seqtte, eclass
                     qui save `_bs_cur_data', replace
                     if "`estimator'" == "pp" qui keep if `censored' == 0
                     qui keep if `treatment' == 1
-                    qui bysort `id' `trial' (`fu_time'): ///
+                    // group by the resampled-cluster id (bsample duplicates
+                    // clusters, which share the original `id'); `bs_newid' is
+                    // unique per resampled cluster so trials are not merged
+                    qui bysort `bs_newid' `trial' (`fu_time'): ///
                         gen double _bsls = sum(ln(1 - _bsp))
                     qui gen double _bssv = exp(_bsls)
                     collapse (mean) _sv1=_bssv, by(`fu_time')
@@ -512,7 +515,7 @@ program seqtte, eclass
                     qui use `_bs_cur_data', clear
                     if "`estimator'" == "pp" qui keep if `censored' == 0
                     qui keep if `treatment' == 0
-                    qui bysort `id' `trial' (`fu_time'): ///
+                    qui bysort `bs_newid' `trial' (`fu_time'): ///
                         gen double _bsls = sum(ln(1 - _bsp))
                     qui gen double _bssv = exp(_bsls)
                     if `weighted_pp' {
