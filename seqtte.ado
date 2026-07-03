@@ -1,4 +1,4 @@
-*! version 0.9.0  03jul2026  Tom Palmer
+*! version 0.10.0  03jul2026  Tom Palmer
 program seqtte, eclass
     version 16
 
@@ -433,21 +433,14 @@ program seqtte, eclass
         tempfile bsdata
         qui save `bsdata'
 
-        // Pre-compute CIF truncation point and allocate bootstrap CIF matrices
+        // Pre-compute the follow-up grid length and allocate bootstrap CIF
+        // matrices. The grid runs 0..max observed follow-up (same as the main
+        // g-computation); each replicate projects its resampled baselines over it.
         if "`plot'" != "" {
-            tempfile _bs_cur_data
-            tempvar _pre_cnt
-            if "`estimator'" == "pp" qui keep if `censored' == 0
-            qui keep if `treatment' == 1
-            qui bysort `fu_time': gen int `_pre_cnt' = _N
-            qui sum `_pre_cnt' if `fu_time' == 0, meanonly
-            local _bs_thresh = max(5, floor(r(mean) * 0.10))
-            qui sum `fu_time' if `_pre_cnt' >= `_bs_thresh', meanonly
-            if r(N) > 0 local _max_fu = r(max)
-            else {
-                qui sum `fu_time', meanonly
-                local _max_fu = r(max)
-            }
+            tempfile _bs_grid
+            if "`estimator'" == "pp" qui sum `fu_time' if `censored' == 0, meanonly
+            else qui sum `fu_time', meanonly
+            local _max_fu = r(max)
             local _n_t_bs = `_max_fu' + 1
             tempname bs_cif0 bs_cif1
             matrix `bs_cif0' = J(`bootstrap', `_n_t_bs', .)
@@ -515,18 +508,25 @@ program seqtte, eclass
                             `covariates' c.`fu_time'#c.`treatment' ///
                             if `censored' == 0, cluster(`bs_newid')
                     }
-                    qui predict double _bsp, pr
-                    qui save `_bs_cur_data', replace
+                    // Full-grid counterfactual CIF (mirrors the main g-computation):
+                    // one baseline row per (bs_newid, trial), projected over the
+                    // follow-up grid, with treatment set to each arm level.
+                    // bs_newid is unique per resampled cluster so duplicated
+                    // clusters' trials are not merged.
                     if "`estimator'" == "pp" qui keep if `censored' == 0
-                    qui keep if `treatment' == 1
-                    // group by the resampled-cluster id (bsample duplicates
-                    // clusters, which share the original `id'); `bs_newid' is
-                    // unique per resampled cluster so trials are not merged
+                    qui keep if `fu_time' == 0
+                    qui expand `_n_t_bs'
+                    qui bysort `bs_newid' `trial': replace `fu_time' = _n - 1
+                    qui save `_bs_grid', replace
+
+                    // Arm 1: everyone treated
+                    qui replace `treatment' = 1
+                    qui predict double _bsp, pr
                     qui bysort `bs_newid' `trial' (`fu_time'): ///
                         gen double _bsls = sum(ln(1 - _bsp))
                     qui gen double _bssv = exp(_bsls)
                     collapse (mean) _sv1=_bssv, by(`fu_time')
-                    qui keep if `fu_time' <= `_max_fu'
+                    sort `fu_time'
                     qui count
                     local _nb = r(N)
                     forvalues _j = 1/`_nb' {
@@ -534,19 +534,16 @@ program seqtte, eclass
                         local _col = `_ft' + 1
                         matrix `bs_cif1'[`b', `_col'] = 1 - _sv1[`_j']
                     }
-                    qui use `_bs_cur_data', clear
-                    if "`estimator'" == "pp" qui keep if `censored' == 0
-                    qui keep if `treatment' == 0
+
+                    // Arm 0: everyone untreated
+                    qui use `_bs_grid', clear
+                    qui replace `treatment' = 0
+                    qui predict double _bsp, pr
                     qui bysort `bs_newid' `trial' (`fu_time'): ///
                         gen double _bsls = sum(ln(1 - _bsp))
                     qui gen double _bssv = exp(_bsls)
-                    if `weighted_pp' {
-                        collapse (mean) _sv0=_bssv [iweight=`wt_cum'], by(`fu_time')
-                    }
-                    else {
-                        collapse (mean) _sv0=_bssv, by(`fu_time')
-                    }
-                    qui keep if `fu_time' <= `_max_fu'
+                    collapse (mean) _sv0=_bssv, by(`fu_time')
+                    sort `fu_time'
                     qui count
                     local _nb = r(N)
                     forvalues _j = 1/`_nb' {
@@ -628,7 +625,7 @@ program seqtte, eclass
     // Follow-up is truncated where arm-1 has fewer than 5 person-trials to
     // avoid unstable estimates in the sparse tail.
     if "`plot'" != "" {
-        tempvar _pred _logsurv _surv _cnt_ft
+        tempvar _pred _logsurv _surv
         // Refit the outcome model with a treatment x follow-up interaction so the
         // cumulative-incidence curves let the treatment effect vary over follow-up
         // (matching R SEQTaRget / Python pySEQTarget, which add haart_bas*followup
@@ -657,50 +654,54 @@ program seqtte, eclass
                 `covariates' c.`fu_time'#c.`treatment' ///
                 if `censored' == 0, cluster(`id')
         }
-        qui predict double `_pred', pr
-
-        tempfile _cif_base _arm1_data
+        // Counterfactual g-computation, standardised to the baseline covariate
+        // distribution of ALL person-trials. Keeping the observed treated /
+        // control subsets ("keep if treatment==1/0") standardises each arm to a
+        // different, confounded covariate distribution; instead we set treatment
+        // to each arm level for every person-trial and predict. Each trial's
+        // baseline (fu_time==0) covariates are held constant (the expand step
+        // duplicated the trial-entry row), so we project each baseline over the
+        // full follow-up grid, predict the hazard from the interacted (IPCW-
+        // weighted) model, form S_i(t) = prod_{s<=t}(1 - h_i(s)), then average
+        // S_i(t) across all trials at each t with a simple mean (the IPCW is
+        // already in the model fit). CIF = 1 - mean(S_i(t)). Matches R/Python.
+        tempfile _cif_base _grid _arm1_data
         qui save `_cif_base'
 
-        // --- Arm 1 (first, to determine the truncation point) ---
-        if "`estimator'" == "pp" qui keep if `censored' == 0
-        qui keep if `treatment' == 1
-        qui bysort `fu_time': gen int `_cnt_ft' = _N
-        // Adaptive threshold: 10% of arm-1 baseline count (minimum 5)
-        qui sum `_cnt_ft' if `fu_time' == 0, meanonly
-        local _thresh = max(5, floor(r(mean) * 0.10))
-        qui sum `fu_time' if `_cnt_ft' >= `_thresh', meanonly
-        if r(N) > 0 local _max_fu = r(max)
-        else {
-            qui sum `fu_time', meanonly
-            local _max_fu = r(max)
-        }
-        di as txt _n "CIF truncation: arm-1 threshold = " `_thresh' ///
-            " person-trials; max follow-up = " `_max_fu'
+        // Follow-up grid length = max observed follow-up in the analysis data.
+        if "`estimator'" == "pp" qui sum `fu_time' if `censored' == 0, meanonly
+        else qui sum `fu_time', meanonly
+        local _max_fu = r(max)
+        local _n_t = `_max_fu' + 1
+        di as txt _n "Cumulative incidence by g-computation over follow-up 0-" `_max_fu'
+
+        // One baseline (fu_time==0, never censored) row per (id, trial),
+        // replicated over the full follow-up grid.
+        qui keep if `fu_time' == 0
+        qui expand `_n_t'
+        qui bysort `id' `trial': replace `fu_time' = _n - 1
+        qui save `_grid'
+
+        // --- Arm 1: everyone treated ---
+        qui replace `treatment' = 1
+        qui predict double `_pred', pr
         qui bysort `id' `trial' (`fu_time'): ///
             gen double `_logsurv' = sum(ln(1 - `_pred'))
         qui gen double `_surv' = exp(`_logsurv')
         collapse (mean) _msurv1=`_surv', by(`fu_time')
         sort `fu_time'
-        qui keep if `fu_time' <= `_max_fu'
         qui gen double _cif1 = 1 - _msurv1
         qui save `_arm1_data'
 
-        // --- Arm 0 ---
-        qui use `_cif_base', clear
-        if "`estimator'" == "pp" qui keep if `censored' == 0
-        qui keep if `treatment' == 0
+        // --- Arm 0: everyone untreated ---
+        qui use `_grid', clear
+        qui replace `treatment' = 0
+        qui predict double `_pred', pr
         qui bysort `id' `trial' (`fu_time'): ///
             gen double `_logsurv' = sum(ln(1 - `_pred'))
         qui gen double `_surv' = exp(`_logsurv')
-        if `weighted_pp' {
-            collapse (mean) _msurv0=`_surv' [iweight=`wt_cum'], by(`fu_time')
-        }
-        else {
-            collapse (mean) _msurv0=`_surv', by(`fu_time')
-        }
+        collapse (mean) _msurv0=`_surv', by(`fu_time')
         sort `fu_time'
-        qui keep if `fu_time' <= `_max_fu'
         qui gen double _cif0 = 1 - _msurv0
 
         // --- Combine ---
