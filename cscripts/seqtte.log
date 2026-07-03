@@ -1,15 +1,15 @@
 -------------------------------------------------------------------------------
       name:  seqtte
-       log:  /Users/eptmp/Documents/GitHub/seqtte/cscripts/seqtte.log
+       log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- opened on:   3 Jul 2026, 10:42:52
+ opened on:   3 Jul 2026, 22:25:00
 
 . cscript seqtte adofile seqtte
 -------------------------------------------------------------------BEGIN seqtte
 
 -> which seqtte, usesysdir
-/Users/eptmp/Documents/GitHub/seqtte/seqtte.ado
-*! version 0.10.0  03jul2026  Tom Palmer
+/Users/tom/Documents/GitHub/seqtte/seqtte.ado
+*! version 0.11.0  03jul2026  Tom Palmer
 
 . 
 . * ------------------------------------------------------------
@@ -1520,6 +1520,8 @@ Follow-up by treatment arm (arm 0 / arm 1):
   Intervals (nonunique):         4,577 /        1,289
   Individuals (unique):            158 /          177
 
+Cumulative-incidence follow-up capped at 9
+
 Fitting ITT model...
 
 Logistic regression                                     Number of obs =  5,866
@@ -1631,6 +1633,8 @@ Follow-up by treatment arm (arm 0 / arm 1):
   Intervals (nonunique):         2,318 /          477
   Individuals (unique):            158 /          177
 
+Cumulative-incidence follow-up capped at 6
+
 Fitting PP model...
 
 Logistic regression                                     Number of obs =  2,795
@@ -1658,7 +1662,7 @@ event        |
 ------------------------------------------------------------------------------
 Note: _cons estimates baseline hazard.
 
-Cumulative incidence by g-computation over follow-up 0-9
+Cumulative incidence by g-computation over follow-up 0-6
 
 . 
 . local nr = rowsof(e(cif))
@@ -1694,6 +1698,8 @@ Expanded dataset:        5,866 observations (person-trial periods)
 Follow-up by treatment arm (arm 0 / arm 1):
   Intervals (nonunique):         4,577 /        1,289
   Individuals (unique):            158 /          177
+
+Cumulative-incidence follow-up capped at 9
 
 Running 20 bootstrap replicates...
 
@@ -1760,6 +1766,8 @@ Expanded dataset:        5,866 observations (person-trial periods)
 Follow-up by treatment arm (arm 0 / arm 1):
   Intervals (nonunique):         4,577 /        1,289
   Individuals (unique):            158 /          177
+
+Cumulative-incidence follow-up capped at 9
 
 Fitting ITT model...
 
@@ -1923,7 +1931,7 @@ seqtte cscript passed
 . 
 end of do-file
       name:  seqtte
-       log:  /Users/eptmp/Documents/GitHub/seqtte/cscripts/seqtte.log
+       log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- closed on:   3 Jul 2026, 10:43:01
+ closed on:   3 Jul 2026, 22:25:06
 -------------------------------------------------------------------------------
