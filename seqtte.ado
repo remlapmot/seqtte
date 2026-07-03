@@ -1,4 +1,4 @@
-*! version 0.10.0  03jul2026  Tom Palmer
+*! version 0.11.0  03jul2026  Tom Palmer
 program seqtte, eclass
     version 16
 
@@ -16,6 +16,7 @@ program seqtte, eclass
          SEEd(integer -1) ///
          BOOTstrap(integer 0) ///
          PLOT ///
+         SURVivalmax(integer -1) ///
          expandonly]
 
     local outcome `varlist'
@@ -44,6 +45,12 @@ program seqtte, eclass
         exit 198
     }
     local do_bs = (`bootstrap' > 0)
+
+    // Validate survivalmax option (plot follow-up cap; -1 = adaptive default)
+    if `survivalmax' != -1 & `survivalmax' < 1 {
+        di as err "survivalmax() must be a positive follow-up time"
+        exit 198
+    }
 
     // expandonly returns the expanded dataset without fitting any model, so it
     // is incompatible with the analysis-dependent options.
@@ -411,6 +418,38 @@ program seqtte, eclass
 
     local bs_ok = 0
 
+    // ----- Cumulative-incidence follow-up cap (plot only) -----
+    // Cap the plotted follow-up so the g-computation curves are not driven by
+    // model extrapolation into the sparse tail. Default: the largest follow-up
+    // where at least 10% of baseline trials still contribute observed
+    // (uncensored) data (minimum 5 trials). Override with survivalmax().
+    // Computed here, before the bootstrap, so the bands and the point curves
+    // share one grid.
+    if "`plot'" != "" {
+        if `survivalmax' != -1 {
+            local _max_fu = `survivalmax'
+        }
+        else {
+            tempvar _cnt_ft
+            if "`estimator'" == "pp" {
+                qui bysort `fu_time': egen long `_cnt_ft' = total(`censored' == 0)
+            }
+            else {
+                qui bysort `fu_time': gen long `_cnt_ft' = _N
+            }
+            qui sum `_cnt_ft' if `fu_time' == 0, meanonly
+            local _cap_thresh = max(5, floor(r(mean) * 0.10))
+            qui sum `fu_time' if `_cnt_ft' >= `_cap_thresh', meanonly
+            if r(N) > 0 local _max_fu = r(max)
+            else {
+                qui sum `fu_time', meanonly
+                local _max_fu = r(max)
+            }
+            qui drop `_cnt_ft'
+        }
+        di as txt _n "Cumulative-incidence follow-up capped at " `_max_fu'
+    }
+
     // ----- Bootstrap -----
     if `do_bs' {
 
@@ -433,19 +472,15 @@ program seqtte, eclass
         tempfile bsdata
         qui save `bsdata'
 
-        // Pre-compute the follow-up grid length and allocate bootstrap CIF
-        // matrices. The grid runs 0..max observed follow-up (same as the main
-        // g-computation); each replicate projects its resampled baselines over it.
+        // Allocate bootstrap CIF matrices over the pre-computed follow-up grid
+        // (the same cap the point curves use), so each replicate projects its
+        // resampled baselines over the same 0..`_max_fu' grid.
         if "`plot'" != "" {
             tempfile _bs_grid
-            if "`estimator'" == "pp" qui sum `fu_time' if `censored' == 0, meanonly
-            else qui sum `fu_time', meanonly
-            local _max_fu = r(max)
             local _n_t_bs = `_max_fu' + 1
             tempname bs_cif0 bs_cif1
             matrix `bs_cif0' = J(`bootstrap', `_n_t_bs', .)
             matrix `bs_cif1' = J(`bootstrap', `_n_t_bs', .)
-            qui use `bsdata', clear
         }
 
         di as txt _n "Running " `bootstrap' " bootstrap replicates..."
@@ -668,10 +703,7 @@ program seqtte, eclass
         tempfile _cif_base _grid _arm1_data
         qui save `_cif_base'
 
-        // Follow-up grid length = max observed follow-up in the analysis data.
-        if "`estimator'" == "pp" qui sum `fu_time' if `censored' == 0, meanonly
-        else qui sum `fu_time', meanonly
-        local _max_fu = r(max)
+        // Follow-up grid length from the pre-computed cap (survivalmax / adaptive).
         local _n_t = `_max_fu' + 1
         di as txt _n "Cumulative incidence by g-computation over follow-up 0-" `_max_fu'
 

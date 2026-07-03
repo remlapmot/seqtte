@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 0.8.0  03jun2026  Tom Palmer}{...}
+{* *! version 0.11.0  03jul2026  Tom Palmer}{...}
 {vieweralsosee "seqtte" "help seqtte"}{...}
 {viewerjumpto "Syntax" "seqtte##syntax"}{...}
 {viewerjumpto "Description" "seqtte##description"}{...}
@@ -42,6 +42,7 @@
 {synopt:{opt bootstrap(#)}}number of bootstrap replicates for the standard error and 95% percentile CI; default 0{p_end}
 {synopt:{opt seed(#)}}random-number seed; default {cmd:-1} (seed not set){p_end}
 {synopt:{opt plot}}plot cumulative incidence curves for each treatment arm{p_end}
+{synopt:{opt survivalmax(#)}}cap the follow-up shown in the cumulative incidence curves; default is adaptive{p_end}
 {synopt:{opt expandonly}}return the expanded sequential-trial dataset and skip the analysis{p_end}
 {synoptline}
 
@@ -188,6 +189,16 @@ Default is {cmd:-1}, meaning the seed is not set.
 {opt plot} produces cumulative incidence (1 - survival) curves for each
 treatment arm by g-computation from the fitted outcome model.
 Cannot be combined with {cmd:expandonly}.
+
+{phang}
+{opt survivalmax(#)} caps the follow-up time shown in the cumulative incidence
+curves (with {cmd:plot}).
+The g-computation projects every trial over the follow-up grid, so at long
+follow-up times, where few trials contributed observed data, the curves are
+driven by model extrapolation.
+By default the follow-up is capped at the largest time where at least 10% of
+the baseline trials still contribute observed (uncensored) data (minimum 5
+trials); specify {opt survivalmax(#)} to set the cap explicitly.
 
 {phang}
 {opt expandonly} performs the data expansion only and leaves the expanded
