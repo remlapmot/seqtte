@@ -1,4 +1,4 @@
-*! version 0.8.0  03jun2026  Tom Palmer
+*! version 0.9.0  03jul2026  Tom Palmer
 program seqtte, eclass
     version 16
 
@@ -493,6 +493,28 @@ program seqtte, eclass
                 matrix `bs_b'[`b', 1] = _b[`treatment']
                 local bs_ok = `bs_ok' + 1
                 if "`plot'" != "" {
+                    // Refit with the treatment x follow-up interaction for the CIF
+                    // bands; the bootstrap HR (bs_b) above uses the PH model.
+                    if "`estimator'" == "itt" {
+                        qui logistic `event' `treatment' ///
+                            c.`fu_time'##c.`fu_time' ///
+                            c.`trial'##c.`trial' ///
+                            `covariates' c.`fu_time'#c.`treatment', cluster(`bs_newid')
+                    }
+                    else if `weighted_pp' {
+                        qui logistic `event' `treatment' ///
+                            c.`fu_time'##c.`fu_time' ///
+                            c.`trial'##c.`trial' ///
+                            `covariates' c.`fu_time'#c.`treatment' ///
+                            if `censored' == 0 [pweight = `wt_cum'], cluster(`bs_newid')
+                    }
+                    else {
+                        qui logistic `event' `treatment' ///
+                            c.`fu_time'##c.`fu_time' ///
+                            c.`trial'##c.`trial' ///
+                            `covariates' c.`fu_time'#c.`treatment' ///
+                            if `censored' == 0, cluster(`bs_newid')
+                    }
                     qui predict double _bsp, pr
                     qui save `_bs_cur_data', replace
                     if "`estimator'" == "pp" qui keep if `censored' == 0
@@ -607,6 +629,34 @@ program seqtte, eclass
     // avoid unstable estimates in the sparse tail.
     if "`plot'" != "" {
         tempvar _pred _logsurv _surv _cnt_ft
+        // Refit the outcome model with a treatment x follow-up interaction so the
+        // cumulative-incidence curves let the treatment effect vary over follow-up
+        // (matching R SEQTaRget / Python pySEQTarget, which add haart_bas*followup
+        // for the survival curves). The reported hazard ratio keeps the
+        // proportional-hazards (no-interaction) model fitted above, so we store it
+        // and restore it after the g-computation.
+        tempname _est_ph
+        qui estimates store `_est_ph'
+        if "`estimator'" == "itt" {
+            qui logit `event' `treatment' ///
+                c.`fu_time'##c.`fu_time' ///
+                c.`trial'##c.`trial' ///
+                `covariates' c.`fu_time'#c.`treatment', cluster(`id')
+        }
+        else if `weighted_pp' {
+            qui logit `event' `treatment' ///
+                c.`fu_time'##c.`fu_time' ///
+                c.`trial'##c.`trial' ///
+                `covariates' c.`fu_time'#c.`treatment' ///
+                if `censored' == 0 [pweight = `wt_cum'], cluster(`id')
+        }
+        else {
+            qui logit `event' `treatment' ///
+                c.`fu_time'##c.`fu_time' ///
+                c.`trial'##c.`trial' ///
+                `covariates' c.`fu_time'#c.`treatment' ///
+                if `censored' == 0, cluster(`id')
+        }
         qui predict double `_pred', pr
 
         tempfile _cif_base _arm1_data
@@ -709,6 +759,10 @@ program seqtte, eclass
         }
 
         qui use `_cif_base', clear
+        // Restore the proportional-hazards model so the posted e(b)/e(V) and the
+        // reported hazard ratio are unaffected by the interacted plot model.
+        qui estimates restore `_est_ph'
+        qui estimates drop `_est_ph'
     }
 
     restore
