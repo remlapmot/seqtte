@@ -834,14 +834,19 @@ program seqtte, eclass
         local _nc = colsof(`_tmp')
         qui set obs `_nr'
         qui svmat double `_tmp', names(col)
-        // Arm colours match the R/Python (ggplot2) defaults: arm 0 = "#F8766D"
-        // (RGB 248 118 109), arm 1 = "#00BFC4" (RGB 0 191 196)
+        // Arm colours are taken from the current graph scheme rather than
+        // hardcoded, so that monochrome schemes such as sj (see help scheme)
+        // give a figure suitable for black-and-white print.  pstyle() ties
+        // each confidence band to the line of the same arm, which would
+        // otherwise pick up the third and fourth plot styles.  The two line
+        // patterns are set explicitly so that the arms remain distinguishable
+        // under a monochrome scheme, where both colours are black.
         if `_nc' == 7 {
             twoway ///
-                (rarea cif0_lo cif0_hi fu_time, fcolor("248 118 109%20") lwidth(none)) ///
-                (rarea cif1_lo cif1_hi fu_time, fcolor("0 191 196%20")   lwidth(none)) ///
-                (line cif0 fu_time, lcolor("248 118 109") lwidth(medthick)) ///
-                (line cif1 fu_time, lcolor("0 191 196")   lwidth(medthick)), ///
+                (rarea cif0_lo cif0_hi fu_time, pstyle(p1) fintensity(20) lwidth(none)) ///
+                (rarea cif1_lo cif1_hi fu_time, pstyle(p2) fintensity(20) lwidth(none)) ///
+                (line cif0 fu_time, pstyle(p1) lpattern(solid) lwidth(medthick)) ///
+                (line cif1 fu_time, pstyle(p2) lpattern(dash)  lwidth(medthick)), ///
                 ytitle("Cumulative incidence") ///
                 xtitle("Follow-up time") ///
                 title("Cumulative incidence by treatment arm") ///
@@ -849,8 +854,9 @@ program seqtte, eclass
                 name(seqtte_cif, replace)
         }
         else {
-            twoway (line cif0 fu_time, lcolor("248 118 109") lwidth(medthick)) ///
-                   (line cif1 fu_time, lcolor("0 191 196")   lwidth(medthick)), ///
+            twoway ///
+                (line cif0 fu_time, pstyle(p1) lpattern(solid) lwidth(medthick)) ///
+                (line cif1 fu_time, pstyle(p2) lpattern(dash)  lwidth(medthick)), ///
                 ytitle("Cumulative incidence") ///
                 xtitle("Follow-up time") ///
                 title("Cumulative incidence by treatment arm") ///
