@@ -1,0 +1,35 @@
+project: 
+  type: website
+  preview: 
+    port: 4000
+
+website: 
+  title: "seqtte"
+  repo-url: https://github.com/remlapmot/seqtte
+  repo-branch: main
+  navbar:
+    search: true
+    left:
+      - text: "Home"
+        href: index.html
+      - text: "Helpfile examples"
+        href: seqtte-examples.html
+      - text: "Helpfile"
+        href: seqtte-helpfile.html
+      - text: "About"
+        href: about.html
+    right:
+      - icon: github
+        href: https://github.com/remlapmot/seqtte
+        aria-label: GitHub
+
+format:
+  html:
+    theme: cosmo
+    css: mystyles.css
+    toc: true
+    highlight-style: arrow
+
+freeze: false  # re-render only when source changes
+
+# bibliography: refs.bib
