@@ -111,6 +111,7 @@ just test
 ## Authors
 
 * Tom Palmer, University of Bristol, Bristol, UK.
+* Paul Madley-Dowd, University of Bristol, Bristol, UK.
 * Michalis Katsoulis, UCL, London, UK.
 
 ## References
