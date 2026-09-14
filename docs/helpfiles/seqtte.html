@@ -1,0 +1,272 @@
+
+<html>
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf8">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css">
+BODY{background-color: ffffff;
+    font-family: monaco, "courier new", monospace;
+     color: #000000}
+.input, .result, .error{font-weight: bold}
+.input {color: #CC6600}
+.result{color: #000099}
+.error{color: #dd0000}
+</style>
+</head>
+<body>
+<pre>
+<span class=result><u>Title</u></span>
+<br><br>
+    <span class=result>seqtte</span> -- Sequential target trial emulation
+<br><br>
+<a name="syntax"></a><span class=result><u>Syntax</u></span>
+<br><br>
+        <span class=result>seqtte</span> <i>outcomevar</i> [<i>if</i>] [<i>in</i>]<span class=result>,</span> <span class=result>id(</span><i>varname</i><span class=result>)</span> <span class=result>time(</span><i>varname</i><span class=result>)</span> <span class=result>treatment(</span><i>varname</i><span class=result>)</span> [<i>options</i>]
+<br><br>
+    <i>options</i>                   Description
+    ----------------------------------------------------------------------------------------------
+    Required
+      <span class=result>id(</span><i>varname</i><span class=result>)</span>             individual identifier variable
+      <span class=result>time(</span><i>varname</i><span class=result>)</span>           integer calendar time variable
+      <span class=result>treatment(</span><i>varname</i><span class=result>)</span>      binary treatment indicator (0/1)
+    ----------------------------------------------------------------------------------------------
+    Optional
+      <span class=result>covariates(</span><i>varlist</i><span class=result>)</span>     adjustment covariates for the outcome model
+      <span class=result>estimator(</span><i>string</i><span class=result>)</span>       <span class=result>itt</span> (default) or <span class=result>pp</span>
+      <span class=result>wdenominator(</span><i>varlist</i><span class=result>)</span>   denominator weight model covariates; if omitted with <span class=result>pp</span>, an
+                                unweighted per-protocol analysis is performed
+      <span class=result>wnumerator(</span><i>varlist</i><span class=result>)</span>     numerator weight model covariates; if supplied, stabilized weights
+                                are used
+      <span class=result>truncation(</span><i>#</i><span class=result>)</span>           truncation threshold for cumulative weights; default 25
+      <span class=result>selectionrandom</span>         randomly subsample the control-arm (id, trial) pairs
+      <span class=result>selectionsample(</span><i>#</i><span class=result>)</span>      proportion of control-arm pairs to retain under <span class=result>selectionrandom</span>;
+                                default 0.5
+      <span class=result>bootstrap(</span><i>#</i><span class=result>)</span>            number of bootstrap replicates for the standard error and 95%
+                                percentile CI; default 0
+      <span class=result>seed(</span><i>#</i><span class=result>)</span>                 random-number seed; default <span class=result>-1</span> (seed not set)
+      <span class=result>plot</span>                    plot cumulative incidence curves for each treatment arm
+      <span class=result>survivalmax(</span><i>#</i><span class=result>)</span>          cap the follow-up shown in the cumulative incidence curves; default
+                                is adaptive
+      <span class=result>expandonly</span>              return the expanded sequential-trial dataset and skip the analysis
+    ----------------------------------------------------------------------------------------------
+<br><br>
+<a name="description"></a><span class=result><u>Description</u></span>
+<br><br>
+    <span class=result>seqtte</span> estimates the causal effect of a sustained treatment strategy using sequential target
+    trial emulation (Hernán and Robins, 2016).  Two estimators are available.
+<br><br>
+    <u>Intent-to-treat (ITT)</u> (<span class=result>estimator(itt)</span>, the default).  Estimates the effect of being assigned
+    to treatment at trial entry, regardless of subsequent treatment changes.  No weighting is
+    used.
+<br><br>
+    <u>Per-protocol (PP)</u> (<span class=result>estimator(pp)</span>).  Estimates the effect of sustained adherence to the
+    assigned treatment strategy.  Individuals are censored at the period in which they deviate
+    from their assigned treatment.  If <span class=result>wdenominator()</span> is supplied, inverse probability of
+    censoring weights (IPCW) are applied to adjust for informative censoring (weighted PP).  If
+    <span class=result>wdenominator()</span> is omitted, censoring is applied but no weights are used (unweighted PP).
+<br><br>
+    <u>Input data.</u>  The data should be in long (person-period) format with one row per individual per
+    time period.  <i>outcomevar</i> should equal 1 only in the period the event first occurs and 0
+    otherwise.  The <i>time</i> variable should take consecutive integer values.
+<br><br>
+    <u>Algorithm.</u>  For each eligible person-period (i.e. periods in which the individual has not yet
+    received treatment), a trial is initiated.  The individual is then followed from that trial
+    entry time to the end of their observed follow-up.  Data are expanded so that each person can
+    contribute to multiple trials.  A pooled logistic regression model is then fitted with
+    quadratic polynomial terms for follow-up time within trial and trial number, with standard
+    errors clustered by individual.  The pooled logistic regression approximates a discrete-time
+    hazard model, so the exponentiated treatment coefficient is reported as a hazard ratio.
+<br><br>
+    <u>Weight models (weighted PP only).</u>  When <span class=result>wdenominator()</span> is supplied with <span class=result>estimator(pp)</span>, four
+    logistic regression models are fitted on the pre-expansion data, stratified by prior treatment
+    status (<i>A_lag</i> = 0 or 1):  a denominator model including <span class=result>wdenominator()</span> covariates and a cubic
+    polynomial in calendar time, and (if <span class=result>wnumerator()</span> is supplied) a numerator model including
+    <span class=result>wnumerator()</span> covariates and the same time polynomial.  Unstabilized weights are used when
+    <span class=result>wnumerator()</span> is omitted; stabilized weights (numerator/denominator) are used when it is
+    supplied.  Cumulative products of per-period weights are formed within each trial, then
+    truncated at <span class=result>truncation()</span>.  When <span class=result>wdenominator()</span> is omitted, no weight models are fitted and
+    the outcome model is fitted on the censored data without weighting.
+<br><br>
+<a name="options"></a><span class=result><u>Options</u></span>
+<br><br>
+        +----------+
+    ----+ Required +------------------------------------------------------------------------------
+<br><br>
+    <span class=result>id(</span><i>varname</i><span class=result>)</span> specifies the variable identifying individuals.
+<br><br>
+    <span class=result>time(</span><i>varname</i><span class=result>)</span> specifies the integer calendar time variable.  Consecutive integer values
+        represent consecutive periods.
+<br><br>
+    <span class=result>treatment(</span><i>varname</i><span class=result>)</span> specifies the binary treatment indicator (0 = untreated, 1 = treated).
+<br><br>
+        +----------+
+    ----+ Optional +------------------------------------------------------------------------------
+<br><br>
+    <span class=result>covariates(</span><i>varlist</i><span class=result>)</span> specifies adjustment covariates for the outcome model.  In the expanded
+        dataset each person-trial record takes covariate values from the trial entry period, so
+        both time-fixed and time-varying covariates are included at their trial-entry values.
+        Factor-variable notation (e.g. <span class=result>i.group</span>) is allowed.
+<br><br>
+    <span class=result>estimator(</span><i>string</i><span class=result>)</span> specifies the estimator: <span class=result>itt</span> (default) for the intent-to-treat effect, or <span class=result>pp</span>
+        for the per-protocol effect.
+<br><br>
+    <span class=result>wdenominator(</span><i>varlist</i><span class=result>)</span> specifies the covariates for the denominator weight models.  These are
+        fitted on the pre-expansion data and should include all time-varying confounders of the
+        treatment–outcome relationship.  When supplied with <span class=result>estimator(pp)</span>, IPCW weights are
+        applied (weighted PP); when omitted, censoring is applied without weighting (unweighted
+        PP).  Factor-variable notation (e.g. <span class=result>i.group</span>) is allowed.
+<br><br>
+    <span class=result>wnumerator(</span><i>varlist</i><span class=result>)</span> specifies the covariates for the numerator (stabilization) weight models.
+        These should be a subset of <span class=result>wdenominator()</span>, typically restricted to baseline (study-entry)
+        values of covariates.  When omitted, unstabilized weights are used.  Factor-variable
+        notation (e.g. <span class=result>i.group</span>) is allowed.
+<br><br>
+    <span class=result>truncation(</span><i>#</i><span class=result>)</span> specifies the upper truncation threshold applied to the cumulative IPW weights.
+        Default is 25.
+<br><br>
+    <span class=result>selectionrandom</span> randomly subsamples the control-arm (id, trial) pairs (Bernoulli sampling),
+        retaining all treated-arm pairs.  This reduces the size of the expanded dataset and is
+        useful when the expanded data are very large.  By default no subsampling is applied (all
+        pairs are used).
+<br><br>
+    <span class=result>selectionsample(</span><i>#</i><span class=result>)</span> specifies the proportion of control-arm pairs to retain when
+        <span class=result>selectionrandom</span> is specified.  Must be in (0, 1]; default is 0.5.  It has no effect unless
+        <span class=result>selectionrandom</span> is also specified.
+<br><br>
+    <span class=result>bootstrap(</span><i>#</i><span class=result>)</span> requests <i>#</i> bootstrap replicates (resampling individuals with replacement) to
+        compute a bootstrap standard error and 95% percentile confidence interval for the
+        log-hazard ratio, reported below the regression table.  Default is 0 (no bootstrap).
+<br><br>
+    <span class=result>seed(</span><i>#</i><span class=result>)</span> sets the random-number seed, for reproducibility of the bootstrap resampling and of
+        <span class=result>selectionrandom</span>.  Default is <span class=result>-1</span>, meaning the seed is not set.
+<br><br>
+    <span class=result>plot</span> produces cumulative incidence (1 - survival) curves for each treatment arm by
+        g-computation from the fitted outcome model.  Cannot be combined with <span class=result>expandonly</span>.
+<br><br>
+    <span class=result>survivalmax(</span><i>#</i><span class=result>)</span> caps the follow-up time shown in the cumulative incidence curves (with <span class=result>plot</span>).
+        The g-computation projects every trial over the follow-up grid, so at long follow-up
+        times, where few trials contributed observed data, the curves are driven by model
+        extrapolation.  By default the follow-up is capped at the largest time where at least 10%
+        of the baseline trials still contribute observed (uncensored) data (minimum 5 trials);
+        specify <span class=result>survivalmax(</span><i>#</i><span class=result>)</span> to set the cap explicitly.
+<br><br>
+    <span class=result>expandonly</span> performs the data expansion only and leaves the expanded sequential-trial dataset
+        in memory, skipping the weight models, outcome model, bootstrap, and cumulative-incidence
+        steps.  The returned data contain the original variables together with <span class=result>trial</span> (calendar
+        time of trial entry), <span class=result>followup</span> (time since trial entry), <span class=result>period</span> (calendar time, equal to
+        <span class=result>trial</span> + <span class=result>followup</span>), and <span class=result>event</span> (the period-specific outcome indicator); for <span class=result>estimator(pp)</span> a
+        <span class=result>censored</span> indicator (and, for weighted PP, the cumulative <span class=result>weight</span>) are also included.  This
+        option cannot be combined with <span class=result>bootstrap()</span> or <span class=result>plot</span>.
+<br><br>
+<a name="examples"></a><span class=result><u>Examples</u></span>
+<br><br>
+    Setup: generate a synthetic person-period dataset with a baseline covariate (<span class=result>age</span>) and a
+    time-varying confounder (<span class=result>bmi</span>)
+<br><br>
+        <span class=input>. clear</span>
+        <span class=input>. set seed 42</span>
+        <span class=input>. set obs 500</span>
+        <span class=input>. gen id = _n</span>
+        <span class=input>. gen age = rnormal(50, 10)</span>
+        <span class=input>. expand 12</span>
+        <span class=input>. bysort id (age): gen time = _n - 1</span>
+        <span class=input>. gen bmi = .</span>
+        <span class=input>. bysort id (time): replace bmi = rnormal(25, 4) if time == 0</span>
+        <span class=input>. bysort id (time): replace bmi = bmi[_n-1] + rnormal(0, 1) if time &gt; 0</span>
+        <span class=input>. gen treatment = .</span>
+        <span class=input>. bysort id (time): replace treatment = (runiform() &lt; invlogit(-2 + 0.1 * (bmi - 25))) if</span>
+            <span class=result>time == 0</span>
+        <span class=input>. bysort id (time): replace treatment = cond(treatment[_n-1] == 0, runiform() &lt;</span>
+            <span class=result>invlogit(-2 + 0.1 * (bmi - 25)), runiform() &lt; 0.7) if time &gt; 0</span>
+        <span class=input>. gen outcome = (runiform() &lt; invlogit(-3 + 0.05 * (bmi - 25) - 0.4 * treatment))</span>
+        <span class=input>. bysort id (time): gen cumev = sum(outcome)</span>
+        <span class=input>. drop if cumev &gt; 1</span>
+        <span class=input>. drop cumev</span>
+<br><br>
+    ITT estimator
+<br><br>
+        <span class=input>. seqtte outcome, id(id) time(time) treatment(treatment) covariates(age)</span>
+<br><br>
+    Unweighted PP estimator (censoring applied, no IPCW weights)
+<br><br>
+        <span class=input>. seqtte outcome, id(id) time(time) treatment(treatment) covariates(age) estimator(pp)</span>
+<br><br>
+    PP estimator with unstabilized weights
+<br><br>
+        <span class=input>. seqtte outcome, id(id) time(time) treatment(treatment) covariates(age) estimator(pp)</span>
+            <span class=result>wdenominator(age bmi)</span>
+<br><br>
+    PP estimator with stabilized weights. Note that the numerator model should be a submodel of
+    the denominator model; if the same covariates are given to both the models coincide, every
+    weight is 1, and the fit is identical to the unweighted per-protocol analysis.
+<br><br>
+        <span class=input>. seqtte outcome, id(id) time(time) treatment(treatment) covariates(age) estimator(pp)</span>
+            <span class=result>wdenominator(age bmi) wnumerator(age)</span>
+<br><br>
+    Cumulative incidence curves by treatment arm
+<br><br>
+        <span class=input>. seqtte outcome, id(id) time(time) treatment(treatment) covariates(age) plot</span>
+<br><br>
+<a name="results"></a><span class=result><u>Stored results</u></span>
+<br><br>
+    <span class=result>seqtte</span> stores the following in <span class=result>e()</span>:
+<br><br>
+    Scalars        
+      <span class=result>e(N)</span>                number of observations in the pooled logistic regression
+      <span class=result>e(N_indiv)</span>          number of individuals in the original data
+      <span class=result>e(N_orig)</span>           number of observations in the original data
+      <span class=result>e(N_exp)</span>            number of observations in the expanded dataset
+      <span class=result>e(r2_p)</span>             pseudo R-squared
+      <span class=result>e(ll)</span>               log likelihood
+      <span class=result>e(N_uniq_arm0)</span>      number of individuals contributing follow-up to arm 0
+      <span class=result>e(N_uniq_arm1)</span>      number of individuals contributing follow-up to arm 1
+      <span class=result>e(N_nonuniq_arm0)</span>   number of follow-up intervals in arm 0
+      <span class=result>e(N_nonuniq_arm1)</span>   number of follow-up intervals in arm 1
+      <span class=result>e(N_sel)</span>            observations after random selection (if <span class=result>selectionrandom</span>)
+      <span class=result>e(selection_sample)</span> control-arm sampling proportion (if <span class=result>selectionrandom</span>)
+      <span class=result>e(N_boot)</span>           number of successful bootstrap replicates (if <span class=result>bootstrap()</span>)
+      <span class=result>e(bs_se)</span>            bootstrap standard error of the log-hazard ratio (if <span class=result>bootstrap()</span>)
+      <span class=result>e(bs_ll)</span>            lower bound of the bootstrap 95% percentile CI for the hazard ratio (if
+                            <span class=result>bootstrap()</span>)
+      <span class=result>e(bs_ul)</span>            upper bound of the bootstrap 95% percentile CI for the hazard ratio (if
+                            <span class=result>bootstrap()</span>)
+<br><br>
+    Macros         
+      <span class=result>e(cmd)</span>              <span class=result>seqtte</span>
+      <span class=result>e(estimator)</span>        <span class=result>itt</span> or <span class=result>pp</span>
+      <span class=result>e(depvar)</span>           name of the outcome variable
+      <span class=result>e(clustvar)</span>         name of the cluster variable
+      <span class=result>e(vcetype)</span>          <span class=result>Robust</span>
+<br><br>
+    Matrices       
+      <span class=result>e(b)</span>                coefficient vector (log scale; exponentiated values reported as hazard
+                            ratios)
+      <span class=result>e(V)</span>                variance-covariance matrix
+      <span class=result>e(bs_b)</span>             bootstrap log-hazard-ratio replicates (if <span class=result>bootstrap()</span>)
+      <span class=result>e(cif)</span>              cumulative incidence by arm and follow-up time (if <span class=result>plot</span>)
+<br><br>
+<a name="references"></a><span class=result><u>References</u></span>
+<br><br>
+<a name="HR2016"></a>    Hernán MA, Robins JM. 2016.  Using Big Data to Emulate a Target Trial When a Randomized Trial
+        Is Not Available.  <i>American Journal of Epidemiology</i> 183(8): 758–764.
+<br><br>
+    Danaei G, Rodríguez LAG, Cantero OF, Logan R, Hernán MA. 2013.  Observational data for
+        comparative effectiveness research:  an emulation of randomised trials of statins and
+        primary prevention of coronary heart disease.  <i>Statistical Methods in Medical Research</i>
+        22(1): 70–96.
+<br><br>
+    Maringe C, Benitez Majano S, Exarchakou A, et al. 2020.  Reflection on modern methods: trial
+        emulation in the presence of immortal-time bias.  Assessing the benefit of major surgery
+        for elderly lung cancer patients using observational data.  <i>International Journal of</i>
+        <i>Epidemiology</i> 49(5): 1719–1729.
+<br><br>
+<a name="author"></a><span class=result><u>Author</u></span>
+<br><br>
+    Tom Palmer, University of Bristol, Bristol, UK.  remlapmot@hotmail.com
+<br><br>
+    Michalis Katsoulis, UCL, London, UK.
+<br><br>
+    Please report any bugs or feature requests at https://github.com/remlapmot/seqtte/issues.
+</pre>
+</body>
+</html>
