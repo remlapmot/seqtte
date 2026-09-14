@@ -84,6 +84,16 @@ The input data should be in long (person-period) format with:
 
 ## For developers
 
+### Building the website
+
+The Quarto source for the package website is in `site/` and renders into `docs/`, which is served by GitHub Pages. From the top level of the repo run
+
+```sh
+just render
+```
+
+See `site/README.md` for the R and Stata dependencies.
+
 ### Running certification scripts
 
 From the `cscripts/` directory in Stata:
