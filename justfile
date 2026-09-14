@@ -1,9 +1,11 @@
-# dev:
-#     stata-mp "do developer"
-# render:
-#     quarto render site
-#     rm -r docs/*
-#     mv site/_site/* docs/
+render:
+    quarto render site
+    rm -rf docs/*
+    mv site/_site/* docs/
+
+[working-directory('site')]
+dev:
+    stata-mp "do developer"
 
 install: uninstall
     printf 'net install seqtte, from("https://raw.githubusercontent.com/remlapmot/seqtte/main/") replace\nado dir seqtte\n' | stata-mp -q
