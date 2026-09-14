@@ -215,20 +215,26 @@ This option cannot be combined with {cmd:bootstrap()} or {cmd:plot}.
 {marker examples}{...}
 {title:Examples}
 
-{pstd}Setup: generate a synthetic person-period dataset{p_end}
+{pstd}Setup: generate a synthetic person-period dataset with a baseline
+covariate ({cmd:age}) and a time-varying confounder ({cmd:bmi}){p_end}
 
 {phang2}{cmd:. clear}{p_end}
 {phang2}{cmd:. set seed 42}{p_end}
 {phang2}{cmd:. set obs 500}{p_end}
 {phang2}{cmd:. gen id = _n}{p_end}
 {phang2}{cmd:. gen age = rnormal(50, 10)}{p_end}
-{phang2}{cmd:. expand 15}{p_end}
-{phang2}{cmd:. bysort id: gen time = _n - 1}{p_end}
-{phang2}{cmd:. gen treatment = 0}{p_end}
-{phang2}{cmd:. bysort id (time): replace treatment = 1 if time > 4 & id <= 250}{p_end}
-{phang2}{cmd:. gen outcome = (runiform() < 0.05)}{p_end}
+{phang2}{cmd:. expand 12}{p_end}
+{phang2}{cmd:. bysort id (age): gen time = _n - 1}{p_end}
+{phang2}{cmd:. gen bmi = .}{p_end}
+{phang2}{cmd:. bysort id (time): replace bmi = rnormal(25, 4) if time == 0}{p_end}
+{phang2}{cmd:. bysort id (time): replace bmi = bmi[_n-1] + rnormal(0, 1) if time > 0}{p_end}
+{phang2}{cmd:. gen treatment = .}{p_end}
+{phang2}{cmd:. bysort id (time): replace treatment = (runiform() < invlogit(-2 + 0.1 * (bmi - 25))) if time == 0}{p_end}
+{phang2}{cmd:. bysort id (time): replace treatment = cond(treatment[_n-1] == 0, runiform() < invlogit(-2 + 0.1 * (bmi - 25)), runiform() < 0.7) if time > 0}{p_end}
+{phang2}{cmd:. gen outcome = (runiform() < invlogit(-3 + 0.05 * (bmi - 25) - 0.4 * treatment))}{p_end}
 {phang2}{cmd:. bysort id (time): gen cumev = sum(outcome)}{p_end}
 {phang2}{cmd:. drop if cumev > 1}{p_end}
+{phang2}{cmd:. drop cumev}{p_end}
 
 {pstd}ITT estimator{p_end}
 
@@ -240,11 +246,18 @@ This option cannot be combined with {cmd:bootstrap()} or {cmd:plot}.
 
 {pstd}PP estimator with unstabilized weights{p_end}
 
-{phang2}{cmd:. seqtte outcome, id(id) time(time) treatment(treatment) covariates(age) estimator(pp) wdenominator(age)}{p_end}
+{phang2}{cmd:. seqtte outcome, id(id) time(time) treatment(treatment) covariates(age) estimator(pp) wdenominator(age bmi)}{p_end}
 
-{pstd}PP estimator with stabilized weights{p_end}
+{pstd}PP estimator with stabilized weights. Note that the numerator model should
+be a submodel of the denominator model; if the same covariates are given to both
+the models coincide, every weight is 1, and the fit is identical to the
+unweighted per-protocol analysis.{p_end}
 
-{phang2}{cmd:. seqtte outcome, id(id) time(time) treatment(treatment) covariates(age) estimator(pp) wdenominator(age) wnumerator(age)}{p_end}
+{phang2}{cmd:. seqtte outcome, id(id) time(time) treatment(treatment) covariates(age) estimator(pp) wdenominator(age bmi) wnumerator(age)}{p_end}
+
+{pstd}Cumulative incidence curves by treatment arm{p_end}
+
+{phang2}{cmd:. seqtte outcome, id(id) time(time) treatment(treatment) covariates(age) plot}{p_end}
 
 {marker results}{...}
 {title:Stored results}
