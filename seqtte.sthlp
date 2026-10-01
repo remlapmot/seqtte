@@ -143,6 +143,8 @@ for the intent-to-treat effect, or {cmd:pp} for the per-protocol effect.
 weight models.
 These are fitted on the pre-expansion data and should include all
 time-varying confounders of the treatment–outcome relationship.
+The variables enter at their current-period values, so time-varying covariates
+are allowed alongside any baseline covariates.
 When supplied with {cmd:estimator(pp)}, IPCW weights are applied (weighted PP);
 when omitted, censoring is applied without weighting (unweighted PP).
 {help fvvarlist:Factor-variable notation} (e.g. {cmd:i.group}) is allowed.
@@ -159,6 +161,7 @@ When omitted, unstabilized weights are used.
 {opt truncation(#)} specifies the upper truncation threshold applied
 to the cumulative IPW weights.
 Default is 25.
+Specify {cmd:truncation(.)} to leave the weights untruncated.
 
 {phang}
 {opt selectionrandom} randomly subsamples the control-arm (id, trial) pairs
@@ -188,6 +191,9 @@ Default is {cmd:-1}, meaning the seed is not set.
 {phang}
 {opt plot} produces cumulative incidence (1 - survival) curves for each
 treatment arm by g-computation from the fitted outcome model.
+When {cmd:bootstrap()} is also specified, pointwise 95% percentile confidence
+bands are added to the curves and to {cmd:e(cif)}.
+Line and band colours follow the current graph {help scheme}.
 Cannot be combined with {cmd:expandonly}.
 
 {phang}
@@ -202,14 +208,16 @@ trials); specify {opt survivalmax(#)} to set the cap explicitly.
 
 {phang}
 {opt expandonly} performs the data expansion only and leaves the expanded
-sequential-trial dataset in memory, skipping the weight models, outcome model,
-bootstrap, and cumulative-incidence steps.
+sequential-trial dataset in memory, skipping the outcome model, bootstrap, and
+cumulative-incidence steps.
 The returned data contain the original variables together with {cmd:trial}
 (calendar time of trial entry), {cmd:followup} (time since trial entry),
 {cmd:period} (calendar time, equal to {cmd:trial} + {cmd:followup}), and
 {cmd:event} (the period-specific outcome indicator); for {cmd:estimator(pp)} a
 {cmd:censored} indicator (and, for weighted PP, the cumulative {cmd:weight}) are
 also included.
+The weight models are therefore still fitted for weighted PP, so this option can
+be used to inspect the estimated weights before any outcome model is fitted.
 This option cannot be combined with {cmd:bootstrap()} or {cmd:plot}.
 
 {marker examples}{...}
@@ -295,7 +303,7 @@ unweighted per-protocol analysis.{p_end}
 {synopt:{cmd:e(b)}}coefficient vector (log scale; exponentiated values reported as hazard ratios){p_end}
 {synopt:{cmd:e(V)}}variance-covariance matrix{p_end}
 {synopt:{cmd:e(bs_b)}}bootstrap log-hazard-ratio replicates (if {cmd:bootstrap()}){p_end}
-{synopt:{cmd:e(cif)}}cumulative incidence by arm and follow-up time (if {cmd:plot}){p_end}
+{synopt:{cmd:e(cif)}}cumulative incidence by arm and follow-up time (if {cmd:plot}); includes lower and upper limits if {cmd:bootstrap()} is also specified{p_end}
 
 {marker references}{...}
 {title:References}
