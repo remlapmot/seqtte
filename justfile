@@ -1,4 +1,4 @@
-render:
+render: uninstall
     quarto render site
     rm -rf docs/*
     mv site/_site/* docs/
