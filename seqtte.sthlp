@@ -190,7 +190,12 @@ Default is {cmd:-1}, meaning the seed is not set.
 
 {phang}
 {opt plot} produces cumulative incidence (1 - survival) curves for each
-treatment arm by g-computation from the fitted outcome model.
+treatment arm by g-computation.
+The outcome model is refitted with an additional product term between
+treatment and follow-up time, so that the treatment effect can vary over
+follow-up (for weighted PP the refitted model uses the same IPCW weights).
+The hazard ratio reported in the regression table still comes from the model
+without the product term.
 When {cmd:bootstrap()} is also specified, pointwise 95% percentile confidence
 bands are added to the curves and to {cmd:e(cif)}.
 Line and band colours follow the current graph {help scheme}.
