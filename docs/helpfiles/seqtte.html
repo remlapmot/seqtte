@@ -142,9 +142,13 @@ BODY{background-color: ffffff;
         <span class=result>selectionrandom</span>.  Default is <span class=result>-1</span>, meaning the seed is not set.
 <br><br>
     <span class=result>plot</span> produces cumulative incidence (1 - survival) curves for each treatment arm by
-        g-computation from the fitted outcome model.  When <span class=result>bootstrap()</span> is also specified,
-        pointwise 95% percentile confidence bands are added to the curves and to <span class=result>e(cif)</span>.  Line and
-        band colours follow the current graph scheme.  Cannot be combined with <span class=result>expandonly</span>.
+        g-computation.  The outcome model is refitted with an additional product term between
+        treatment and follow-up time, so that the treatment effect can vary over follow-up (for
+        weighted PP the refitted model uses the same IPCW weights).  The hazard ratio reported in
+        the regression table still comes from the model without the product term.  When
+        <span class=result>bootstrap()</span> is also specified, pointwise 95% percentile confidence bands are added to the
+        curves and to <span class=result>e(cif)</span>.  Line and band colours follow the current graph scheme.  Cannot be
+        combined with <span class=result>expandonly</span>.
 <br><br>
     <span class=result>survivalmax(</span><i>#</i><span class=result>)</span> caps the follow-up time shown in the cumulative incidence curves (with <span class=result>plot</span>).
         The g-computation projects every trial over the follow-up grid, so at long follow-up
