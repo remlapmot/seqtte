@@ -15,6 +15,9 @@ library(Statamarkdown)
 
 ```{stata, include=FALSE}
 * ssc install log2html
+* The generated html files are build artefacts: they are removed by `just render`
+* once Quarto has copied them into _site, so recreate the directory here.
+cap mkdir ./helpfiles
 local helpfiles seqtte
 foreach file in `helpfiles' {
 	di _n "`file'"

@@ -1,4 +1,7 @@
 /.quarto/
 /_site/
 
+# generated from ../seqtte.sthlp by the Stata chunk in index.qmd
+/helpfiles/
+
 **/*.quarto_ipynb
