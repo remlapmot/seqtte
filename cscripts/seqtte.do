@@ -1,4 +1,5 @@
 cscript seqtte adofile seqtte
+set varabbrev off
 
 * ------------------------------------------------------------
 * Generate a synthetic person-period dataset for testing

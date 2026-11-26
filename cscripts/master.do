@@ -8,6 +8,10 @@ log using master.log, text replace name(master)
 
 cscript master
 
+* SSC requires code to run with variable abbreviation turned off
+local varabbrev = c(varabbrev)
+set varabbrev off
+
 cap noi ado describe seqtte
 
 local cscripts ///
@@ -20,5 +24,7 @@ foreach dofile of local cscripts {
 }
 
 log close _all
+
+set varabbrev `varabbrev'
 
 cap noi adopath - "`path'"
