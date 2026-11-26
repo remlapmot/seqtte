@@ -1,15 +1,17 @@
 -------------------------------------------------------------------------------
       name:  seqtte
-       log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
+       log:  /Users/eptmp/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- opened on:   3 Jul 2026, 22:25:00
+ opened on:  26 Nov 2026, 10:18:15
 
 . cscript seqtte adofile seqtte
 -------------------------------------------------------------------BEGIN seqtte
 
 -> which seqtte, usesysdir
-/Users/tom/Documents/GitHub/seqtte/seqtte.ado
+/Users/eptmp/Documents/GitHub/seqtte/seqtte.ado
 *! version 0.11.0  03jul2026  Tom Palmer
+
+. set varabbrev off
 
 . 
 . * ------------------------------------------------------------
@@ -1931,7 +1933,7 @@ seqtte cscript passed
 . 
 end of do-file
       name:  seqtte
-       log:  /Users/tom/Documents/GitHub/seqtte/cscripts/seqtte.log
+       log:  /Users/eptmp/Documents/GitHub/seqtte/cscripts/seqtte.log
   log type:  text
- closed on:   3 Jul 2026, 22:25:06
+ closed on:  26 Nov 2026, 10:18:23
 -------------------------------------------------------------------------------
